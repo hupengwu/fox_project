@@ -28,6 +28,7 @@
 #include <fstream>
 #include <sstream>
 #include "CJsonObject.hpp"
+#include <FoxStty.h>
 
 
 
@@ -146,6 +147,8 @@ int test1()
 
 int main()
 {
+    FoxStty::demo();
+
     test1();
 
    int lth = sizeof(unsigned long int);

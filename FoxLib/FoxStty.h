@@ -22,7 +22,7 @@ typedef struct tty_info_t
 其中，lockTTY（）和unlockTTY（）是为了能够在多线程中使用。在读写操作的前后，需要锁定和释放串口资源。
 具体的使用方法，在代码实现的原文件中，main（）函数中进行了演示。下面就是源代码文件： */
 
-enum Parity { N, E, O, S };
+enum TTYParity { N, E, O, S };
 
 class FoxStty
 {
@@ -34,7 +34,7 @@ public:
     static int setTTYSpeed(TTY_INFO* ptty, int speed);
 
     // 设置串口数据位，停止位和效验位
-    static int setTTYParity(TTY_INFO* ptty, int databits, Parity parity, int stopbits);
+    static int setTTYParity(TTY_INFO* ptty, int databits, TTYParity parity, int stopbits);
 
     // 清理串口设备资源 
     static int cleanTTY(TTY_INFO* ptty);

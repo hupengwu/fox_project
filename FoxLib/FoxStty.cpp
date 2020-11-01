@@ -8,55 +8,13 @@
 #include <fcntl.h> 
 #include <sys/file.h>
 
-//#include <sys/types.h> 
-//#include <sys/stat.h> 
-//#include <errno.h> 
+
 
 /*
-TTY_INFO* FoxStty::readyTTY(int id)
-{
-    return nullptr;
-}
-
-int FoxStty::setTTYSpeed(TTY_INFO* ptty, int speed)
-{
-    return 0;
-}
-
-int FoxStty::setTTYParity(TTY_INFO* ptty, int databits, int parity, int stopbits)
-{
-    return 0;
-}
-
-int FoxStty::cleanTTY(TTY_INFO* ptty)
-{
-    return 0;
-}
-
-int FoxStty::sendnTTY(TTY_INFO* ptty, char* pbuf, int size)
-{
-    return 0;
-}
-
-int FoxStty::recvnTTY(TTY_INFO* ptty, char* pbuf, int size)
-{
-    return 0;
-}
-
-int FoxStty::lockTTY(TTY_INFO* ptty)
-{
-    return 0;
-}
-
-int FoxStty::unlockTTY(TTY_INFO* ptty)
-{
-    return 0;
-}
-
+* 说明：打开串口配置，初始化串口设备并进行原有设置的保存 
+* 参数：id  串口/dev/ttyS%d
+* 返回值：
 */
-
-/// 
-// 初始化串口设备并进行原有设置的保存 
 TTY_INFO* FoxStty::readyTTY(int id)
 {
     TTY_INFO* ptty;
@@ -81,8 +39,11 @@ TTY_INFO* FoxStty::readyTTY(int id)
     return ptty;
 }
 
-/// 
-// 清理串口设备资源 
+/*
+* 说明：清理串口设备资源 
+* 参数：
+* 返回值：
+*/
 int FoxStty::cleanTTY(TTY_INFO* ptty)
 {
     // 
@@ -100,12 +61,12 @@ int FoxStty::cleanTTY(TTY_INFO* ptty)
 }
 
 
-/// 
-// 设置串口通信速率 
-// ptty 参数类型(TTY_INFO *),已经初始化的串口设备信息结构指针 
-// speed 参数类型(int),用来设置串口的波特率 
-// return 返回值类型(int),函数执行成功返回零值，否则返回大于零的值 
-/// 
+/*
+* 设置串口通信速率
+* ptty 参数类型(TTY_INFO *),已经初始化的串口设备信息结构指针 
+* speed 参数类型(int),用来设置串口的波特率 
+* return 返回值类型(int),函数执行成功返回零值，否则返回大于零的值 
+*/
 int FoxStty::setTTYSpeed(TTY_INFO* ptty, int speed)
 {
     int i;
@@ -159,7 +120,7 @@ int FoxStty::setTTYSpeed(TTY_INFO* ptty, int speed)
 // parity 参数类型(int),效验类型 取值为N,E,O,,S 
 // return 返回值类型(int),函数执行成功返回零值，否则返回大于零的值 
 /// 
-int FoxStty::setTTYParity(TTY_INFO* ptty, int databits, Parity parity, int stopbits)
+int FoxStty::setTTYParity(TTY_INFO* ptty, int databits, TTYParity parity, int stopbits)
 {
     // 
     // 取得串口设置 
@@ -320,7 +281,7 @@ int FoxStty::unlockTTY(TTY_INFO* ptty)
 // 接口测试 
 int FoxStty::demo()
 {
-    TTY_INFO* ptty;
+    TTY_INFO* ptty = nullptr;
     int nbyte, idx;
     char cc[16];
 

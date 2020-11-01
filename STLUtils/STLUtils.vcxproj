@@ -78,11 +78,11 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClCompile Include="CAutoLock.cpp" />
-    <ClCompile Include="MyUtil.cpp" />
+    <ClCompile Include="STLDequeUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CAutoLock.h" />
-    <ClInclude Include="MyUtil.h" />
+    <ClInclude Include="STLDequeUtils.h" />
     <ClInclude Include="STLListUtils.h" />
     <ClInclude Include="STLMapUtils.h" />
     <ClInclude Include="STLVectorUtils.h" />
