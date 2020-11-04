@@ -9,8 +9,6 @@
 #endif
 
 
-//#define min(a,b) a>b?b:a
-//#define max(a,b) a>b?a:b
 #ifndef max
 #define max(a,b) (((a)>(b))?(a):(b))
 #endif
@@ -30,7 +28,7 @@ FoxByteArray::FoxByteArray()
 
 FoxByteArray::~FoxByteArray()
 {
-	delete[] (BYTE*)m_pData;
+	delete[](BYTE*)m_pData;
 }
 
 void FoxByteArray::SetSize(int nNewSize, int nGrowBy)
@@ -43,7 +41,7 @@ void FoxByteArray::SetSize(int nNewSize, int nGrowBy)
 	if (nNewSize == 0)
 	{
 		// shrink to nothing
-		delete[] (BYTE*)m_pData;
+		delete[](BYTE*)m_pData;
 		m_pData = NULL;
 		m_nSize = m_nMaxSize = 0;
 	}
@@ -51,7 +49,7 @@ void FoxByteArray::SetSize(int nNewSize, int nGrowBy)
 	{
 		// create one with exact size
 #ifdef SIZE_T_MAX
-		ASSERT(nNewSize <= SIZE_T_MAX/sizeof(BYTE));    // no overflow
+		ASSERT(nNewSize <= SIZE_T_MAX / sizeof(BYTE));    // no overflow
 #endif
 		m_pData = (BYTE*) new BYTE[nNewSize * sizeof(BYTE)];
 
@@ -66,7 +64,7 @@ void FoxByteArray::SetSize(int nNewSize, int nGrowBy)
 		{
 			// initialize the new elements
 
-			memset(&m_pData[m_nSize], 0, (nNewSize-m_nSize) * sizeof(BYTE));
+			memset(&m_pData[m_nSize], 0, (nNewSize - m_nSize) * sizeof(BYTE));
 
 		}
 
@@ -90,7 +88,7 @@ void FoxByteArray::SetSize(int nNewSize, int nGrowBy)
 
 		ASSERT(nNewMax >= m_nMaxSize);  // no wrap around
 #ifdef SIZE_T_MAX
-		ASSERT(nNewMax <= SIZE_T_MAX/sizeof(BYTE)); // no overflow
+		ASSERT(nNewMax <= SIZE_T_MAX / sizeof(BYTE)); // no overflow
 #endif
 		BYTE* pNewData = (BYTE*) new BYTE[nNewMax * sizeof(BYTE)];
 
@@ -100,11 +98,11 @@ void FoxByteArray::SetSize(int nNewSize, int nGrowBy)
 		// construct remaining elements
 		ASSERT(nNewSize > m_nSize);
 
-		memset(&pNewData[m_nSize], 0, (nNewSize-m_nSize) * sizeof(BYTE));
+		memset(&pNewData[m_nSize], 0, (nNewSize - m_nSize) * sizeof(BYTE));
 
 
 		// get rid of old stuff (note: no destructors called)
-		delete[] (BYTE*)m_pData;
+		delete[](BYTE*)m_pData;
 		m_pData = pNewData;
 		m_nSize = nNewSize;
 		m_nMaxSize = nNewMax;
@@ -140,7 +138,7 @@ void FoxByteArray::FreeExtra()
 	{
 		// shrink to desired size
 #ifdef SIZE_T_MAX
-		ASSERT(m_nSize <= SIZE_T_MAX/sizeof(BYTE)); // no overflow
+		ASSERT(m_nSize <= SIZE_T_MAX / sizeof(BYTE)); // no overflow
 #endif
 		BYTE* pNewData = NULL;
 		if (m_nSize != 0)
@@ -151,7 +149,7 @@ void FoxByteArray::FreeExtra()
 		}
 
 		// get rid of old stuff (note: no destructors called)
-		delete[] (BYTE*)m_pData;
+		delete[](BYTE*)m_pData;
 		m_pData = pNewData;
 		m_nMaxSize = m_nSize;
 	}
@@ -164,7 +162,7 @@ void FoxByteArray::SetAtGrow(int nIndex, BYTE newElement)
 	ASSERT(nIndex >= 0);
 
 	if (nIndex >= m_nSize)
-		SetSize(nIndex+1);
+		SetSize(nIndex + 1);
 	m_pData[nIndex] = newElement;
 }
 
@@ -189,8 +187,8 @@ void FoxByteArray::InsertAt(int nIndex, BYTE newElement, int nCount)
 		int nOldSize = m_nSize;
 		SetSize(m_nSize + nCount);  // grow it to new size
 		// shift old data up to fill gap
-		memmove(&m_pData[nIndex+nCount], &m_pData[nIndex],
-			(nOldSize-nIndex) * sizeof(BYTE));
+		memmove(&m_pData[nIndex + nCount], &m_pData[nIndex],
+			(nOldSize - nIndex) * sizeof(BYTE));
 
 		// re-init slots we copied from
 
@@ -222,13 +220,13 @@ void FoxByteArray::RemoveAt(int nIndex, int nCount)
 
 	if (nMoveCount)
 		memmove(&m_pData[nIndex], &m_pData[nIndex + nCount],
-		nMoveCount * sizeof(BYTE));
+			nMoveCount * sizeof(BYTE));
 	m_nSize -= nCount;
 }
 
 void FoxByteArray::InsertAt(int nStartIndex, FoxByteArray* pNewArray)
 {
-	if (pNewArray==this)
+	if (pNewArray == this)
 		return;
 
 	ASSERT(pNewArray != NULL);

@@ -6,7 +6,7 @@
 #include <STLListUtils.h>
 #include <STLVectorUtils.h>
 
-#include <CAutoLock.h>
+#include <STLAutoLock.h>
 
 #include <FoxDateTime.h>
 
@@ -29,11 +29,13 @@
 #include <sstream>
 #include "CJsonObject.hpp"
 #include <FoxStty.h>
+#include <fox_json_dict.h>
 
 
 
 using namespace std;
-
+using namespace fox_json;
+/*
 int test1()
 {
     std::ifstream fin("");
@@ -144,12 +146,22 @@ int test1()
     std::cout << oJson.ToString() << std::endl;
 
 }
+*/
 
 int main()
 {
+    fox_json::JsonDict jd;
+    name_space_def ss1;
+    ss1.nameSpace = "abc";
+    jd.putNameSpaceDef(ss1);
+    name_space_def ss123 = jd.getNameSpaceDef("abc1");
+    if (ss123.nameSpace=="")
+    {
+        int i1 = 0;
+    }
     FoxStty::demo();
 
-    test1();
+  //  test1();
 
    int lth = sizeof(unsigned long int);
    lth = sizeof(unsigned long long);

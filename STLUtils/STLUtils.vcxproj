@@ -77,11 +77,11 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <ClCompile Include="CAutoLock.cpp" />
+    <ClCompile Include="STLAutoLock.cpp" />
     <ClCompile Include="STLDequeUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CAutoLock.h" />
+    <ClInclude Include="STLAutoLock.h" />
     <ClInclude Include="STLDequeUtils.h" />
     <ClInclude Include="STLListUtils.h" />
     <ClInclude Include="STLMapUtils.h" />

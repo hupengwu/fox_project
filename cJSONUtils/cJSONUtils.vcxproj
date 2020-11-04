@@ -80,10 +80,14 @@
     <ClCompile Include="cJSON.c" />
     <ClCompile Include="CJsonObject.cpp" />
     <ClCompile Include="demo\demo.cpp" />
+    <ClCompile Include="fox_json_dict.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cJSON.h" />
     <ClInclude Include="CJsonObject.hpp" />
+    <ClInclude Include="FoxJsonObjectDemo.h" />
+    <ClInclude Include="fox_json_type.h" />
+    <ClInclude Include="fox_json_dict.h" />
   </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

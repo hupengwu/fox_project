@@ -32,11 +32,12 @@ using namespace std;
 //				return TRUE;
 //			}	
 //======================================================================
-class CAutoLock
+
+class STLAutoLock
 {
 public:
-	CAutoLock(mutex& mutex);
-	virtual ~CAutoLock();
+	STLAutoLock(mutex& mutex);
+	virtual ~STLAutoLock();
 
 private:
 	mutex* mutexRef;
