@@ -77,17 +77,23 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <ClCompile Include="STLAutoLock.cpp" />
     <ClCompile Include="STLDequeUtils.cpp" />
+    <ClCompile Include="STLLockGuardUtils.cpp" />
+    <ClCompile Include="STLThreadUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="STLAutoLock.h" />
     <ClInclude Include="STLDequeUtils.h" />
     <ClInclude Include="STLListUtils.h" />
+    <ClInclude Include="STLLockGuardUtils.h" />
     <ClInclude Include="STLMapUtils.h" />
+    <ClInclude Include="STLThreadUtils.h" />
     <ClInclude Include="STLVectorUtils.h" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <AdditionalDependencies>-lpthread;$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

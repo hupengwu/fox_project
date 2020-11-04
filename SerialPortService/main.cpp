@@ -6,7 +6,6 @@
 #include <STLListUtils.h>
 #include <STLVectorUtils.h>
 
-#include <STLAutoLock.h>
 
 #include <FoxDateTime.h>
 

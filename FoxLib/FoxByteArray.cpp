@@ -1,13 +1,6 @@
 #include "FoxByteArray.h"
 #include <string.h>
 
-#ifdef _DEBUG
-#include <assert.h>
-#define ASSERT(x) assert(x);
-#else
-#define ASSERT(x) 
-#endif
-
 
 #ifndef max
 #define max(a,b) (((a)>(b))?(a):(b))
@@ -33,7 +26,7 @@ FoxByteArray::~FoxByteArray()
 
 void FoxByteArray::SetSize(int nNewSize, int nGrowBy)
 {
-	ASSERT(nNewSize >= 0);
+	assert(nNewSize >= 0);
 
 	if (nGrowBy != -1)
 		m_nGrowBy = nGrowBy;  // set new size
@@ -49,7 +42,7 @@ void FoxByteArray::SetSize(int nNewSize, int nGrowBy)
 	{
 		// create one with exact size
 #ifdef SIZE_T_MAX
-		ASSERT(nNewSize <= SIZE_T_MAX / sizeof(BYTE));    // no overflow
+		assert(nNewSize <= SIZE_T_MAX / sizeof(BYTE));    // no overflow
 #endif
 		m_pData = (BYTE*) new BYTE[nNewSize * sizeof(BYTE)];
 
@@ -86,9 +79,9 @@ void FoxByteArray::SetSize(int nNewSize, int nGrowBy)
 		else
 			nNewMax = nNewSize;  // no slush
 
-		ASSERT(nNewMax >= m_nMaxSize);  // no wrap around
+		assert(nNewMax >= m_nMaxSize);  // no wrap around
 #ifdef SIZE_T_MAX
-		ASSERT(nNewMax <= SIZE_T_MAX / sizeof(BYTE)); // no overflow
+		assert(nNewMax <= SIZE_T_MAX / sizeof(BYTE)); // no overflow
 #endif
 		BYTE* pNewData = (BYTE*) new BYTE[nNewMax * sizeof(BYTE)];
 
@@ -96,7 +89,7 @@ void FoxByteArray::SetSize(int nNewSize, int nGrowBy)
 		memcpy(pNewData, m_pData, m_nSize * sizeof(BYTE));
 
 		// construct remaining elements
-		ASSERT(nNewSize > m_nSize);
+		assert(nNewSize > m_nSize);
 
 		memset(&pNewData[m_nSize], 0, (nNewSize - m_nSize) * sizeof(BYTE));
 
@@ -111,7 +104,7 @@ void FoxByteArray::SetSize(int nNewSize, int nGrowBy)
 
 int FoxByteArray::Append(const FoxByteArray& src)
 {
-	ASSERT(this != &src);   // cannot append to itself
+	assert(this != &src);   // cannot append to itself
 
 	int nOldSize = m_nSize;
 	SetSize(m_nSize + src.m_nSize);
@@ -123,7 +116,7 @@ int FoxByteArray::Append(const FoxByteArray& src)
 
 void FoxByteArray::Copy(const FoxByteArray& src)
 {
-	ASSERT(this != &src);   // cannot append to itself
+	assert(this != &src);   // cannot append to itself
 
 	SetSize(src.m_nSize);
 
@@ -138,7 +131,7 @@ void FoxByteArray::FreeExtra()
 	{
 		// shrink to desired size
 #ifdef SIZE_T_MAX
-		ASSERT(m_nSize <= SIZE_T_MAX / sizeof(BYTE)); // no overflow
+		assert(m_nSize <= SIZE_T_MAX / sizeof(BYTE)); // no overflow
 #endif
 		BYTE* pNewData = NULL;
 		if (m_nSize != 0)
@@ -159,7 +152,7 @@ void FoxByteArray::FreeExtra()
 
 void FoxByteArray::SetAtGrow(int nIndex, BYTE newElement)
 {
-	ASSERT(nIndex >= 0);
+	assert(nIndex >= 0);
 
 	if (nIndex >= m_nSize)
 		SetSize(nIndex + 1);
@@ -173,8 +166,8 @@ void FoxByteArray::SetAtGrow(int nIndex, BYTE newElement)
 void FoxByteArray::InsertAt(int nIndex, BYTE newElement, int nCount)
 {
 
-	ASSERT(nIndex >= 0);    // will expand to meet need
-	ASSERT(nCount > 0);     // zero or negative size not allowed
+	assert(nIndex >= 0);    // will expand to meet need
+	assert(nCount > 0);     // zero or negative size not allowed
 
 	if (nIndex >= m_nSize)
 	{
@@ -197,13 +190,15 @@ void FoxByteArray::InsertAt(int nIndex, BYTE newElement, int nCount)
 	}
 
 	// insert new value in the gap
-	ASSERT(nIndex + nCount <= m_nSize);
+	assert(nIndex + nCount <= m_nSize);
 
 
 
 	// copy elements into the empty space
-	while (nCount--)
+	while (nCount--) 
+	{
 		m_pData[nIndex++] = newElement;
+	}
 
 }
 
@@ -211,16 +206,17 @@ void FoxByteArray::InsertAt(int nIndex, BYTE newElement, int nCount)
 
 void FoxByteArray::RemoveAt(int nIndex, int nCount)
 {
-	ASSERT(nIndex >= 0);
-	ASSERT(nCount >= 0);
-	ASSERT(nIndex + nCount <= m_nSize);
+	assert(nIndex >= 0);
+	assert(nCount >= 0);
+	assert(nIndex + nCount <= m_nSize);
 
 	// just remove a range
 	int nMoveCount = m_nSize - (nIndex + nCount);
 
-	if (nMoveCount)
-		memmove(&m_pData[nIndex], &m_pData[nIndex + nCount],
-			nMoveCount * sizeof(BYTE));
+	if (nMoveCount) 
+	{
+		memmove(&m_pData[nIndex], &m_pData[nIndex + nCount],nMoveCount * sizeof(BYTE));
+	}
 	m_nSize -= nCount;
 }
 
@@ -229,8 +225,8 @@ void FoxByteArray::InsertAt(int nStartIndex, FoxByteArray* pNewArray)
 	if (pNewArray == this)
 		return;
 
-	ASSERT(pNewArray != NULL);
-	ASSERT(nStartIndex >= 0);
+	assert(pNewArray != NULL);
+	assert(nStartIndex >= 0);
 
 	if (pNewArray->GetSize() > 0)
 	{
