@@ -47,7 +47,7 @@ public:
 	static FoxDateTime GetCurrentTime();
 
 	FoxDateTime();
-	~FoxDateTime() {};
+	virtual ~FoxDateTime() {};
 
 	FoxDateTime(const FoxDateTime& dateSrc);
 	FoxDateTime(time_t timeSrc);

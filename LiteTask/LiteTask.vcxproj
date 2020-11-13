@@ -35,9 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{98179949-d2e6-4e63-b756-c0100ea19115}</ProjectGuid>
+    <ProjectGuid>{290697ce-6b88-4d61-9ffb-c7805a598671}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>STLUtils</RootNamespace>
+    <RootNamespace>LiteTask</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -47,7 +47,6 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -60,7 +59,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -77,30 +76,20 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="STLDemoRunnable.cpp" />
-    <ClCompile Include="STLRunnable.cpp" />
-    <ClCompile Include="STLSemaphore.cpp" />
-    <ClCompile Include="CSemaphoreTest.cpp" />
-    <ClCompile Include="STLDequeUtils.cpp" />
-    <ClCompile Include="STLEvent.cpp" />
-    <ClCompile Include="STLLockGuardUtils.cpp" />
-    <ClCompile Include="STLThreadPool.cpp" />
-    <ClCompile Include="STLThreadUtils.cpp" />
+    <ClInclude Include="Demo1SyncTaskListPacket.h" />
+    <ClInclude Include="Demo2AsyncTaskWorker.h" />
+    <ClInclude Include="LiteAsyncTaskWorker.h" />
+    <ClInclude Include="LiteSyncTaskListPacket.h" />
+    <ClInclude Include="LiteSyncTaskPacket.h" />
+    <ClInclude Include="LiteSyncTaskWorker.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="STLDemoRunnable.h" />
-    <ClInclude Include="STLRunnable.h" />
-    <ClInclude Include="STLSemaphore.h" />
-    <ClInclude Include="CSemaphoreTest.h" />
-    <ClInclude Include="STLDequeUtils.h" />
-    <ClInclude Include="STLEvent.h" />
-    <ClInclude Include="STLListUtils.h" />
-    <ClInclude Include="STLLockGuardUtils.h" />
-    <ClInclude Include="STLMapUtils.h" />
-    <ClInclude Include="STLThreadPool.h" />
-    <ClInclude Include="STLThreadUtils.h" />
-    <ClInclude Include="STLVectorUtils.h" />
+    <ClCompile Include="Demo1SyncTaskListPacket.cpp" />
+    <ClCompile Include="Demo2AsyncTaskWorker.cpp" />
+    <ClCompile Include="LiteSyncTaskPacket.cpp" />
+    <ClCompile Include="LiteSyncTaskWorker.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="LiteAsyncTaskWorker.cpp" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
