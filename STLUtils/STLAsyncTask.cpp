@@ -1,0 +1,26 @@
+#include "STLAsyncTask.h"
+
+STLAsyncTask::STLAsyncTask()
+{
+	this->threadPool = nullptr;
+}
+
+STLAsyncTask::~STLAsyncTask()
+{
+}
+
+void STLAsyncTask::start(int nThreads)
+{
+	this->threadPool =  STLThreadPool::newThreadPool(nThreads);
+}
+
+void STLAsyncTask::execute(STLRunnable* runnable)
+{
+	this->threadPool->execute(runnable);
+}
+
+void STLAsyncTask::close()
+{
+	STLThreadPool::shutdownThreadPool(this->threadPool);
+}
+

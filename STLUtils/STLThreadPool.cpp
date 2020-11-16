@@ -2,6 +2,9 @@
 
 STLThreadPool::STLThreadPool()
 {
+    // 初始化标记
+    this->nFinished = 0;
+    this->isExit = false;
 }
 
 STLThreadPool::~STLThreadPool()
@@ -12,10 +15,6 @@ STLThreadPool* STLThreadPool::newThreadPool(int nThreads)
 {
     // 实例化一个空的线程池对象
     STLThreadPool* threadPool = new STLThreadPool();
-
-    // 初始化标记
-    threadPool->nFinished = 0;
-    threadPool->isExit = false;
 
     // 创建并启动线程
     for (int i = 0; i < nThreads; i++)
@@ -82,7 +81,14 @@ void STLThreadPool::shutdownThreadPool(STLThreadPool* &threadPool)
     threadPool->semaphore.reset();
 
     // 删除线程池
+    delete threadPool;
     threadPool = nullptr;
+}
+
+bool STLThreadPool::isBusy()
+{
+    lock_guard<mutex> guard(this->lock);
+    return this->runnables.size() > this->threads.size();
 }
 
 void STLThreadPool::setFinished()

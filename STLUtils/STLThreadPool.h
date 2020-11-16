@@ -43,6 +43,9 @@ public:
 	// <3 >关闭线程池
 	static void shutdownThreadPool(STLThreadPool* &threadPool);
 
+public:
+	bool isBusy();
+
 private:
 	// 内部线程函数
 	static void executThreadFun(STLThreadPool& threadPoo);

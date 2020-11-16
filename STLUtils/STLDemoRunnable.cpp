@@ -8,5 +8,5 @@ void STLDemoRunnable::run()
     static int i = 0;
     i++;
     printf("thread id = %d, count = %d\n", thread_id,i);
-    this_thread::sleep_for(chrono::milliseconds(1000 * 1));
+    this_thread::sleep_for(chrono::milliseconds(100 * 1));
 }
