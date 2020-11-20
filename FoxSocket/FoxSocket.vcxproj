@@ -35,9 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{290697ce-6b88-4d61-9ffb-c7805a598671}</ProjectGuid>
+    <ProjectGuid>{84b06743-7d94-45ba-83b5-90b777b808b6}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>LiteTask</RootNamespace>
+    <RootNamespace>FoxSocket</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -59,8 +59,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <RemoteRootDir>/home/pi/projects/$(SolutionName)</RemoteRootDir>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -77,29 +77,17 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>..\STLUtils;..\FoxLoggerLib</IncludePath>
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemGroup>
-    <ClInclude Include="Demo1SyncTaskListPacket.h" />
-    <ClInclude Include="Demo2AsyncTaskWorker.h" />
-    <ClInclude Include="LiteAsyncTaskWorker.h" />
-    <ClInclude Include="LiteSyncTaskListPacket.h" />
-    <ClInclude Include="LiteSyncTaskPacket.h" />
-    <ClInclude Include="LiteSyncTaskWorker.h" />
+    <ClInclude Include="FoxTcpServerSocket.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Demo1SyncTaskListPacket.cpp" />
-    <ClCompile Include="Demo2AsyncTaskWorker.cpp" />
-    <ClCompile Include="LiteSyncTaskPacket.cpp" />
-    <ClCompile Include="LiteSyncTaskWorker.cpp" />
+    <ClCompile Include="FoxTcpServerSocket.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="LiteAsyncTaskWorker.cpp" />
   </ItemGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Link>
-      <AdditionalDependencies>-lpthread;$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
+  <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

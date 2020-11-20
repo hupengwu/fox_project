@@ -89,24 +89,24 @@ bool STLTimedTask::getExit()
     return this->isExit;
 }
 
-void STLTimedTask::executThreadFun(STLTimedTask& timer)
+void STLTimedTask::executThreadFun(STLTimedTask& timedTask)
 {   
     std::chrono::system_clock::time_point timeoPoint = std::chrono::system_clock::now();
 
     while (true)
     {
         // 是否为退出标记
-        if (timer.getExit())
+        if (timedTask.getExit())
         {
             break;
         }
 
-        if (timer.fixedInterval)
+        if (timedTask.fixedInterval)
         {
             // 固定时间间隔模式:每个timeInterval之间执行一次任务
 
-            timeoPoint += chrono::milliseconds(timer.timeInterval);
-            timer.wait_util(timeoPoint);
+            timeoPoint += chrono::milliseconds(timedTask.timeInterval);
+            timedTask.wait_util(timeoPoint);
             // 重置时间点
             timeoPoint = std::chrono::system_clock::now();
         }
@@ -114,21 +114,21 @@ void STLTimedTask::executThreadFun(STLTimedTask& timer)
         {
             // 间隔时间模式模式:每个任务之间等待timeInterval毫秒
 
-            timer.wait();
+            timedTask.wait();
         }
                 
 
         // 执行runnable
-        if (timer.runnable != nullptr)
+        if (timedTask.runnable != nullptr)
         {
             // 执行该runnable
-            timer.runnable->run();
+            timedTask.runnable->run();
         }
 
     }
 
     // 标识一个线程运行结束
-    timer.setFinished();
+    timedTask.setFinished();
 }
 
 

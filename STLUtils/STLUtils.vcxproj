@@ -60,7 +60,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <RemoteRootDir>/home/pi/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -76,6 +77,9 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="STLAsyncTask.cpp" />
@@ -87,7 +91,6 @@
     <ClCompile Include="STLEvent.cpp" />
     <ClCompile Include="STLLockGuardUtils.cpp" />
     <ClCompile Include="STLThreadPool.cpp" />
-    <ClCompile Include="STLThreadUtils.cpp" />
     <ClCompile Include="STLTimedTask.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -101,8 +104,8 @@
     <ClInclude Include="STLListUtils.h" />
     <ClInclude Include="STLLockGuardUtils.h" />
     <ClInclude Include="STLMapUtils.h" />
+    <ClInclude Include="STLStringUtils.h" />
     <ClInclude Include="STLThreadPool.h" />
-    <ClInclude Include="STLThreadUtils.h" />
     <ClInclude Include="STLTimedTask.h" />
     <ClInclude Include="STLVectorUtils.h" />
   </ItemGroup>

@@ -35,9 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{290697ce-6b88-4d61-9ffb-c7805a598671}</ProjectGuid>
+    <ProjectGuid>{23242466-3fa2-4656-b7a6-fe77bea44a99}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>LiteTask</RootNamespace>
+    <RootNamespace>FoxLoggerLib</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -80,26 +80,16 @@
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemGroup>
-    <ClInclude Include="Demo1SyncTaskListPacket.h" />
-    <ClInclude Include="Demo2AsyncTaskWorker.h" />
-    <ClInclude Include="LiteAsyncTaskWorker.h" />
-    <ClInclude Include="LiteSyncTaskListPacket.h" />
-    <ClInclude Include="LiteSyncTaskPacket.h" />
-    <ClInclude Include="LiteSyncTaskWorker.h" />
+    <ClInclude Include="FoxLoggerFactory.h" />
+    <ClInclude Include="ILogger.h" />
+    <ClInclude Include="Log4jLogger.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Demo1SyncTaskListPacket.cpp" />
-    <ClCompile Include="Demo2AsyncTaskWorker.cpp" />
-    <ClCompile Include="LiteSyncTaskPacket.cpp" />
-    <ClCompile Include="LiteSyncTaskWorker.cpp" />
+    <ClCompile Include="FoxLoggerFactory.cpp" />
+    <ClCompile Include="Log4jLogger.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="LiteAsyncTaskWorker.cpp" />
   </ItemGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Link>
-      <AdditionalDependencies>-lpthread;$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
+  <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>
