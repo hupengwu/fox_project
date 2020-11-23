@@ -83,7 +83,9 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="STLAsyncTask.cpp" />
+    <ClCompile Include="STLByteArray.cpp" />
     <ClCompile Include="STLDemoRunnable.cpp" />
+    <ClCompile Include="STLMethodUtil.cpp" />
     <ClCompile Include="STLRunnable.cpp" />
     <ClCompile Include="STLSemaphore.cpp" />
     <ClCompile Include="CSemaphoreTest.cpp" />
@@ -95,7 +97,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="STLAsyncTask.h" />
+    <ClInclude Include="STLByteArray.h" />
     <ClInclude Include="STLDemoRunnable.h" />
+    <ClInclude Include="STLMethodUtil.h" />
     <ClInclude Include="STLRunnable.h" />
     <ClInclude Include="STLSemaphore.h" />
     <ClInclude Include="CSemaphoreTest.h" />

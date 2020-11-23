@@ -5,6 +5,7 @@ STLThreadPool::STLThreadPool()
     // 初始化标记
     this->nFinished = 0;
     this->isExit = false;
+    this->nRunning = 0;
 }
 
 STLThreadPool::~STLThreadPool()
@@ -88,7 +89,7 @@ void STLThreadPool::shutdownThreadPool(STLThreadPool* &threadPool)
 bool STLThreadPool::isBusy()
 {
     lock_guard<mutex> guard(this->lock);
-    return this->runnables.size() > this->threads.size();
+    return this->nRunning >= this->threads.size();
 }
 
 void STLThreadPool::setFinished()
@@ -101,6 +102,26 @@ bool STLThreadPool::getFinished()
 {
     lock_guard<mutex> guard(this->lock);
     return this->nFinished >= this->threads.size();
+}
+
+void STLThreadPool::setRunning(bool increase)
+{
+    lock_guard<mutex> guard(this->lock);
+    if (increase)
+    {
+        this->nRunning++;
+    }
+    else
+    {
+        this->nRunning--;
+    }
+    
+}
+
+int STLThreadPool::getRunning()
+{
+    lock_guard<mutex> guard(this->lock);
+    return this->nRunning;
 }
 
 void STLThreadPool::setExit(bool isExit)
@@ -151,7 +172,7 @@ void STLThreadPool::executThreadFun(STLThreadPool& threadPool)
         threadPool.semaphore.wait();
 
         // 是否为退出标记
-        if (threadPool.isExit)
+        if (threadPool.getExit())
         {
             break;
         }
@@ -161,8 +182,12 @@ void STLThreadPool::executThreadFun(STLThreadPool& threadPool)
             STLRunnable* runnable = threadPool.getRunnable();
             if (runnable != nullptr)
             {
+                threadPool.setRunning(true);
+
                 // 执行该runnable
                 runnable->run();
+
+                threadPool.setRunning(false);
             }
         }
     }

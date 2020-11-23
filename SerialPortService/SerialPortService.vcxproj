@@ -90,6 +90,12 @@
     <ProjectReference Include="..\FoxLib\FoxLib.vcxproj">
       <Project>{b21f15f5-0938-40ce-898b-14db31756bef}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\FoxLoggerLib\FoxLoggerLib.vcxproj">
+      <Project>{23242466-3fa2-4656-b7a6-fe77bea44a99}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\FoxSocket\FoxSocket.vcxproj">
+      <Project>{84b06743-7d94-45ba-83b5-90b777b808b6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\STLUtils\STLUtils.vcxproj">
       <Project>{98179949-d2e6-4e63-b756-c0100ea19115}</Project>
     </ProjectReference>

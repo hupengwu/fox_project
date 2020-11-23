@@ -24,3 +24,7 @@ void STLAsyncTask::close()
 	STLThreadPool::shutdownThreadPool(this->threadPool);
 }
 
+bool STLAsyncTask::isBusy()
+{
+	return this->threadPool->isBusy();
+}

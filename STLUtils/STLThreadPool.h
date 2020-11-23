@@ -53,11 +53,14 @@ private:
 private:// 线程结束状况
 	void	setFinished();
 	bool	getFinished();
+	void	setRunning(bool increase);
+	int		getRunning();
 	void	setExit(bool isExit);
 	bool	getExit();
 
 	bool	isExit;    // 请求退出标识
 	size_t	nFinished; // 退出的线程数
+	size_t	nRunning; //  执行runnable的线程数
 
 private:
 	STLRunnable* getRunnable();

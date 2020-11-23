@@ -7,6 +7,7 @@ class STLStringUtils
 public:
     /*
     * 根据可变参数，生成字符串
+    * 使用范例：std::string message = STLStringUtils::snprintf("Bind error.Port[%d]", this->serverAddr.sin_port);
     */
     template <typename... Args>
     static std::string snprintf(const char* pformat, Args... args);

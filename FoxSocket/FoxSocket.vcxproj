@@ -60,7 +60,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
     <RemoteRootDir>/home/pi/projects/$(SolutionName)</RemoteRootDir>
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -81,13 +81,39 @@
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="FoxTcpServerDemoHandler.h" />
+    <ClInclude Include="FoxTcpServerMapper.h" />
+    <ClInclude Include="FoxTcpServerHandler.h" />
+    <ClInclude Include="FoxTcpServerRecver.h" />
     <ClInclude Include="FoxTcpServerSocket.h" />
+    <ClInclude Include="ReadThread.h" />
+    <ClInclude Include="FoxTcpSocketKey.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FoxTcpServerDemoHandler.cpp" />
+    <ClCompile Include="FoxTcpServerHandler.cpp" />
+    <ClCompile Include="FoxTcpServerMapper.cpp" />
+    <ClCompile Include="FoxTcpServerRecver.cpp" />
     <ClCompile Include="FoxTcpServerSocket.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ReadThread.cpp" />
+    <ClCompile Include="FoxTcpSocketKey.cpp" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\FoxLoggerLib\FoxLoggerLib.vcxproj">
+      <Project>{23242466-3fa2-4656-b7a6-fe77bea44a99}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\STLUtils\STLUtils.vcxproj">
+      <Project>{98179949-d2e6-4e63-b756-c0100ea19115}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <AdditionalLibraryDirectories>$(RemoteRootDir)/bin/$(Platform)/$(Configuration);-Wl,--rpath=$(RemoteRootDir)/bin/$(Platform)/$(Configuration);%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LibraryDependencies>STLUtils;FoxLoggerLib;</LibraryDependencies>
+      <AdditionalDependencies>-lpthread;$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

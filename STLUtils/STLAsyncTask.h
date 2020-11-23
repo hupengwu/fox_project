@@ -20,6 +20,9 @@ public:
 	// <3 >关闭线程池
 	void close();
 
+public:
+	bool isBusy();
+
 private:
 	// 线程池
 	STLThreadPool* threadPool;
