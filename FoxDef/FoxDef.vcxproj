@@ -35,9 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{84b06743-7d94-45ba-83b5-90b777b808b6}</ProjectGuid>
+    <ProjectGuid>{f65de489-bc6a-4add-afa0-98eed08d3ffc}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>FoxSocket</RootNamespace>
+    <RootNamespace>FoxDef</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -77,43 +77,17 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\FoxDef;..\STLUtils;..\FoxLoggerLib</IncludePath>
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemGroup>
-    <ClInclude Include="FoxTcpClientDemoHandler.h" />
-    <ClInclude Include="FoxTcpClientSocket.h" />
-    <ClInclude Include="FoxTcpServerDemoHandler.h" />
-    <ClInclude Include="FoxTcpServerMapper.h" />
-    <ClInclude Include="FoxTcpSocketHandler.h" />
-    <ClInclude Include="FoxTcpServerRecver.h" />
-    <ClInclude Include="FoxTcpServerSocket.h" />
-    <ClInclude Include="FoxTcpSocketKey.h" />
+    <ClInclude Include="fox.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FoxTcpClientDemoHandler.cpp" />
-    <ClCompile Include="FoxTcpClientSocket.cpp" />
-    <ClCompile Include="FoxTcpServerDemoHandler.cpp" />
-    <ClCompile Include="FoxTcpSocketHandler.cpp" />
-    <ClCompile Include="FoxTcpServerMapper.cpp" />
-    <ClCompile Include="FoxTcpServerRecver.cpp" />
-    <ClCompile Include="FoxTcpServerSocket.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="FoxTcpSocketKey.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FoxLoggerLib\FoxLoggerLib.vcxproj">
-      <Project>{23242466-3fa2-4656-b7a6-fe77bea44a99}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\STLUtils\STLUtils.vcxproj">
-      <Project>{98179949-d2e6-4e63-b756-c0100ea19115}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <AdditionalLibraryDirectories>$(RemoteRootDir)/bin/$(Platform)/$(Configuration);-Wl,--rpath=$(RemoteRootDir)/bin/$(Platform)/$(Configuration);%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <LibraryDependencies>FoxDef;STLUtils;FoxLoggerLib;</LibraryDependencies>
-      <AdditionalDependencies>-lpthread;$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

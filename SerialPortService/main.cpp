@@ -92,18 +92,18 @@ int main()
     k2v["2"] = 2;
     k2v["3"] = 3;
 
-    map<int, string> v2k = STLMapUtils< string, int>::swapKeyValue(k2v);
-    set<string> keys = STLMapUtils< string, int>::getKeySet(k2v);
-    list<int> lists = STLMapUtils< string, int>::getValueList(k2v);
-    vector<int> vectors = STLListUtils<int>::list2vector(lists);
-    set<int> sets = STLListUtils<int>::list2set(lists);
-    lists = STLListUtils<int>::set2list(sets);
-    lists = STLListUtils<int>::vector2list(vectors);
+    map<int, string> v2k = STLMapUtils<string, int>::swapKeyValue(k2v);
+    set<string> keys = STLMapUtils<string, int>::getKeySet(k2v);
+    list<int> lists = STLMapUtils<string, int>::getValueList(k2v);
+    vector<int> vectors = STLListUtils::list2vector(lists);
+    set<int> sets = STLListUtils::list2set(lists);
+    lists = STLListUtils::set2list(sets);
+    lists = STLListUtils::vector2list(vectors);
 
-    sets = STLVectorUtils<int>::vector2set(vectors);
-    lists = STLVectorUtils<int>::vector2list(vectors);
-    vectors = STLVectorUtils<int>::list2vector(lists);
-    vectors = STLVectorUtils<int>::set2vector(sets);
+    sets = STLVectorUtils::vector2set(vectors);
+    lists = STLVectorUtils::vector2list(vectors);
+    vectors = STLVectorUtils::list2vector(lists);
+    vectors = STLVectorUtils::set2vector(sets);
 
 
     CUDPItemClientSocket udpsocket;

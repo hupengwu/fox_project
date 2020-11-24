@@ -40,7 +40,7 @@ template<typename TYPE>
 inline vector<TYPE> STLVectorUtils::list2vector(const list<TYPE>& values)
 {
     vector<TYPE> result;
-    for (typename list::const_iterator it = values.begin(); it != values.end(); ++it)
+    for (typename list<TYPE>::const_iterator it = values.begin(); it != values.end(); ++it)
     {
         result.push_back(*it);
     }
@@ -51,7 +51,7 @@ template<typename TYPE>
 inline vector<TYPE> STLVectorUtils::set2vector(const set<TYPE>& values)
 {
     vector<TYPE> result;
-    for (typename set::const_iterator it = values.begin(); it != values.end(); ++it)
+    for (typename set<TYPE>::const_iterator it = values.begin(); it != values.end(); ++it)
     {
         result.push_back(*it);
     }
@@ -62,7 +62,7 @@ template<typename TYPE>
 inline list<TYPE> STLVectorUtils::vector2list(const vector<TYPE>& values)
 {
     list<TYPE> result;
-    for (typename vector::const_iterator it = values.begin(); it != values.end(); ++it)
+    for (typename vector<TYPE>::const_iterator it = values.begin(); it != values.end(); ++it)
     {
         result.push_back(*it);
     }
@@ -73,7 +73,7 @@ template<typename TYPE>
 inline set<TYPE> STLVectorUtils::vector2set(const vector<TYPE>& values)
 {
     set<TYPE> result;
-    for (typename vector::const_iterator it = values.begin(); it != values.end(); ++it)
+    for (typename vector<TYPE>::const_iterator it = values.begin(); it != values.end(); ++it)
     {
         result.insert(*it);
     }

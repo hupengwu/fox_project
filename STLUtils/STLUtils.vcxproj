@@ -79,6 +79,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IncludePath>..\FoxDef;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -114,9 +115,16 @@
     <ClInclude Include="STLTimedTask.h" />
     <ClInclude Include="STLVectorUtils.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FoxDef\FoxDef.vcxproj">
+      <Project>{f65de489-bc6a-4add-afa0-98eed08d3ffc}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <AdditionalDependencies>-lpthread;$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
+      <LibraryDependencies>FoxDef</LibraryDependencies>
+      <AdditionalLibraryDirectories>$(RemoteRootDir)/bin/$(Platform)/$(Configuration);-Wl,--rpath=$(RemoteRootDir)/bin/$(Platform)/$(Configuration);%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

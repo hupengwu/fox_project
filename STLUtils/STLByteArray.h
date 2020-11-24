@@ -1,6 +1,8 @@
 #pragma once
 
-using BYTE = unsigned char;
+#include <fox.h>
+
+using namespace fox;
 
 class STLByteArray
 {

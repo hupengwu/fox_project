@@ -112,6 +112,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <AdditionalDependencies>-lpthread;$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(RemoteRootDir)/bin/$(Platform)/$(Configuration);-Wl,--rpath=$(RemoteRootDir)/bin/$(Platform)/$(Configuration);%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
