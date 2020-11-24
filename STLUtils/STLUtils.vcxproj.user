@@ -4,5 +4,8 @@
     <RemoteDebuggingTarget>-2126994653;192.168.88.130 (username=, port=22, authentication=Password)</RemoteDebuggingTarget>
     <DebuggerFlavor>LinuxDebugger</DebuggerFlavor>
     <RemoteTarget>-2126994653;192.168.88.130 (username=, port=22, authentication=Password)</RemoteTarget>
+    <RemoteDebuggerCommand>$(RemoteRootDir)/bin/$(Platform)/$(Configuration)/$(TargetName)$(TargetExt)</RemoteDebuggerCommand>
+    <RemoteDebuggerWorkingDirectory>$(RemoteRootDir)/bin/$(Platform)/$(Configuration)</RemoteDebuggerWorkingDirectory>
+    <AdditionalDebuggerCommands>set solib-search-path $(SolutionDir)bin/$(Platform)/$(Configuration);$(AdditionalDebuggerCommands)</AdditionalDebuggerCommands>
   </PropertyGroup>
 </Project>

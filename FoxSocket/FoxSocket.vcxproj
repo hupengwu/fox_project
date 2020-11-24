@@ -88,7 +88,6 @@
     <ClInclude Include="FoxTcpSocketHandler.h" />
     <ClInclude Include="FoxTcpServerRecver.h" />
     <ClInclude Include="FoxTcpServerSocket.h" />
-    <ClInclude Include="ReadThread.h" />
     <ClInclude Include="FoxTcpSocketKey.h" />
   </ItemGroup>
   <ItemGroup>
@@ -100,7 +99,6 @@
     <ClCompile Include="FoxTcpServerRecver.cpp" />
     <ClCompile Include="FoxTcpServerSocket.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ReadThread.cpp" />
     <ClCompile Include="FoxTcpSocketKey.cpp" />
   </ItemGroup>
   <ItemGroup>

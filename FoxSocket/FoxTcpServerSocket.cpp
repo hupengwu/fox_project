@@ -23,7 +23,7 @@ FoxTcpServerSocket::FoxTcpServerSocket()
     this->isExit = false;
     this->bFinished = true;
     this->socketHandler = nullptr;
-    this->listenThread = nullptr;
+    this->recvThread = nullptr;
     this->socketKey.setSocket(-1);
     this->nThreads = 5;
 
@@ -90,7 +90,7 @@ bool FoxTcpServerSocket::start(int nSocketPort)
 
     // <7> 启动一个专门监听接入的listener线程
     this->setFinished(false);
-    this->listenThread = new thread(recvThreadFunc, ref(*this));
+    this->recvThread = new thread(recvThreadFunc, ref(*this));
 
     return true;
 }
@@ -113,15 +113,15 @@ void FoxTcpServerSocket::close()
     }
 
     // 回收线程
-    thread* thread = this->listenThread;    
+    thread* thread = this->recvThread;    
     if (thread != nullptr)
     {
         if (thread->joinable())
         {
             thread->join();
         }
-        delete this->listenThread;
-        this->listenThread = nullptr;
+        delete this->recvThread;
+        this->recvThread = nullptr;
     }
 
     // 重置标识

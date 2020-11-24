@@ -13,7 +13,7 @@
 
 ILogger* FoxTcpServerRecver::logger = FoxLoggerFactory::getLogger();
 
-#define BUFF_SIZE_MAX   16*1024
+constexpr auto BUFF_SIZE_MAX = 16*1024;
 
 void FoxTcpServerRecver::run()
 {

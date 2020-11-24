@@ -7,6 +7,18 @@
 #include "FoxTcpSocketKey.h"
 #include "FoxTcpSocketHandler.h"
 
+/**
+ * 客户端socket：后台线程响应的socket
+ * 结构：一个后台数据读线程
+ * socketChannel管理：
+ * 1.可以通过connect成功，来知道创建了哪些socketChannel;
+ * 2.可以通过自定义的SocketCloseHandler，捕获哪些socketChannel关闭;
+ * 3.可以通过isConnected，来指导当前socketChannel中途是否失效
+ * 4.可以通过SocketConnectHandler，捕获哪些socketChannel连接上了;
+ *
+ * @author h00442047
+ * @since 2019年12月25日
+ */
 class FoxTcpClientSocket
 {
 public:
@@ -24,6 +36,9 @@ public:
     */
     int send(const char* buff, int length);
 
+    /*
+    * 关闭socket
+    */
     void close();
 
     /*
@@ -69,6 +84,6 @@ private:
     /*
     * 负责监听客户端接入的线程
     */
-    thread*                     listenThread;
+    thread*                     recvThread;
 };
 

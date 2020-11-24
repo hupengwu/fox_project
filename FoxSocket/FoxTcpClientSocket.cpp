@@ -17,7 +17,7 @@ FoxTcpClientSocket::FoxTcpClientSocket()
     this->isExit = false;
     this->bFinished = true;
     this->socketHandler = nullptr;
-    this->listenThread = nullptr;
+    this->recvThread = nullptr;
 
     this->socketHandler = new FoxTcpSocketHandler();
 }
@@ -71,7 +71,7 @@ bool FoxTcpClientSocket::connect(const char* serverIP, int serverPort)
  
     // <6> 启动一个专门手法的线程
     this->setFinished(false);
-    this->listenThread = new thread(recvThreadFunc, ref(*this));
+    this->recvThread = new thread(recvThreadFunc, ref(*this));
 
     return true;
 }
@@ -97,15 +97,15 @@ void FoxTcpClientSocket::close()
     }
 
     // 回收线程
-    thread* thread = this->listenThread;
+    thread* thread = this->recvThread;
     if (thread != nullptr)
     {
         if (thread->joinable())
         {
             thread->join();
         }
-        delete this->listenThread;
-        this->listenThread = nullptr;
+        delete this->recvThread;
+        this->recvThread = nullptr;
     }
 
 
@@ -165,7 +165,7 @@ bool FoxTcpClientSocket::getExit()
     return this->isExit;
 }
 
-#define BUFF_SIZE_MAX   16*1024
+constexpr auto BUFF_SIZE_MAX = 16*1024;
 
 void FoxTcpClientSocket::recvThreadFunc(FoxTcpClientSocket& clientSocket)
 {

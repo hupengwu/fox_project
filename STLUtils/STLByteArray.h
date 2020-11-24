@@ -1,6 +1,6 @@
 #pragma once
 
-typedef unsigned char BYTE;
+using BYTE = unsigned char;
 
 class STLByteArray
 {

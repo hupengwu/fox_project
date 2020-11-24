@@ -2,9 +2,15 @@
 #include "STLAsyncTask.h"
 #include "STLDemoRunnable.h"
 #include "STLTimedTask.h"
+#include "STLStringUtils.h"
 
 int main()
 {
+	list<string> list;
+	STLStringUtils::split("h,h,5,6",",", list);
+	vector<string> vec;
+	STLStringUtils::split("h,h,5,6", ",", vec);
+
 	STLTimedTask time(new STLDemoRunnable());
 	time.start(1000);
 	this_thread::sleep_for(chrono::milliseconds(1000 * 60));

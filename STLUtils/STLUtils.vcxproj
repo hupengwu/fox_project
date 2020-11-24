@@ -92,6 +92,7 @@
     <ClCompile Include="STLDequeUtils.cpp" />
     <ClCompile Include="STLEvent.cpp" />
     <ClCompile Include="STLLockGuardUtils.cpp" />
+    <ClCompile Include="STLStringUtils.cpp" />
     <ClCompile Include="STLThreadPool.cpp" />
     <ClCompile Include="STLTimedTask.cpp" />
   </ItemGroup>

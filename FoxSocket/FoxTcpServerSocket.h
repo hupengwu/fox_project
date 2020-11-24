@@ -77,7 +77,7 @@ private:
     /*
     * 负责监听客户端接入的线程
     */
-    thread*                     listenThread;
+    thread*                     recvThread;
 
     /*
     * 负责处理客户端的线程池
