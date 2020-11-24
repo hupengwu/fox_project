@@ -148,7 +148,7 @@ bool CJsonObject::AddEmptySubArray(const std::string& strKey)
     return(true);
 }
 
-bool CJsonObject::GetKey(std::string& strKey)
+bool CJsonObject::getKey(std::string& strKey)
 {
     if (IsArray())
     {

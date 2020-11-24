@@ -56,7 +56,7 @@ namespace neb
     public:     // method of ordinary json object
         bool AddEmptySubObject(const std::string& strKey);
         bool AddEmptySubArray(const std::string& strKey);
-        bool GetKey(std::string& strKey);
+        bool getKey(std::string& strKey);
         void ResetTraversing();
         CJsonObject& operator[](const std::string& strKey);
         std::string operator()(const std::string& strKey) const;

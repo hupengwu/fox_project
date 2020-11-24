@@ -87,13 +87,13 @@ int main(int argc, char* argv[])
      std::cout << oCopyJson.ToString() << std::endl;
      std::cout << "-------------------------key traverse------------------------------" << std::endl;
      std::string strTraversing;
-     while(oJson["dynamic_loading"][0].GetKey(strTraversing))
+     while(oJson["dynamic_loading"][0].getKey(strTraversing))
      {
          std::cout << "traversing:  " << strTraversing << std::endl;
      }
      std::cout << "---------------add a new key, then key traverse---------------------" << std::endl;
      oJson["dynamic_loading"][0].Add("new_key", "new_value");
-     while(oJson["dynamic_loading"][0].GetKey(strTraversing))
+     while(oJson["dynamic_loading"][0].getKey(strTraversing))
      {
          std::cout << "traversing:  " << strTraversing << std::endl;
      }
