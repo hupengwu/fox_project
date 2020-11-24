@@ -5,20 +5,23 @@
 #include <netinet/in.h>
 
 #include "FoxTcpServerMapper.h"
-#include "FoxTcpServerHandler.h"
+#include "FoxTcpSocketHandler.h"
 
+/*
+* 多线程接收者：socket的接收包括连接/断开/数据三个动作
+*/
 class FoxTcpServerRecver : public STLRunnable
 {
 public:
 	void run();
 
 public:
-	FoxTcpServerRecver(FoxTcpSocketKey& socketKey, FoxTcpServerHandler* handler);
+	FoxTcpServerRecver(FoxTcpSocketKey& socketKey, FoxTcpSocketHandler* socketHandler);
 	virtual ~FoxTcpServerRecver();
 
 private:
 	FoxTcpSocketKey			socketKey;
-	FoxTcpServerHandler*	socketL1Handler;
+	FoxTcpSocketHandler*	socketHandler;
 
 private:
 	static ILogger*			logger;

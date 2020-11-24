@@ -12,16 +12,16 @@ using namespace std;
  * @author h00442047
  * @since 2019年12月10日
  */
-class FoxTcpServerHandler
+class FoxTcpSocketHandler
 {
 public:
-    FoxTcpServerHandler();
-    virtual ~FoxTcpServerHandler();
+    FoxTcpSocketHandler();
+    virtual ~FoxTcpSocketHandler();
 
 public:
     /**
      * 运行状态
-     * 对象：NioServerSocket/NioClientSocket
+     * 对象：FoxTcpServerSocket
      *
      * @return 是否运行的标记
      */
@@ -31,7 +31,7 @@ public:
 public:
     /**
      * 处理Accept消息：当一个客户端接入服务端的时候，会捕获到这个动作
-     * 对象：NioServerSocket
+     * 对象：FoxTcpServerSocket
      *
      * @param key SelectionKey
      */
@@ -39,7 +39,7 @@ public:
 
     /**
      * 处理Read消息：当接收到客户端发送过来的数据时，会捕获到这个动作
-     * 对象：NioServerSocket/NioClientSocket
+     * 对象：FoxTcpServerSocket
      *
      * @param key SelectionKey
      */
@@ -47,7 +47,7 @@ public:
 
     /**
      * 处理Write消息：当可以给客户端发送数据的时候，会捕获到这个动作
-     * 对象：NioServerSocket/NioClientSocket
+     * 对象：FoxTcpServerSocket
      *
      * @param key SelectionKey
      */
@@ -55,7 +55,7 @@ public:
 
     /**
      * 处理断开连接消息：当客户端跟服务器的连接断开时候，会捕获到这个动作
-     * 对象：NioClientSocket
+     * 对象：FoxTcpServerSocket
      *
      * @param key SelectionKey
      */

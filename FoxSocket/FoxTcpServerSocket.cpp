@@ -24,9 +24,10 @@ FoxTcpServerSocket::FoxTcpServerSocket()
     this->bFinished = true;
     this->socketHandler = nullptr;
     this->listenThread = nullptr;
-    this->serverSocket = -1;
+    this->socketKey.setSocket(-1);
+    this->nThreads = 5;
 
-    this->socketHandler = new FoxTcpServerHandler();
+    this->socketHandler = new FoxTcpSocketHandler();
 }
 
 FoxTcpServerSocket::~FoxTcpServerSocket()
@@ -37,13 +38,14 @@ FoxTcpServerSocket::~FoxTcpServerSocket()
 bool FoxTcpServerSocket::start(int nSocketPort)
 {
     // <1> 创建一个socket句柄
-    this->serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (this->serverSocket == -1)
+    int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (serverSocket == -1)
     {
         logger->info("Create Socket Failed!");
         return false;
     }
     logger->info("socket create successfully!");
+    this->socketKey.setSocket(serverSocket);
 
     // <2> 设置地址重用：避免刚刚已经调用close的端口无法被绑定（之前被使用过的socket，操作系统会保持一定的TIME_WAIT时间内禁止再次绑定 ）
     int on = 1;
@@ -54,18 +56,20 @@ bool FoxTcpServerSocket::start(int nSocketPort)
     }
 
     // <3> 绑定socket句柄和地址+端口
-    bzero(&this->serverAddr, sizeof(struct sockaddr_in));
-    this->serverAddr.sin_family = AF_INET;
-    this->serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    this->serverAddr.sin_port = htons((u_short)nSocketPort);
-    if (bind(serverSocket, (struct sockaddr*)&this->serverAddr, sizeof(struct sockaddr)) < 0)
+    sockaddr_in serverAddr;
+    bzero(&serverAddr, sizeof(struct sockaddr_in));
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    serverAddr.sin_port = htons((u_short)nSocketPort);
+    if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(struct sockaddr)) < 0)
     {
-        std::string message = STLStringUtils::snprintf("Bind error.Port[%d]", this->serverAddr.sin_port);
-        logger->info(message);
+        logger->info("Bind error.Port[%d]", serverAddr.sin_port);
         return false;
     }
+    this->socketKey.setSocketAddr(serverAddr);
 
-    // <4> 设置accept超时:1秒
+
+    // <4> 设置accept/recv超时:1秒
     struct timeval timeout = { 1,0 };
     if (setsockopt(serverSocket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(struct timeval)) != 0)
     {
@@ -79,14 +83,14 @@ bool FoxTcpServerSocket::start(int nSocketPort)
         logger->info("Listen error!");
         return false;
     }
-    logger->info(STLStringUtils::snprintf("Listening on port[% d]", this->serverAddr.sin_port));
+    logger->info("Listening on port[% d]", serverAddr.sin_port);
 
     // <6> 启动客户端数据处理的异步任务线程池
-    this->clientThread.start(1);
+    this->clientThread.start(this->nThreads);
 
     // <7> 启动一个专门监听接入的listener线程
     this->setFinished(false);
-    this->listenThread = new thread(listenThreadFunc, ref(*this));
+    this->listenThread = new thread(recvThreadFunc, ref(*this));
 
     return true;
 }
@@ -126,26 +130,39 @@ void FoxTcpServerSocket::close()
     this->socketHandler->setExit(false);
 
     // 关闭服务端socket
-    if (this->serverSocket != -1)
+    int serverSocket = this->socketKey.getSocket();
+    if (serverSocket != -1)
     {
-        int result = ::shutdown(this->serverSocket, 0x02);
-        result = ::close(this->serverSocket);
-        this->serverSocket = -1;
+        ::shutdown(serverSocket, 0x02);
+        ::close(serverSocket);
+        this->socketKey.setSocket(-1);
     }
     
 }
 
+void FoxTcpServerSocket::setThreads(int nThreads)
+{
+    lock_guard<mutex> guard(this->lock);
+    this->nThreads = nThreads;
+}
+
+int FoxTcpServerSocket::getThreads()
+{
+    lock_guard<mutex> guard(this->lock);
+    return this->nThreads;
+}
+
 int FoxTcpServerSocket::getServerSocket()
 {
-	return this->serverSocket;
+	return this->socketKey.getSocket();
 }
 
 sockaddr_in FoxTcpServerSocket::getServerAddr()
 {
-    return this->serverAddr;
+    return this->socketKey.getSocketAddr();
 }
 
-bool FoxTcpServerSocket::bindSocketHandler(FoxTcpServerHandler* socketHandler)
+bool FoxTcpServerSocket::bindSocketHandler(FoxTcpSocketHandler* socketHandler)
 {
     lock_guard<mutex> guard(this->lock);
 
@@ -184,7 +201,7 @@ bool FoxTcpServerSocket::getExit()
     return this->isExit;
 }
 
-void FoxTcpServerSocket::listenThreadFunc(FoxTcpServerSocket& socket)
+void FoxTcpServerSocket::recvThreadFunc(FoxTcpServerSocket& socket)
 {
     while (true)
     {
@@ -199,19 +216,18 @@ void FoxTcpServerSocket::listenThreadFunc(FoxTcpServerSocket& socket)
         int ilength = sizeof(clientAddr);
 
         // 等待客户端socket的接入
-        int hClientSocket = accept(socket.serverSocket, (sockaddr*)&clientAddr, (socklen_t*)(&ilength));
+        int hClientSocket = accept(socket.socketKey.getSocket(), (sockaddr*)&clientAddr, (socklen_t*)(&ilength));
         if (-1 == hClientSocket)
         {            
             continue;
         }
 
         // 接入了一个客户socket
-        string message = STLStringUtils::snprintf("try cconnect from client, address : %s, port : %d ,Socket Num : % d",
+        logger->info("try cconnect from client, address : %s, port : %d ,Socket Num : % d",
             inet_ntoa(clientAddr.sin_addr),
             clientAddr.sin_port,
             hClientSocket
         );
-        logger->info(message);
 
         // 线程池是否繁忙状态
         if (socket.clientThread.isBusy())
@@ -220,12 +236,11 @@ void FoxTcpServerSocket::listenThreadFunc(FoxTcpServerSocket& socket)
             ::shutdown(hClientSocket, 0x02);
             ::close(hClientSocket);
 
-            string message = STLStringUtils::snprintf("disconnect from client, address : %s, port : %d ,Socket Num : % d",
+            logger->info("disconnect from client, address : %s, port : %d ,Socket Num : % d",
                 inet_ntoa(clientAddr.sin_addr),
                 clientAddr.sin_port,
                 hClientSocket
             );
-            logger->info(message);
 
             continue;
         }
@@ -239,12 +254,10 @@ void FoxTcpServerSocket::listenThreadFunc(FoxTcpServerSocket& socket)
     }
 
     // 退出线程
-    string message = STLStringUtils::snprintf("finish listenThreadFunc from server, address : %s, port : %d ,Socket Num : % d",
+    logger->info("finish listenThreadFunc from server, address : %s, port : %d ,Socket Num : % d",
         inet_ntoa(socket.getServerAddr().sin_addr),
         socket.getServerAddr().sin_port,
-        socket.getServerSocket()
-    );
-    logger->info(message);
+        socket.getServerSocket());
 
     socket.setFinished(true);
 }

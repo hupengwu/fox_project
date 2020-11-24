@@ -3,14 +3,14 @@
 
 FoxTcpSocketKey::FoxTcpSocketKey()
 {
-    this->closed = false;
-	this->clientSocket = -1;
+    this->invalid = false;
+	this->socket = -1;
 }
 
 FoxTcpSocketKey::FoxTcpSocketKey(const FoxTcpSocketKey& src)
 {
-	this->closed = src.closed;
-	this->clientSocket = src.clientSocket;
+	this->invalid = src.invalid;
+	this->socket = src.socket;
 	this->sockaddr = src.sockaddr;
 }
 
@@ -25,8 +25,8 @@ const FoxTcpSocketKey& FoxTcpSocketKey::operator=(const FoxTcpSocketKey& src)
 		return *this;
 	}
 
-	this->closed = src.closed;
-	this->clientSocket = src.clientSocket;
+	this->invalid = src.invalid;
+	this->socket = src.socket;
 	this->sockaddr = src.sockaddr;
 
 	return *this;
@@ -44,25 +44,25 @@ void FoxTcpSocketKey::setSocketAddr(sockaddr_in sockaddr)
 
 int FoxTcpSocketKey::getSocket()
 {
-    return this->clientSocket;
+    return this->socket;
 }
 
-void FoxTcpSocketKey::setSocket(int clientSocket)
+void FoxTcpSocketKey::setSocket(int socket)
 {
-    this->clientSocket = clientSocket;
+    this->socket = socket;
 }
 
-void FoxTcpSocketKey::setClosed()
+void FoxTcpSocketKey::setInvalid(bool invalid)
 {
-    this->closed = true;
+    this->invalid = invalid;
 }
 
-bool FoxTcpSocketKey::getClosed()
+bool FoxTcpSocketKey::getInvalid()
 {
-    return this->closed;
+    return this->invalid;
 }
 
 int FoxTcpSocketKey::writeSocket(const char* buff, int length)
 {    
-    return ::send(this->clientSocket, buff, length, 0);
+    return ::send(this->socket, buff, length, 0);
 }

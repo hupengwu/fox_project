@@ -17,7 +17,7 @@ public:
     static ILogger* getLogger();
     static void     freeLogger();
 
-public:
+protected:
     /**
      * 记录调试日志信息
      *

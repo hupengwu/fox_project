@@ -81,17 +81,21 @@
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="FoxTcpClientDemoHandler.h" />
+    <ClInclude Include="FoxTcpClientSocket.h" />
     <ClInclude Include="FoxTcpServerDemoHandler.h" />
     <ClInclude Include="FoxTcpServerMapper.h" />
-    <ClInclude Include="FoxTcpServerHandler.h" />
+    <ClInclude Include="FoxTcpSocketHandler.h" />
     <ClInclude Include="FoxTcpServerRecver.h" />
     <ClInclude Include="FoxTcpServerSocket.h" />
     <ClInclude Include="ReadThread.h" />
     <ClInclude Include="FoxTcpSocketKey.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FoxTcpClientDemoHandler.cpp" />
+    <ClCompile Include="FoxTcpClientSocket.cpp" />
     <ClCompile Include="FoxTcpServerDemoHandler.cpp" />
-    <ClCompile Include="FoxTcpServerHandler.cpp" />
+    <ClCompile Include="FoxTcpSocketHandler.cpp" />
     <ClCompile Include="FoxTcpServerMapper.cpp" />
     <ClCompile Include="FoxTcpServerRecver.cpp" />
     <ClCompile Include="FoxTcpServerSocket.cpp" />

@@ -1,34 +1,30 @@
 #pragma once
 
-#include <STLAsyncTask.h>
+#include <mutex>
+#include <thread>
 #include <ILogger.h>
 
-#include "FoxTcpSocketHandler.h"
 #include "FoxTcpSocketKey.h"
+#include "FoxTcpSocketHandler.h"
 
-/**
- * 服务端Socket:多线程响应的socket
- * 结构：一个监听线程，多个数据读线程，一个数据写线程
- *
- * @author h00442047
- * @since 2019年12月2日
- */
-class FoxTcpServerSocket
+class FoxTcpClientSocket
 {
 public:
-    FoxTcpServerSocket();
-    virtual ~FoxTcpServerSocket();
+    FoxTcpClientSocket();
+    virtual ~FoxTcpClientSocket();
 
 public:
-    bool start(int nSocketPort);
+    /*
+    * 连接服务器
+    */
+	bool connect(const char* serverIP, int serverPort);
+
+    /*
+    * 发送数据
+    */
+    int send(const char* buff, int length);
+
     void close();
-
-    void setThreads(int nThreads);
-    int  getThreads();
-
-public:
-    int                 getServerSocket();
-    sockaddr_in         getServerAddr();
 
     /*
     * 自定义socketHandler，它会被自动释放
@@ -44,14 +40,14 @@ private:// 线程结束状况
     bool				isExit;    // 请求退出标识
     bool				bFinished; // 是否已经退出线程
 
-private:  
+private:
     /**
      * 日志
      */
     static ILogger*             logger;
 
     /**
-     * 互斥 
+     * 互斥
      */
     mutex				        lock;
 
@@ -60,10 +56,6 @@ private:
      */
     FoxTcpSocketKey             socketKey;
 
-    /*
-    * 线程数
-    */
-    int                         nThreads;
 private:
     /**
      * 外部接口
@@ -73,15 +65,10 @@ private:
     /*
     * 负责监听客户端接入的线程函数
     */
-    static void			        recvThreadFunc(FoxTcpServerSocket& socket);
+    static void			        recvThreadFunc(FoxTcpClientSocket& socket);
     /*
     * 负责监听客户端接入的线程
     */
     thread*                     listenThread;
-
-    /*
-    * 负责处理客户端的线程池
-    */
-    STLAsyncTask                clientThread;
 };
 

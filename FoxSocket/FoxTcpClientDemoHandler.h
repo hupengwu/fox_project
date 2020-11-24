@@ -4,11 +4,11 @@
 
 #include "FoxTcpSocketHandler.h"
 
-class FoxTcpServerDemoHandler : public FoxTcpSocketHandler
+class FoxTcpClientDemoHandler : public FoxTcpSocketHandler
 {
 public:
-	FoxTcpServerDemoHandler();
-	~FoxTcpServerDemoHandler();
+    FoxTcpClientDemoHandler();
+    ~FoxTcpClientDemoHandler();
 
 public:
     /**
@@ -27,12 +27,12 @@ public:
      */
     virtual void handleRead(FoxTcpSocketKey& key, const char* buff, int length);
 
-     /**
-      * 处理断开连接消息：当客户端跟服务器的连接断开时候，会捕获到这个动作
-      * 对象：NioClientSocket
-      *
-      * @param key SelectionKey
-      */
+    /**
+     * 处理断开连接消息：当客户端跟服务器的连接断开时候，会捕获到这个动作
+     * 对象：NioClientSocket
+     *
+     * @param key SelectionKey
+     */
     virtual void handleDisconnect(FoxTcpSocketKey& key);
 
 private:
@@ -42,4 +42,5 @@ private:
     static ILogger* logger;
 
 };
+
 

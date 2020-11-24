@@ -1,20 +1,20 @@
-#include "FoxTcpServerDemoHandler.h"
+#include "FoxTcpClientDemoHandler.h"
 
 #include <FoxLoggerFactory.h>
 #include <STLStringUtils.h>
 #include <arpa/inet.h>
 
-ILogger* FoxTcpServerDemoHandler::logger = FoxLoggerFactory::getLogger();
+ILogger* FoxTcpClientDemoHandler::logger = FoxLoggerFactory::getLogger();
 
-FoxTcpServerDemoHandler::FoxTcpServerDemoHandler()
+FoxTcpClientDemoHandler::FoxTcpClientDemoHandler()
 {
 }
 
-FoxTcpServerDemoHandler::~FoxTcpServerDemoHandler()
+FoxTcpClientDemoHandler::~FoxTcpClientDemoHandler()
 {
 }
 
-void FoxTcpServerDemoHandler::handleConnect(FoxTcpSocketKey& key)
+void FoxTcpClientDemoHandler::handleConnect(FoxTcpSocketKey& key)
 {
     // 接入了一个客户socket
     logger->info("handleConnect from client, address : %s, port : %d ,Socket Num : % d",
@@ -23,7 +23,7 @@ void FoxTcpServerDemoHandler::handleConnect(FoxTcpSocketKey& key)
         key.getSocket());
 }
 
-void FoxTcpServerDemoHandler::handleRead(FoxTcpSocketKey& key, const char* buff, int length)
+void FoxTcpClientDemoHandler::handleRead(FoxTcpSocketKey& key, const char* buff, int length)
 {
     // 接收到的数据
     logger->info("handleRead from client, address : %s, port : %d ,Socket Num : % d,message =  %s",
@@ -37,7 +37,7 @@ void FoxTcpServerDemoHandler::handleRead(FoxTcpSocketKey& key, const char* buff,
     key.writeSocket(buff, length);
 }
 
-void FoxTcpServerDemoHandler::handleDisconnect(FoxTcpSocketKey& key)
+void FoxTcpClientDemoHandler::handleDisconnect(FoxTcpSocketKey& key)
 {
     // 接入了一个客户socket
     logger->info("handleDisconnect from client, address : %s, port : %d ,Socket Num : % d",
@@ -45,3 +45,5 @@ void FoxTcpServerDemoHandler::handleDisconnect(FoxTcpSocketKey& key)
         key.getSocketAddr().sin_port,
         key.getSocket());
 }
+
+

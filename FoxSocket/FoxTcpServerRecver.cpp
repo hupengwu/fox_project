@@ -17,20 +17,17 @@ ILogger* FoxTcpServerRecver::logger = FoxLoggerFactory::getLogger();
 
 void FoxTcpServerRecver::run()
 {
-    //char SendBuff[BUFF_SIZE_MAX];
     char recvBuff[BUFF_SIZE_MAX];
 
-    FoxTcpServerHandler& handler    = *this->socketL1Handler;
+    FoxTcpSocketHandler& handler    = *this->socketHandler;
     FoxTcpSocketKey& key            = this->socketKey;
     int socket                      = key.getSocket();
 
     // <1> 客户端连接进来
-    string message = STLStringUtils::snprintf("connect from client, address : %s, port : %d ,Socket Num : % d",
+    logger->info("connect from client, address : %s, port : %d ,Socket Num : % d",
         inet_ntoa(key.getSocketAddr().sin_addr),
         key.getSocketAddr().sin_port,
-        socket
-    );
-    logger->info(message);
+        socket);
     handler.handleConnect(key);
 
     while (true)
@@ -45,14 +42,12 @@ void FoxTcpServerRecver::run()
         }
 
         // <3> 接收到客户端断开的消息（等于0）或者 服务端主动断开该客户端连接 或者 服务端socket通过handler通知过来的退出请求
-        if ((length == 0) || key.getClosed() || handler.getExit())
+        if ((length == 0) || key.getInvalid() || handler.getExit())
         {
-            string message = STLStringUtils::snprintf("disconnect from client, address : %s, port : %d ,Socket Num : % d",
+            logger->info("disconnect from client, address : %s, port : %d ,Socket Num : % d",
                 inet_ntoa(key.getSocketAddr().sin_addr),
                 key.getSocketAddr().sin_port,
-                socket
-            );
-            logger->info(message);
+                socket);
 
             handler.handleDisconnect(key);
             break;
@@ -60,16 +55,16 @@ void FoxTcpServerRecver::run()
     }
 
     // 关闭socket
-    int result= ::shutdown(socket, 0x02);
-    result = ::close(socket);
+    ::shutdown(socket, 0x02);
+    ::close(socket);
 
     return;
 }
 
-FoxTcpServerRecver::FoxTcpServerRecver(FoxTcpSocketKey& socketKey, FoxTcpServerHandler* handler)
+FoxTcpServerRecver::FoxTcpServerRecver(FoxTcpSocketKey& socketKey, FoxTcpSocketHandler* socketHandler)
 {
     this->socketKey = socketKey;
-    this->socketL1Handler = handler;
+    this->socketHandler = socketHandler;
 }
 
 FoxTcpServerRecver::~FoxTcpServerRecver()
