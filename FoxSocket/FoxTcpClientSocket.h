@@ -35,7 +35,7 @@ public:
     /*
     * 连接服务器
     */
-	bool connect(const char* serverIP, int serverPort);
+	bool connect(const char* remoteIP, int remotePort);
 
     /*
     * 发送数据

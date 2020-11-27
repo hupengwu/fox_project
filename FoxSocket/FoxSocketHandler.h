@@ -39,7 +39,7 @@ public:
 
     /**
      * 处理Read消息：当接收到客户端发送过来的数据时，会捕获到这个动作
-     * 对象：FoxTcpServerSocket/FoxUdpServerSocket
+     * 对象：FoxTcpServerSocket/FoxTcpClientSocket/FoxUdpSocket
      *
      * @param key FoxSocketKey
      */
@@ -47,11 +47,11 @@ public:
 
     /**
      * 处理Read消息：当接收到客户端发送过来的数据时，会捕获到这个动作
-     * 对象：FoxUdpServerSocket
+     * 对象：FoxUdpSocket
      *
      * @param key FoxSocketKey
      */
-    virtual void handleReadFrom(FoxSocketKey& serverKey, const char* buff, int buffLen, sockaddr_in& addr_client, int& addrLen);
+    virtual void handleReadFrom(FoxSocketKey& key, const char* buff, int buffLen, sockaddr_in& remoteAddr, int& remoteAddrLen);
 
     /**
      * 处理断开连接消息：当客户端跟服务器的连接断开时候，会捕获到这个动作

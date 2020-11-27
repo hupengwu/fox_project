@@ -18,11 +18,11 @@ FoxTcpClientSocket::~FoxTcpClientSocket()
 {
 }
 
-bool FoxTcpClientSocket::connect(const char* serverIP, int serverPort)
+bool FoxTcpClientSocket::connect(const char* remoteIP, int remotePort)
 {
     // <1> 创建socket
-    int socket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (socket < 0)
+    int localSocket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (localSocket < 0)
     {
         logger->error("socket creation failed!");
         return false;
@@ -31,30 +31,30 @@ bool FoxTcpClientSocket::connect(const char* serverIP, int serverPort)
 
     // <2> 设置recv超时:1秒
     struct timeval timeout = { 1,0 };
-    if (setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(struct timeval)) != 0)
+    if (setsockopt(localSocket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(struct timeval)) != 0)
     {
         logger->info("set recv timeout failed");
         return false;
     }
 
     // 初始化地址结构
-    struct sockaddr_in socketAddr;
-    socketAddr.sin_family = AF_INET;
-    socketAddr.sin_port = htons((u_short)serverPort);
-    socketAddr.sin_addr.s_addr = inet_addr(serverIP);
+    struct sockaddr_in remoteAddr;
+    remoteAddr.sin_family = AF_INET;
+    remoteAddr.sin_port = htons((u_short)remotePort);
+    remoteAddr.sin_addr.s_addr = inet_addr(remoteIP);
 
     // <3> 连接服务端
-    if (::connect(socket, (struct sockaddr*)&socketAddr, sizeof(struct sockaddr)) < 0)
+    if (::connect(localSocket, (struct sockaddr*)&remoteAddr, sizeof(struct sockaddr)) < 0)
     {
-        ::close(socket);
-        logger->info("Connect error.IP[%s], port[%d]", serverIP, socketAddr.sin_port);
+        ::close(localSocket);
+        logger->info("Connect error.IP[%s], port[%d]", remoteIP, remoteAddr.sin_port);
         return false;
     }
-    logger->info("Connect to IP[%s], port[%d]", serverIP, socketAddr.sin_port);
+    logger->info("Connect to IP[%s], port[%d]", remoteIP, remoteAddr.sin_port);
 
     // <4> 保存socket信息
-    this->socketKey.setSocket(socket);
-    this->socketKey.setSocketAddr(socketAddr);
+    this->socketKey.setSocket(localSocket);
+    this->socketKey.setSocketAddr(remoteAddr);
     this->socketKey.setInvalid(false);
 
     // <5> 通知连接服务端成功
@@ -70,8 +70,8 @@ bool FoxTcpClientSocket::connect(const char* serverIP, int serverPort)
 
 int FoxTcpClientSocket::send(const char* buff, int length)
 {
-    int socket = this->socketKey.getSocket();
-    return ::send(socket, buff, length,0);
+    int localSocket = this->socketKey.getSocket();
+    return ::send(localSocket, buff, length,0);
 }
 
 void FoxTcpClientSocket::close()
@@ -107,14 +107,14 @@ void FoxTcpClientSocket::close()
     this->socketHandler->setExit(false);
 
     // 关闭本地socket
-    int socket = this->socketKey.getSocket();
-    if (socket != -1)
+    int localSocket = this->socketKey.getSocket();
+    if (localSocket != -1)
     {
         this->socketHandler->handleDisconnect(this->socketKey);
         this->socketHandler->handleClosed(this->socketKey);
 
-        ::shutdown(socket, 0x02);
-        ::close(socket);
+        ::shutdown(localSocket, 0x02);
+        ::close(localSocket);
         this->socketKey.setSocket(-1);
     }
 }
@@ -122,11 +122,11 @@ void FoxTcpClientSocket::close()
 void FoxTcpClientSocket::recvFunc(FoxSocket* socket)
 {
     FoxTcpClientSocket* clientSocket = (FoxTcpClientSocket*)socket;
-    FoxSocketHandler& handler    = *clientSocket->socketHandler;
-    FoxSocketKey& key            = clientSocket->socketKey;
+    FoxSocketHandler& handler        = *clientSocket->socketHandler;
+    FoxSocketKey& localKey           = clientSocket->socketKey;
 
     // <1> 接收到服务端发过来的消息
-    int length = ::recv(key.getSocket(), recvBuff, sizeof(recvBuff), 0);
+    int length = ::recv(localKey.getSocket(), recvBuff, sizeof(recvBuff), 0);
     if (-1 == length)
     {
         return;
@@ -135,28 +135,28 @@ void FoxTcpClientSocket::recvFunc(FoxSocket* socket)
     // <2> 接收到了服务端发送过来的数据（大于0）
     if (length > 0)
     {
-        handler.handleRead(key, recvBuff, length);
+        handler.handleRead(localKey, recvBuff, length);
         return;
     }
 
     // <2> 接收到服务端断开的消息（等于0）或者 客户端主动断开该客户端连接 或者 客户端socket通过handler通知过来的退出请求
-    if ((length == 0) || key.getInvalid() || handler.getExit())
+    if ((length == 0) || localKey.getInvalid() || handler.getExit())
     {
         logger->info("disconnect from client, server : %s, port : %d ,Socket Num : % d",
-            inet_ntoa(key.getSocketAddr().sin_addr),
-            key.getSocketAddr().sin_port,
+            inet_ntoa(localKey.getSocketAddr().sin_addr),
+            localKey.getSocketAddr().sin_port,
             socket);
 
         // 关闭本地socket
-        int socket = this->socketKey.getSocket();
-        if (socket != -1)
+        int localSocket = localKey.getSocket();
+        if (localSocket != -1)
         {
             this->socketHandler->handleDisconnect(this->socketKey);
             this->socketHandler->handleClosed(this->socketKey);
 
-            ::shutdown(socket, 0x02);
-            ::close(socket);
-            this->socketKey.setSocket(-1);
+            ::shutdown(localSocket, 0x02);
+            ::close(localSocket);
+            localKey.setSocket(-1);
         }
 
         return;

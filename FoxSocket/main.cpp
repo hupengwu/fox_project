@@ -6,25 +6,45 @@
 #include "FoxTcpClientDemoHandler.h"
 #include "FoxUdpServerDemoHandler.h"
 #include "FoxTcpClientSocket.h"
-#include "FoxUdpServerSocket.h"
+#include "FoxUdpSocket.h"
 
 int main()
 {
-	FoxUdpServerSocket udpsocket;
+	std::string data = "send data";
+
+	FoxUdpSocket udpclient;
+	udpclient.bindSocketHandler(new FoxUdpServerDemoHandler());
+
+	udpclient.close();
+
+	udpclient.create();
+	udpclient.bind(98233);
+
+//	udpclient.sendTo(data.c_str(), data.size() + 1,"127.0.0.1", 98233);
+
+
+	this_thread::sleep_for(chrono::milliseconds(1000 * 20000));
+
+	udpclient.close();
+
+	udpclient.create();
+
+	/*
+	FoxUdpSocket udpsocket;
 	udpsocket.bindSocketHandler(new FoxUdpServerDemoHandler());
 
 	udpsocket.close();
 
 	udpsocket.create(98233);
 
-	this_thread::sleep_for(chrono::milliseconds(1000 * 2000));
+	this_thread::sleep_for(chrono::milliseconds(1000 * 20000));
 
 	udpsocket.close();
 
 	udpsocket.create(98233);
-
+	*/
 	/*
-	std::string data = "send data";
+	
 
 	FoxTcpClientSocket client;
 	client.bindSocketHandler(new FoxTcpClientDemoHandler());
@@ -72,5 +92,5 @@ int main()
 //	this_thread::sleep_for(chrono::milliseconds(1000 * 60));
 //	time.close();
 
-	int i = 0;
+//	int i = 0;
 }

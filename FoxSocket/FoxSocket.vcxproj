@@ -91,7 +91,7 @@
     <ClInclude Include="FoxTcpServerSocket.h" />
     <ClInclude Include="FoxSocketKey.h" />
     <ClInclude Include="FoxUdpServerDemoHandler.h" />
-    <ClInclude Include="FoxUdpServerSocket.h" />
+    <ClInclude Include="FoxUdpSocket.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FoxSocket.cpp" />
@@ -103,7 +103,7 @@
     <ClCompile Include="FoxTcpServerRecver.cpp" />
     <ClCompile Include="FoxTcpServerSocket.cpp" />
     <ClCompile Include="FoxUdpServerDemoHandler.cpp" />
-    <ClCompile Include="FoxUdpServerSocket.cpp" />
+    <ClCompile Include="FoxUdpSocket.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="FoxSocketKey.cpp" />
   </ItemGroup>

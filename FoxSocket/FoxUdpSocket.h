@@ -8,22 +8,28 @@
 #include "FoxSocketHandler.h"
 #include "FoxSocket.h"
 
-class FoxUdpServerSocket : public FoxSocket
+class FoxUdpSocket : public FoxSocket
 {
 public:
-    FoxUdpServerSocket();
-    virtual ~FoxUdpServerSocket();
+    FoxUdpSocket();
+    virtual ~FoxUdpSocket();
 
 public:
     /*
     * 创建socket
     */
-    bool create(int serverPort);
+    bool create();
+
+    /*
+    * 绑定端口
+    */
+    bool bind(int localPort);
 
     /*
     * 发送数据
     */
-    int sendTo(const char* buff, int buffLen, sockaddr_in& addr_client, int addrLen);
+    int sendTo(const char* buff, int buffLen, sockaddr_in& remoteAddr, int remoteAddrLen);
+    int sendTo(const char* buff, int buffLen, const char* remoteIP, int remotePort);
 
     /*
     * 关闭socket
