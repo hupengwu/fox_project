@@ -81,25 +81,29 @@
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="FoxSocket.h" />
     <ClInclude Include="FoxTcpClientDemoHandler.h" />
     <ClInclude Include="FoxTcpClientSocket.h" />
     <ClInclude Include="FoxTcpServerDemoHandler.h" />
     <ClInclude Include="FoxTcpServerMapper.h" />
-    <ClInclude Include="FoxTcpSocketHandler.h" />
+    <ClInclude Include="FoxSocketHandler.h" />
     <ClInclude Include="FoxTcpServerRecver.h" />
     <ClInclude Include="FoxTcpServerSocket.h" />
-    <ClInclude Include="FoxTcpSocketKey.h" />
+    <ClInclude Include="FoxSocketKey.h" />
+    <ClInclude Include="FoxUdpServerSocket.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FoxSocket.cpp" />
     <ClCompile Include="FoxTcpClientDemoHandler.cpp" />
     <ClCompile Include="FoxTcpClientSocket.cpp" />
     <ClCompile Include="FoxTcpServerDemoHandler.cpp" />
-    <ClCompile Include="FoxTcpSocketHandler.cpp" />
+    <ClCompile Include="FoxSocketHandler.cpp" />
     <ClCompile Include="FoxTcpServerMapper.cpp" />
     <ClCompile Include="FoxTcpServerRecver.cpp" />
     <ClCompile Include="FoxTcpServerSocket.cpp" />
+    <ClCompile Include="FoxUdpServerSocket.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="FoxTcpSocketKey.cpp" />
+    <ClCompile Include="FoxSocketKey.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FoxLoggerLib\FoxLoggerLib.vcxproj">

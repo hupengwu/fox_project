@@ -12,7 +12,7 @@ int main()
 	STLStringUtils::split("h,h,5,6", ",", vec);
 
 	STLTimedTask time(new STLDemoRunnable());
-	time.start(1000);
+	time.create(1000);
 	this_thread::sleep_for(chrono::milliseconds(1000 * 60));
 	time.close();
 
@@ -21,7 +21,7 @@ int main()
 
 	// 1.创建5线程的线程池
 	STLAsyncTask asyncTask;
-	asyncTask.start(100);
+	asyncTask.create(100);
 
 	this_thread::sleep_for(chrono::milliseconds(1000 * 1));
 

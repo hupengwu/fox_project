@@ -10,7 +10,7 @@ public:
 
 public:
 	// <1> 创建一个线程池：线程池的线程被创建起来，并等待信号
-	void start(int nThreads);
+	void create(int nThreads);
 
 public:
 	// <2> 提交一个runnable（runnable会被释放掉线程池在主动释放掉，所以要用new STLDemoRunnable()的方法传参）

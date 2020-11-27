@@ -5,7 +5,7 @@
 #include <netinet/in.h>
 
 #include "FoxTcpServerMapper.h"
-#include "FoxTcpSocketHandler.h"
+#include "FoxSocketHandler.h"
 
 /*
 * 多线程接收者：socket的接收包括连接/断开/数据三个动作
@@ -16,12 +16,12 @@ public:
 	void run();
 
 public:
-	FoxTcpServerRecver(FoxTcpSocketKey& socketKey, FoxTcpSocketHandler* socketHandler);
+	FoxTcpServerRecver(FoxSocketKey& socketKey, FoxSocketHandler* socketHandler);
 	virtual ~FoxTcpServerRecver();
 
 private:
-	FoxTcpSocketKey			socketKey;
-	FoxTcpSocketHandler*	socketHandler;
+	FoxSocketKey			socketKey;
+	FoxSocketHandler*		socketHandler;
 
 private:
 	static ILogger*			logger;

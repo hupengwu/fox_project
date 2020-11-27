@@ -13,7 +13,7 @@ STLTimedTask::~STLTimedTask()
 {
 }
 
-void STLTimedTask::start(int timeInterval)
+void STLTimedTask::create(int timeInterval)
 {
     this->timeInterval = timeInterval;
 

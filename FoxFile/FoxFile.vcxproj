@@ -60,6 +60,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
     <RemoteRootDir>/home/pi/projects/$(SolutionName)</RemoteRootDir>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -81,9 +82,11 @@
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="FoxIniFile.h" />
+    <ClInclude Include="FoxZipFile.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FoxIniFile.cpp" />
+    <ClCompile Include="FoxZipFile.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>

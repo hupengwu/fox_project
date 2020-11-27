@@ -1,4 +1,4 @@
-#include "FoxTcpClientSocket.h"
+#include "FoxUdpServerSocket.h"
 
 #include <FoxLoggerFactory.h>
 
@@ -10,9 +10,9 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-ILogger* FoxTcpClientSocket::logger = FoxLoggerFactory::getLogger();
+ILogger* FoxUdpServerSocket::logger = FoxLoggerFactory::getLogger();
 
-FoxTcpClientSocket::FoxTcpClientSocket()
+FoxUdpServerSocket::FoxUdpServerSocket()
 {
     this->isExit = false;
     this->bFinished = true;
@@ -22,16 +22,16 @@ FoxTcpClientSocket::FoxTcpClientSocket()
     this->socketHandler = new FoxSocketHandler();
 }
 
-FoxTcpClientSocket::~FoxTcpClientSocket()
+FoxUdpServerSocket::~FoxUdpServerSocket()
 {
     delete this->socketHandler;
 }
 
-bool FoxTcpClientSocket::connect(const char* serverIP, int serverPort)
+bool FoxUdpServerSocket::create(int serverPort)
 {
     // <1> 创建socket
-    int socket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (socket < 0)
+    int serverSocket = ::socket(AF_INET, SOCK_DGRAM, 0);
+    if (serverSocket < 0)
     {
         logger->error("socket creation failed!");
         return false;
@@ -40,49 +40,44 @@ bool FoxTcpClientSocket::connect(const char* serverIP, int serverPort)
 
     // <2> 设置recv超时:1秒
     struct timeval timeout = { 1,0 };
-    if (setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(struct timeval)) != 0)
+    if (setsockopt(serverSocket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(struct timeval)) != 0)
     {
         logger->info("set recv timeout failed");
         return false;
     }
 
-    // 初始化地址结构
-    struct sockaddr_in socketAddr;
-    socketAddr.sin_family = AF_INET;
-    socketAddr.sin_port = htons((u_short)serverPort);
-    socketAddr.sin_addr.s_addr = inet_addr(serverIP);
-
-    // <3> 连接服务端
-    if (::connect(socket, (struct sockaddr*)&socketAddr, sizeof(struct sockaddr)) < 0)
+    // <3> 绑定socket句柄和地址+端口
+    sockaddr_in serverAddr;
+    bzero(&serverAddr, sizeof(struct sockaddr_in));
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    serverAddr.sin_port = htons((u_short)serverPort);
+    if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(struct sockaddr)) < 0)
     {
-        ::close(socket);
-        logger->info("Connect error.IP[%s], port[%d]", serverIP, socketAddr.sin_port);
+        logger->info("Bind error.Port[%d]", serverAddr.sin_port);
         return false;
     }
-    logger->info("Connect to IP[%s], port[%d]", serverIP, socketAddr.sin_port);
+    this->socketKey.setSocketAddr(serverAddr);
 
     // <4> 保存socket信息
-    this->socketKey.setSocket(socket);
-    this->socketKey.setSocketAddr(socketAddr);
+    this->socketKey.setSocket(serverSocket);
+    this->socketKey.setSocketAddr(serverAddr);
     this->socketKey.setInvalid(false);
 
-    // <5> 通知连接服务端成功
-    this->socketHandler->handleConnect(this->socketKey);
- 
-    // <6> 启动一个专门手法的线程
+    // <5> 启动一个专门收发的线程
     this->setFinished(false);
     this->recvThread = new thread(recvThreadFunc, ref(*this));
 
     return true;
 }
 
-int FoxTcpClientSocket::send(const char* buff, int length)
+int FoxUdpServerSocket::send(const char* buff, int length)
 {
     int socket = this->socketKey.getSocket();
-    return ::send(socket, buff, length,0);
+    return ::send(socket, buff, length, 0);
 }
 
-void FoxTcpClientSocket::close()
+void FoxUdpServerSocket::close()
 {
     // 通知handler退出：handler处理完毕后，关闭客户端的socket
     this->socketHandler->setExit(true);
@@ -126,7 +121,7 @@ void FoxTcpClientSocket::close()
     this->socketHandler->handleDisconnect(this->socketKey);
 }
 
-bool FoxTcpClientSocket::bindSocketHandler(FoxSocketHandler* socketHandler)
+bool FoxUdpServerSocket::bindSocketHandler(FoxSocketHandler* socketHandler)
 {
     lock_guard<mutex> guard(this->lock);
 
@@ -141,82 +136,89 @@ bool FoxTcpClientSocket::bindSocketHandler(FoxSocketHandler* socketHandler)
     return true;
 }
 
-void FoxTcpClientSocket::setFinished(bool finished)
+void FoxUdpServerSocket::setFinished(bool finished)
 {
     lock_guard<mutex> guard(this->lock);
     this->bFinished = finished;
 }
 
-bool FoxTcpClientSocket::getFinished()
+bool FoxUdpServerSocket::getFinished()
 {
     lock_guard<mutex> guard(this->lock);
     return this->bFinished;
 }
 
-void FoxTcpClientSocket::setExit(bool isExit)
+void FoxUdpServerSocket::setExit(bool isExit)
 {
     lock_guard<mutex> guard(this->lock);
     this->isExit = isExit;
 }
 
-bool FoxTcpClientSocket::getExit()
+bool FoxUdpServerSocket::getExit()
 {
     lock_guard<mutex> guard(this->lock);
     return this->isExit;
 }
 
-constexpr auto BUFF_SIZE_MAX = 16*1024;
+constexpr auto BUFF_SIZE_MAX = 16 * 1024;
 
-void FoxTcpClientSocket::recvThreadFunc(FoxTcpClientSocket& clientSocket)
+void FoxUdpServerSocket::recvThreadFunc(FoxUdpServerSocket& socket)
 {
     char recvBuff[BUFF_SIZE_MAX];
 
-    FoxSocketHandler& handler    = *clientSocket.socketHandler;
-    FoxSocketKey& key            = clientSocket.socketKey;
-    int socket                      = key.getSocket();
+    FoxSocketHandler& handler = *socket.socketHandler;
+    FoxSocketKey& serverKey = socket.socketKey;
+    int serverSocket = serverKey.getSocket();
+
+    struct sockaddr_in      addr_client;
+    int                     addr_len;
 
     while (true)
     {
         // 检查：退出线程标记
-        if (clientSocket.getExit())
+        if (socket.getExit())
         {
             break;
         }
 
-        // <1> 接收到服务端发过来的消息
-        int length = ::recv(socket, recvBuff, BUFF_SIZE_MAX, 0);
-        if (-1 == length)
+
+        // <1> 接收到客户端发过来的消息       
+        int length = recvfrom(serverSocket, recvBuff, sizeof(recvBuff), 0, (struct sockaddr*)&addr_client, (socklen_t*)&addr_len);
+        if (length < 0)
         {
             continue;
         }
 
-        // <2> 接收到了服务端发送过来的数据（大于0）
-        if (length > 0)
+        // <2> 接收到了客户端发送过来的数据（大于或等于0）
+        if (length >= 0)
         {
-            handler.handleRead(key, recvBuff, length);
+            FoxSocketKey socketKey;
+            socketKey.setSocket(serverSocket);
+            socketKey.setSocketAddr(addr_client);
+
+            handler.handleRead(socketKey, recvBuff, length);
             continue;
         }
 
-        // <2> 接收到服务端断开的消息（等于0）或者 客户端主动断开该客户端连接 或者 客户端socket通过handler通知过来的退出请求
-        if ((length == 0) || key.getInvalid() || handler.getExit())
+        // <3> 服务端主动关闭 或者 服务端socket通过handler通知过来的退出请求
+        if (serverKey.getInvalid() || handler.getExit())
         {
-            logger->info("disconnect from client, server : %s, port : %d ,Socket Num : % d",
-                inet_ntoa(key.getSocketAddr().sin_addr),
-                key.getSocketAddr().sin_port,
-                socket);
-
-            handler.handleDisconnect(key);
+            logger->info("close server : %s, port : %d ,Socket Num : % d",
+                inet_ntoa(serverKey.getSocketAddr().sin_addr),
+                serverKey.getSocketAddr().sin_port,
+                serverSocket
+            );
             break;
         }
-        
+
     }
 
     // 退出线程
     logger->info("finish recvThreadFunc from server, address : %s, port : %d ,Socket Num : % d",
-        inet_ntoa(key.getSocketAddr().sin_addr),
-        key.getSocketAddr().sin_port,
-        key.getSocket()
+        inet_ntoa(serverKey.getSocketAddr().sin_addr),
+        serverKey.getSocketAddr().sin_port,
+        serverKey.getSocket()
     );
 
-    clientSocket.setFinished(true);
+    socket.setFinished(true);
 }

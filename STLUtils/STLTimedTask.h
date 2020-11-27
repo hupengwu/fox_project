@@ -26,7 +26,7 @@ public:
 
 public:
 	// <2> 启动定时器
-	void start(int timeInterval);
+	void create(int timeInterval);
 
 	// <3> 关闭定时器
 	void close();

@@ -14,7 +14,7 @@ FoxTcpClientDemoHandler::~FoxTcpClientDemoHandler()
 {
 }
 
-void FoxTcpClientDemoHandler::handleConnect(FoxTcpSocketKey& key)
+void FoxTcpClientDemoHandler::handleConnect(FoxSocketKey& key)
 {
     // 接入了一个客户socket
     logger->info("handleConnect from client, address : %s, port : %d ,Socket Num : % d",
@@ -23,7 +23,7 @@ void FoxTcpClientDemoHandler::handleConnect(FoxTcpSocketKey& key)
         key.getSocket());
 }
 
-void FoxTcpClientDemoHandler::handleRead(FoxTcpSocketKey& key, const char* buff, int length)
+void FoxTcpClientDemoHandler::handleRead(FoxSocketKey& key, const char* buff, int length)
 {
     // 接收到的数据
     logger->info("handleRead from client, address : %s, port : %d ,Socket Num : % d,message =  %s",
@@ -37,7 +37,7 @@ void FoxTcpClientDemoHandler::handleRead(FoxTcpSocketKey& key, const char* buff,
     key.writeSocket(buff, length);
 }
 
-void FoxTcpClientDemoHandler::handleDisconnect(FoxTcpSocketKey& key)
+void FoxTcpClientDemoHandler::handleDisconnect(FoxSocketKey& key)
 {
     // 接入了一个客户socket
     logger->info("handleDisconnect from client, address : %s, port : %d ,Socket Num : % d",

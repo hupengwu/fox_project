@@ -2,9 +2,9 @@
 
 #include <ILogger.h>
 
-#include "FoxTcpSocketHandler.h"
+#include "FoxSocketHandler.h"
 
-class FoxTcpClientDemoHandler : public FoxTcpSocketHandler
+class FoxTcpClientDemoHandler : public FoxSocketHandler
 {
 public:
     FoxTcpClientDemoHandler();
@@ -17,7 +17,7 @@ public:
      *
      * @param key SelectionKey
      */
-    virtual void handleConnect(FoxTcpSocketKey& key);
+    virtual void handleConnect(FoxSocketKey& key);
 
     /**
      * 处理Read消息：当接收到客户端发送过来的数据时，会捕获到这个动作
@@ -25,7 +25,7 @@ public:
      *
      * @param key SelectionKey
      */
-    virtual void handleRead(FoxTcpSocketKey& key, const char* buff, int length);
+    virtual void handleRead(FoxSocketKey& key, const char* buff, int length);
 
     /**
      * 处理断开连接消息：当客户端跟服务器的连接断开时候，会捕获到这个动作
@@ -33,7 +33,7 @@ public:
      *
      * @param key SelectionKey
      */
-    virtual void handleDisconnect(FoxTcpSocketKey& key);
+    virtual void handleDisconnect(FoxSocketKey& key);
 
 private:
     /**

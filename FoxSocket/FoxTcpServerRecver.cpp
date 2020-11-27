@@ -9,7 +9,7 @@
 #include <FoxLoggerFactory.h>
 #include <STLStringUtils.h>
 
-#include "FoxTcpSocketKey.h"
+#include "FoxSocketKey.h"
 
 ILogger* FoxTcpServerRecver::logger = FoxLoggerFactory::getLogger();
 
@@ -19,8 +19,8 @@ void FoxTcpServerRecver::run()
 {
     char recvBuff[BUFF_SIZE_MAX];
 
-    FoxTcpSocketHandler& handler    = *this->socketHandler;
-    FoxTcpSocketKey& key            = this->socketKey;
+    FoxSocketHandler& handler    = *this->socketHandler;
+    FoxSocketKey& key            = this->socketKey;
     int socket                      = key.getSocket();
 
     // <1> 客户端连接进来
@@ -61,7 +61,7 @@ void FoxTcpServerRecver::run()
     return;
 }
 
-FoxTcpServerRecver::FoxTcpServerRecver(FoxTcpSocketKey& socketKey, FoxTcpSocketHandler* socketHandler)
+FoxTcpServerRecver::FoxTcpServerRecver(FoxSocketKey& socketKey, FoxSocketHandler* socketHandler)
 {
     this->socketKey = socketKey;
     this->socketHandler = socketHandler;

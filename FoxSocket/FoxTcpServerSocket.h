@@ -3,8 +3,8 @@
 #include <STLAsyncTask.h>
 #include <ILogger.h>
 
-#include "FoxTcpSocketHandler.h"
-#include "FoxTcpSocketKey.h"
+#include "FoxSocketHandler.h"
+#include "FoxSocketKey.h"
 
 /**
  * 服务端Socket:多线程响应的socket
@@ -33,7 +33,7 @@ public:
     /*
     * 自定义socketHandler，它会被自动释放
     */
-    bool                bindSocketHandler(FoxTcpSocketHandler* socketHandler);
+    bool                bindSocketHandler(FoxSocketHandler* socketHandler);
 
 private:// 线程结束状况
     void				setFinished(bool finished);
@@ -58,7 +58,7 @@ private:
     /**
      * 服务端socket的地址信息
      */
-    FoxTcpSocketKey             socketKey;
+    FoxSocketKey             socketKey;
 
     /*
     * 线程数
@@ -68,7 +68,7 @@ private:
     /**
      * 外部接口
      */
-    FoxTcpSocketHandler*        socketHandler;
+    FoxSocketHandler*        socketHandler;
 
     /*
     * 负责监听客户端接入的线程函数

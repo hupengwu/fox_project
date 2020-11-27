@@ -14,7 +14,7 @@
 
 #include "FoxTcpServerSocket.h"
 #include "FoxTcpServerRecver.h"
-#include "FoxTcpSocketKey.h"
+#include "FoxSocketKey.h"
 
 ILogger* FoxTcpServerSocket::logger =  FoxLoggerFactory::getLogger();
 
@@ -27,7 +27,7 @@ FoxTcpServerSocket::FoxTcpServerSocket()
     this->socketKey.setSocket(-1);
     this->nThreads = 5;
 
-    this->socketHandler = new FoxTcpSocketHandler();
+    this->socketHandler = new FoxSocketHandler();
 }
 
 FoxTcpServerSocket::~FoxTcpServerSocket()
@@ -86,7 +86,7 @@ bool FoxTcpServerSocket::start(int nSocketPort)
     logger->info("Listening on port[% d]", serverAddr.sin_port);
 
     // <6> 启动客户端数据处理的异步任务线程池
-    this->clientThread.start(this->nThreads);
+    this->clientThread.create(this->nThreads);
 
     // <7> 启动一个专门监听接入的listener线程
     this->setFinished(false);
@@ -162,7 +162,7 @@ sockaddr_in FoxTcpServerSocket::getServerAddr()
     return this->socketKey.getSocketAddr();
 }
 
-bool FoxTcpServerSocket::bindSocketHandler(FoxTcpSocketHandler* socketHandler)
+bool FoxTcpServerSocket::bindSocketHandler(FoxSocketHandler* socketHandler)
 {
     lock_guard<mutex> guard(this->lock);
 
@@ -246,7 +246,7 @@ void FoxTcpServerSocket::recvThreadFunc(FoxTcpServerSocket& socket)
         }
         
         // 发出一个任务去处理这个客户端接入：new出来的socketKey和clientAddr，在使用完后会被FoxTcpServerRecver自动回收，所以不需要主动释放
-        FoxTcpSocketKey socketKey;
+        FoxSocketKey socketKey;
         socketKey.setSocket(hClientSocket);
         socketKey.setSocketAddr(clientAddr);        
         FoxTcpServerRecver* serverRecver = new FoxTcpServerRecver(socketKey, socket.socketHandler);

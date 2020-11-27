@@ -38,9 +38,9 @@ INI_RES FoxIniFile::openFile(const char* pathName, const char* type)
     string szLine, szMainKey, szLastMainKey, szSubKey;
     char strLine[CONFIGLEN] = { 0 };
     KEYMAP mLastMap;
-    int  nIndexPos = -1;
-    int  nLeftPos = -1;
-    int  nRightPos = -1;
+    std::size_t  nIndexPos = -1;
+    std::size_t  nLeftPos = -1;
+    std::size_t  nRightPos = -1;
     m_fp = fopen(pathName, type);
 
     if (m_fp == nullptr)

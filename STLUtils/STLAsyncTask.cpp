@@ -9,7 +9,7 @@ STLAsyncTask::~STLAsyncTask()
 {
 }
 
-void STLAsyncTask::start(int nThreads)
+void STLAsyncTask::create(int nThreads)
 {
 	this->threadPool =  STLThreadPool::newThreadPool(nThreads);
 }

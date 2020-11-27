@@ -3,32 +3,35 @@
 #include <map>
 #include <string>
 
-using namespace std;
+namespace fox {
+    enum INI_RES
+    {
+        INI_SUCCESS,            //成功
+        INI_ERROR,              //普通错误
+        INI_OPENFILE_ERROR,     //打开文件失败
+        INI_NO_ATTR            //无对应的键值
+    };
 
-enum INI_RES
-{
-    INI_SUCCESS,            //成功
-    INI_ERROR,              //普通错误
-    INI_OPENFILE_ERROR,     //打开文件失败
-    INI_NO_ATTR            //无对应的键值
+
+    /*
+    * 子键索引:子键值
+    */
+    using KEYMAP = map<std::string, std::string>;
+
+
+    /*
+    * 主键索引:主键值
+    */
+    using MAINKEYMAP = map<std::string, KEYMAP>;
+
+    /*
+    * 一个值最大文本长度
+    */
+    constexpr auto CONFIGLEN = 16 * 1024;
 };
 
-
-/*
-* 子键索引:子键值 
-*/
-using KEYMAP = map<std::string, std::string>;
-
-
-/*
-* 主键索引:主键值
-*/
-using MAINKEYMAP = map<std::string, KEYMAP>;
-
-/*
-* 一个值最大文本长度
-*/
-constexpr auto CONFIGLEN = 16 * 1024;
+using namespace std;
+using namespace fox;
 
 /*
 * ini 文件的基本操作类：
