@@ -16,26 +16,16 @@
 #include "FoxTcpServerRecver.h"
 #include "FoxSocketKey.h"
 
-ILogger* FoxTcpServerSocket::logger =  FoxLoggerFactory::getLogger();
-
 FoxTcpServerSocket::FoxTcpServerSocket()
 {
-    this->isExit = false;
-    this->bFinished = true;
-    this->socketHandler = nullptr;
-    this->recvThread = nullptr;
-    this->socketKey.setSocket(-1);
     this->nThreads = 5;
-
-    this->socketHandler = new FoxSocketHandler();
 }
 
 FoxTcpServerSocket::~FoxTcpServerSocket()
 {
-    delete this->socketHandler;
 }
 
-bool FoxTcpServerSocket::start(int nSocketPort)
+bool FoxTcpServerSocket::create(int nSocketPort)
 {
     // <1> 创建一个socket句柄
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -87,11 +77,12 @@ bool FoxTcpServerSocket::start(int nSocketPort)
 
     // <6> 启动客户端数据处理的异步任务线程池
     this->clientThread.create(this->nThreads);
-
+    
     // <7> 启动一个专门监听接入的listener线程
+    FoxTcpServerSocket* socket = this;
     this->setFinished(false);
-    this->recvThread = new thread(recvThreadFunc, ref(*this));
-
+    this->recvThread = new thread(recvThreadFunc, socket);
+    
     return true;
 }
 
@@ -133,11 +124,12 @@ void FoxTcpServerSocket::close()
     int serverSocket = this->socketKey.getSocket();
     if (serverSocket != -1)
     {
+        this->socketHandler->handleClosed(this->socketKey);
+
         ::shutdown(serverSocket, 0x02);
         ::close(serverSocket);
         this->socketKey.setSocket(-1);
-    }
-    
+    } 
 }
 
 void FoxTcpServerSocket::setThreads(int nThreads)
@@ -162,102 +154,51 @@ sockaddr_in FoxTcpServerSocket::getServerAddr()
     return this->socketKey.getSocketAddr();
 }
 
-bool FoxTcpServerSocket::bindSocketHandler(FoxSocketHandler* socketHandler)
-{
-    lock_guard<mutex> guard(this->lock);
+void FoxTcpServerSocket::recvFunc(FoxSocket* socket)
+{  
+    FoxTcpServerSocket* serverSocket = (FoxTcpServerSocket*)socket;
+    FoxSocketKey& socketKey = serverSocket->socketKey;
 
-    if (socketHandler == nullptr)
+
+    //定义客户端的socket地址结构clientAddr
+    sockaddr_in clientAddr;
+    int ilength = sizeof(clientAddr);
+
+    // 等待客户端socket的接入
+    int hClientSocket = accept(socketKey.getSocket(), (sockaddr*)&clientAddr, (socklen_t*)(&ilength));
+    if (-1 == hClientSocket)
     {
-        return false;
+        return;
     }
 
-    delete this->socketHandler;
-    this->socketHandler = socketHandler;
+    // 接入了一个客户socket
+    logger->info("try cconnect from client, address : %s, port : %d ,Socket Num : % d",
+        inet_ntoa(clientAddr.sin_addr),
+        clientAddr.sin_port,
+        hClientSocket
+    );
 
-    return true;
-}
-
-void FoxTcpServerSocket::setFinished(bool finished)
-{
-    lock_guard<mutex> guard(this->lock);
-    this->bFinished = finished;
-}
-
-bool FoxTcpServerSocket::getFinished()
-{
-    lock_guard<mutex> guard(this->lock);
-    return this->bFinished;
-}
-
-void FoxTcpServerSocket::setExit(bool isExit)
-{
-    lock_guard<mutex> guard(this->lock);
-    this->isExit = isExit;
-}
-
-bool FoxTcpServerSocket::getExit()
-{
-    lock_guard<mutex> guard(this->lock);
-    return this->isExit;
-}
-
-void FoxTcpServerSocket::recvThreadFunc(FoxTcpServerSocket& socket)
-{
-    while (true)
+    // 线程池是否繁忙状态
+    if (serverSocket->clientThread.isBusy())
     {
-        // 检查：退出线程标记
-        if (socket.getExit())
-        {
-            break;
-        }
+        // 关闭这个无法继续接入的socket
+        ::shutdown(hClientSocket, 0x02);
+        ::close(hClientSocket);
 
-        //定义客户端的socket地址结构clientAddr
-        sockaddr_in clientAddr;
-        int ilength = sizeof(clientAddr);
-
-        // 等待客户端socket的接入
-        int hClientSocket = accept(socket.socketKey.getSocket(), (sockaddr*)&clientAddr, (socklen_t*)(&ilength));
-        if (-1 == hClientSocket)
-        {            
-            continue;
-        }
-
-        // 接入了一个客户socket
-        logger->info("try cconnect from client, address : %s, port : %d ,Socket Num : % d",
+        logger->info("disconnect from client, address : %s, port : %d ,Socket Num : % d",
             inet_ntoa(clientAddr.sin_addr),
             clientAddr.sin_port,
             hClientSocket
         );
 
-        // 线程池是否繁忙状态
-        if (socket.clientThread.isBusy())
-        {
-            // 关闭这个无法继续接入的socket
-            ::shutdown(hClientSocket, 0x02);
-            ::close(hClientSocket);
-
-            logger->info("disconnect from client, address : %s, port : %d ,Socket Num : % d",
-                inet_ntoa(clientAddr.sin_addr),
-                clientAddr.sin_port,
-                hClientSocket
-            );
-
-            continue;
-        }
-        
-        // 发出一个任务去处理这个客户端接入：new出来的socketKey和clientAddr，在使用完后会被FoxTcpServerRecver自动回收，所以不需要主动释放
-        FoxSocketKey socketKey;
-        socketKey.setSocket(hClientSocket);
-        socketKey.setSocketAddr(clientAddr);        
-        FoxTcpServerRecver* serverRecver = new FoxTcpServerRecver(socketKey, socket.socketHandler);
-        socket.clientThread.execute(serverRecver);
+        return;
     }
 
-    // 退出线程
-    logger->info("finish listenThreadFunc from server, address : %s, port : %d ,Socket Num : % d",
-        inet_ntoa(socket.getServerAddr().sin_addr),
-        socket.getServerAddr().sin_port,
-        socket.getServerSocket());
-
-    socket.setFinished(true);
+    // 发出一个任务去处理这个客户端接入：new出来的socketKey和clientAddr，在使用完后会被FoxTcpServerRecver自动回收，所以不需要主动释放
+    FoxSocketKey clientKey;
+    clientKey.setSocket(hClientSocket);
+    clientKey.setSocketAddr(clientAddr);
+    FoxTcpServerRecver* serverRecver = new FoxTcpServerRecver(clientKey, serverSocket->socketHandler);
+    serverSocket->clientThread.execute(serverRecver);
+    
 }

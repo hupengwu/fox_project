@@ -25,16 +25,22 @@ void FoxTcpClientDemoHandler::handleConnect(FoxSocketKey& key)
 
 void FoxTcpClientDemoHandler::handleRead(FoxSocketKey& key, const char* buff, int length)
 {
-    // 接收到的数据
-    logger->info("handleRead from client, address : %s, port : %d ,Socket Num : % d,message =  %s",
-        inet_ntoa(key.getSocketAddr().sin_addr),
-        key.getSocketAddr().sin_port,
-        key.getSocket(),
-        buff);
+    static int i = 0;
+    if (i++ < 100000)
+    {
+        // 接收到的数据
+        logger->info("handleRead from client, address : %s, port : %d ,Socket Num : % d,message =  %s; %d",
+            inet_ntoa(key.getSocketAddr().sin_addr),
+            key.getSocketAddr().sin_port,
+            key.getSocket(),
+            buff,
+            i);
 
 
-    // 将数据原样返回
-    key.writeSocket(buff, length);
+        // 将数据原样返回
+        key.send(buff, length);
+    }
+
 }
 
 void FoxTcpClientDemoHandler::handleDisconnect(FoxSocketKey& key)

@@ -34,7 +34,7 @@ void FoxTcpServerDemoHandler::handleRead(FoxSocketKey& key, const char* buff, in
 
 
     // 将数据原样返回
-    key.writeSocket(buff, length);
+    key.send(buff, length);
 }
 
 void FoxTcpServerDemoHandler::handleDisconnect(FoxSocketKey& key)

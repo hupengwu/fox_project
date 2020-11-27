@@ -22,6 +22,7 @@ public:
 private:
 	FoxSocketKey			socketKey;
 	FoxSocketHandler*		socketHandler;
+	char					recvBuff[16*1024];
 
 private:
 	static ILogger*			logger;

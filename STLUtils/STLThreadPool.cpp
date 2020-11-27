@@ -20,7 +20,7 @@ STLThreadPool* STLThreadPool::newThreadPool(int nThreads)
     // 创建并启动线程
     for (int i = 0; i < nThreads; i++)
     {
-        thread* ptrThread = new thread(executThreadFun, ref(*threadPool));
+        thread* ptrThread = new thread(executThreadFun, threadPool);
         threadPool->threads.push_back(ptrThread);
     }    
 
@@ -164,34 +164,34 @@ STLRunnable* STLThreadPool::getRunnable()
     return runnal;
 }
 
-void STLThreadPool::executThreadFun(STLThreadPool& threadPool)
+void STLThreadPool::executThreadFun(STLThreadPool* threadPool)
 {
     while (true)
     {
         // 等待调度该线程的信号到达（每个信号都执行一个被新安排的runnable或者是退出）
-        threadPool.semaphore.wait();
+        threadPool->semaphore.wait();
 
         // 是否为退出标记
-        if (threadPool.getExit())
+        if (threadPool->getExit())
         {
             break;
         }
         else
         {
             // 取出一个待执行的runnable
-            STLRunnable* runnable = threadPool.getRunnable();
+            STLRunnable* runnable = threadPool->getRunnable();
             if (runnable != nullptr)
             {
-                threadPool.setRunning(true);
+                threadPool->setRunning(true);
 
                 // 执行该runnable
                 runnable->run();
 
-                threadPool.setRunning(false);
+                threadPool->setRunning(false);
             }
         }
     }
 
     // 标识一个线程运行结束
-    threadPool.setFinished();
+    threadPool->setFinished();
 }

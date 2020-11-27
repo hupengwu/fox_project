@@ -48,7 +48,7 @@ public:
 
 private:
 	// 内部线程函数
-	static void executThreadFun(STLThreadPool& threadPoo);
+	static void executThreadFun(STLThreadPool* threadPoo);
 
 private:// 线程结束状况
 	void	setFinished();

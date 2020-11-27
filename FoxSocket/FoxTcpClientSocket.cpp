@@ -10,21 +10,12 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-ILogger* FoxTcpClientSocket::logger = FoxLoggerFactory::getLogger();
-
 FoxTcpClientSocket::FoxTcpClientSocket()
 {
-    this->isExit = false;
-    this->bFinished = true;
-    this->socketHandler = nullptr;
-    this->recvThread = nullptr;
-
-    this->socketHandler = new FoxSocketHandler();
 }
 
 FoxTcpClientSocket::~FoxTcpClientSocket()
 {
-    delete this->socketHandler;
 }
 
 bool FoxTcpClientSocket::connect(const char* serverIP, int serverPort)
@@ -68,10 +59,11 @@ bool FoxTcpClientSocket::connect(const char* serverIP, int serverPort)
 
     // <5> 通知连接服务端成功
     this->socketHandler->handleConnect(this->socketKey);
- 
+
     // <6> 启动一个专门手法的线程
+    FoxTcpClientSocket* clientSocket = this;
     this->setFinished(false);
-    this->recvThread = new thread(recvThreadFunc, ref(*this));
+    this->recvThread = new thread(recvThreadFunc, clientSocket);
 
     return true;
 }
@@ -93,7 +85,7 @@ void FoxTcpClientSocket::close()
     // 检查：全体线程是否运行结束
     while (!this->getFinished())
     {
-        this_thread::sleep_for(chrono::milliseconds(1000));
+        this_thread::sleep_for(chrono::milliseconds(100));
     }
 
     // 回收线程
@@ -118,105 +110,56 @@ void FoxTcpClientSocket::close()
     int socket = this->socketKey.getSocket();
     if (socket != -1)
     {
+        this->socketHandler->handleDisconnect(this->socketKey);
+        this->socketHandler->handleClosed(this->socketKey);
+
         ::shutdown(socket, 0x02);
         ::close(socket);
         this->socketKey.setSocket(-1);
     }
-
-    this->socketHandler->handleDisconnect(this->socketKey);
 }
 
-bool FoxTcpClientSocket::bindSocketHandler(FoxSocketHandler* socketHandler)
+void FoxTcpClientSocket::recvFunc(FoxSocket* socket)
 {
-    lock_guard<mutex> guard(this->lock);
+    FoxTcpClientSocket* clientSocket = (FoxTcpClientSocket*)socket;
+    FoxSocketHandler& handler    = *clientSocket->socketHandler;
+    FoxSocketKey& key            = clientSocket->socketKey;
 
-    if (socketHandler == nullptr)
+    // <1> 接收到服务端发过来的消息
+    int length = ::recv(key.getSocket(), recvBuff, sizeof(recvBuff), 0);
+    if (-1 == length)
     {
-        return false;
+        return;
     }
 
-    delete this->socketHandler;
-    this->socketHandler = socketHandler;
-
-    return true;
-}
-
-void FoxTcpClientSocket::setFinished(bool finished)
-{
-    lock_guard<mutex> guard(this->lock);
-    this->bFinished = finished;
-}
-
-bool FoxTcpClientSocket::getFinished()
-{
-    lock_guard<mutex> guard(this->lock);
-    return this->bFinished;
-}
-
-void FoxTcpClientSocket::setExit(bool isExit)
-{
-    lock_guard<mutex> guard(this->lock);
-    this->isExit = isExit;
-}
-
-bool FoxTcpClientSocket::getExit()
-{
-    lock_guard<mutex> guard(this->lock);
-    return this->isExit;
-}
-
-constexpr auto BUFF_SIZE_MAX = 16*1024;
-
-void FoxTcpClientSocket::recvThreadFunc(FoxTcpClientSocket& clientSocket)
-{
-    char recvBuff[BUFF_SIZE_MAX];
-
-    FoxSocketHandler& handler    = *clientSocket.socketHandler;
-    FoxSocketKey& key            = clientSocket.socketKey;
-    int socket                      = key.getSocket();
-
-    while (true)
+    // <2> 接收到了服务端发送过来的数据（大于0）
+    if (length > 0)
     {
-        // 检查：退出线程标记
-        if (clientSocket.getExit())
-        {
-            break;
-        }
-
-        // <1> 接收到服务端发过来的消息
-        int length = ::recv(socket, recvBuff, BUFF_SIZE_MAX, 0);
-        if (-1 == length)
-        {
-            continue;
-        }
-
-        // <2> 接收到了服务端发送过来的数据（大于0）
-        if (length > 0)
-        {
-            handler.handleRead(key, recvBuff, length);
-            continue;
-        }
-
-        // <2> 接收到服务端断开的消息（等于0）或者 客户端主动断开该客户端连接 或者 客户端socket通过handler通知过来的退出请求
-        if ((length == 0) || key.getInvalid() || handler.getExit())
-        {
-            logger->info("disconnect from client, server : %s, port : %d ,Socket Num : % d",
-                inet_ntoa(key.getSocketAddr().sin_addr),
-                key.getSocketAddr().sin_port,
-                socket);
-
-            handler.handleDisconnect(key);
-            break;
-        }
-        
+        handler.handleRead(key, recvBuff, length);
+        return;
     }
 
-    // 退出线程
-    logger->info("finish recvThreadFunc from server, address : %s, port : %d ,Socket Num : % d",
-        inet_ntoa(key.getSocketAddr().sin_addr),
-        key.getSocketAddr().sin_port,
-        key.getSocket()
-    );
+    // <2> 接收到服务端断开的消息（等于0）或者 客户端主动断开该客户端连接 或者 客户端socket通过handler通知过来的退出请求
+    if ((length == 0) || key.getInvalid() || handler.getExit())
+    {
+        logger->info("disconnect from client, server : %s, port : %d ,Socket Num : % d",
+            inet_ntoa(key.getSocketAddr().sin_addr),
+            key.getSocketAddr().sin_port,
+            socket);
 
-    clientSocket.setFinished(true);
+        // 关闭本地socket
+        int socket = this->socketKey.getSocket();
+        if (socket != -1)
+        {
+            this->socketHandler->handleDisconnect(this->socketKey);
+            this->socketHandler->handleClosed(this->socketKey);
+
+            ::shutdown(socket, 0x02);
+            ::close(socket);
+            this->socketKey.setSocket(-1);
+        }
+
+        return;
+    }
 }
+

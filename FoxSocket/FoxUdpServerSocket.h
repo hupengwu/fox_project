@@ -6,9 +6,9 @@
 
 #include "FoxSocketKey.h"
 #include "FoxSocketHandler.h"
+#include "FoxSocket.h"
 
-
-class FoxUdpServerSocket
+class FoxUdpServerSocket : public FoxSocket
 {
 public:
     FoxUdpServerSocket();
@@ -23,56 +23,23 @@ public:
     /*
     * 发送数据
     */
-    int send(const char* buff, int length);
+    int sendTo(const char* buff, int buffLen, sockaddr_in& addr_client, int addrLen);
 
     /*
     * 关闭socket
     */
     void close();
 
+protected:
     /*
-    * 自定义socketHandler，它会被自动释放
+    * 子类需要实现的接受数据处理函数
     */
-    bool                bindSocketHandler(FoxSocketHandler* socketHandler);
-
-private:// 线程结束状况
-    void				setFinished(bool finished);
-    bool				getFinished();
-    void				setExit(bool isExit);
-    bool				getExit();
-
-    bool				isExit;    // 请求退出标识
-    bool				bFinished; // 是否已经退出线程
-
-private:
-    /**
-     * 日志
-     */
-    static ILogger*             logger;
-
-    /**
-     * 互斥
-     */
-    mutex				        lock;
-
-    /**
-     * 服务端socket的地址信息
-     */
-    FoxSocketKey                socketKey;
-
-private:
-    /**
-     * 外部接口
-     */
-    FoxSocketHandler*           socketHandler;
+    virtual void               recvFunc(FoxSocket* socket);
 
     /*
-    * 负责监听客户端接入的线程函数
+    * 接收缓存
     */
-    static void			        recvThreadFunc(FoxUdpServerSocket& socket);
-    /*
-    * 负责监听客户端接入的线程
-    */
-    thread* recvThread;
+    char                       recvBuff[16 * 1024];
+
 };
 

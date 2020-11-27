@@ -6,6 +6,7 @@
 
 #include "FoxSocketKey.h"
 #include "FoxSocketHandler.h"
+#include "FoxSocket.h"
 
 /**
  * 客户端socket：后台线程响应的socket
@@ -19,13 +20,18 @@
  * @author h00442047
  * @since 2019年12月25日
  */
-class FoxTcpClientSocket
+class FoxTcpClientSocket : public FoxSocket
 {
 public:
     FoxTcpClientSocket();
     virtual ~FoxTcpClientSocket();
 
 public:
+    /*
+    * 关闭socket
+    */
+    void close();
+
     /*
     * 连接服务器
     */
@@ -34,56 +40,14 @@ public:
     /*
     * 发送数据
     */
-    int send(const char* buff, int length);
+    int send(const char* buff, int length);    
 
+protected:
     /*
-    * 关闭socket
+    * 子类需要实现的接受数据处理函数
     */
-    void close();
+    virtual void               recvFunc(FoxSocket* socket);
 
-    /*
-    * 自定义socketHandler，它会被自动释放
-    */
-    bool                bindSocketHandler(FoxSocketHandler* socketHandler);
-
-private:// 线程结束状况
-    void				setFinished(bool finished);
-    bool				getFinished();
-    void				setExit(bool isExit);
-    bool				getExit();
-
-    bool				isExit;    // 请求退出标识
-    bool				bFinished; // 是否已经退出线程
-
-private:
-    /**
-     * 日志
-     */
-    static ILogger*             logger;
-
-    /**
-     * 互斥
-     */
-    mutex				        lock;
-
-    /**
-     * 服务端socket的地址信息
-     */
-    FoxSocketKey             socketKey;
-
-private:
-    /**
-     * 外部接口
-     */
-    FoxSocketHandler*        socketHandler;
-
-    /*
-    * 负责监听客户端接入的线程函数
-    */
-    static void			        recvThreadFunc(FoxTcpClientSocket& socket);
-    /*
-    * 负责监听客户端接入的线程
-    */
-    thread*                     recvThread;
+    char                       recvBuff[16 * 1024];
 };
 
