@@ -144,16 +144,6 @@ int FoxTcpServerSocket::getThreads()
     return this->nThreads;
 }
 
-int FoxTcpServerSocket::getServerSocket()
-{
-	return this->socketKey.getSocket();
-}
-
-sockaddr_in FoxTcpServerSocket::getServerAddr()
-{
-    return this->socketKey.getSocketAddr();
-}
-
 void FoxTcpServerSocket::recvFunc(FoxSocket* socket)
 {  
     FoxTcpServerSocket* localSocket = (FoxTcpServerSocket*)socket;

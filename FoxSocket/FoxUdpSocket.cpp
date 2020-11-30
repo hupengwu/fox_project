@@ -35,7 +35,7 @@ bool FoxUdpSocket::create()
 
     // <3> ÉèÖÃrecv³¬Ê±:1Ãë
     struct timeval timeout = { 1,0 };
-    if (setsockopt(localSocket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(struct timeval)) != 0)
+    if (::setsockopt(localSocket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(struct timeval)) != 0)
     {
         logger->info("set recv timeout failed");
         return false;

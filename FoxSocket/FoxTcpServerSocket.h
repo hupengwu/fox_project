@@ -28,10 +28,6 @@ public:
     void setThreads(int nThreads);
     int  getThreads();
 
-public:
-    int                 getServerSocket();
-    sockaddr_in         getServerAddr();
-
 protected:  
     /*
     * 子类需要实现的接受数据处理函数

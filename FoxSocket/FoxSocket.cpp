@@ -62,6 +62,12 @@ bool FoxSocket::bindSocketHandler(FoxSocketHandler* socketHandler)
     return true;
 }
 
+FoxSocketKey FoxSocket::getSocketKey()
+{
+    lock_guard<mutex> guard(this->lock);
+    return this->socketKey;
+}
+
 void FoxSocket::setFinished(bool finished)
 {
     lock_guard<mutex> guard(this->lock);

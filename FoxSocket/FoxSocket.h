@@ -31,6 +31,11 @@ public:
     */
     bool                       bindSocketHandler(FoxSocketHandler* socketHandler);
 
+    /*
+    * 获取SocketKey信息
+    */
+    FoxSocketKey               getSocketKey();
+
 protected:// 线程结束状况
     void				       setFinished(bool finished);
     bool				       getFinished();
