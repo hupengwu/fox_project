@@ -21,7 +21,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxDef", "..\FoxDef\FoxDef.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxFile", "..\FoxFile\FoxFile.vcxproj", "{611876DB-8D8D-4E54-973E-6C67E0731B87}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxLogger", "..\FoxLogger\FoxLoggerLib.vcxproj", "{23242466-3FA2-4656-B7A6-FE77BEA44A99}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoxLogger", "..\FoxLogger\FoxLogger.vcxproj", "{23242466-3FA2-4656-B7A6-FE77BEA44A99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

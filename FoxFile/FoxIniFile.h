@@ -3,6 +3,8 @@
 #include <map>
 #include <string>
 
+using namespace std;
+
 namespace fox {
     enum INI_RES
     {

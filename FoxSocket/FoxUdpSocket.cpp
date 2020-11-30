@@ -68,6 +68,8 @@ bool FoxUdpSocket::bind(int localPort)
         return false;
     }
     this->socketKey.setSocketAddr(localAddr);
+
+    return true;
 }
 
 int FoxUdpSocket::sendTo(const char* buff, int buffLen, sockaddr_in& remoteAddr,int remoteAddrLen)

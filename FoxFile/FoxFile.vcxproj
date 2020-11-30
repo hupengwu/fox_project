@@ -78,7 +78,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>..\FoxLoggerLib;$(IncludePath)</IncludePath>
+    <IncludePath>..\FoxLogger;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="FoxIniFile.h" />
@@ -92,10 +92,15 @@
   <ItemGroup>
     <None Include="Test.ini" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FoxLogger\FoxLogger.vcxproj">
+      <Project>{23242466-3fa2-4656-b7a6-fe77bea44a99}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <AdditionalLibraryDirectories>$(RemoteRootDir)/bin/$(Platform)/$(Configuration);-Wl,--rpath=$(RemoteRootDir)/bin/$(Platform)/$(Configuration);%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <LibraryDependencies>FoxLoggerLib;</LibraryDependencies>
+      <LibraryDependencies>FoxLogger;</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
