@@ -10,15 +10,15 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-FoxUdpSocket::FoxUdpSocket()
+FoxOldUdpSocket::FoxOldUdpSocket()
 {
 }
 
-FoxUdpSocket::~FoxUdpSocket()
+FoxOldUdpSocket::~FoxOldUdpSocket()
 {
 }
 
-bool FoxUdpSocket::create()
+bool FoxOldUdpSocket::create()
 {
     // <1> 创建socket
     int localSocket = ::socket(AF_INET, SOCK_DGRAM, 0);
@@ -42,14 +42,14 @@ bool FoxUdpSocket::create()
     }            
 
     // <4> 启动一个专门收发的线程
-    FoxUdpSocket* socket = this;
+    FoxOldUdpSocket* socket = this;
     this->setFinished(false);
     this->recvThread = new thread(recvThreadFunc, socket);
 
     return true;
 }
 
-bool FoxUdpSocket::bind(int localPort)
+bool FoxOldUdpSocket::bind(int localPort)
 {
     int localSocket = this->socketKey.getSocket();
     if (localSocket <=0 || localPort <= 0)
@@ -72,13 +72,13 @@ bool FoxUdpSocket::bind(int localPort)
     return true;
 }
 
-int FoxUdpSocket::sendTo(const char* buff, int buffLen, sockaddr_in& remoteAddr,int remoteAddrLen)
+int FoxOldUdpSocket::sendTo(const char* buff, int buffLen, sockaddr_in& remoteAddr,int remoteAddrLen)
 {
     int localSocket = this->socketKey.getSocket();
     return ::sendto(localSocket, buff, buffLen, 0, (struct sockaddr*)&remoteAddr, remoteAddrLen);
 }
 
-int FoxUdpSocket::sendTo(const char* buff, int buffLen, const char* remoteIP, int remotePort)
+int FoxOldUdpSocket::sendTo(const char* buff, int buffLen, const char* remoteIP, int remotePort)
 {
     // 初始化地址结构
     struct sockaddr_in remoteAddr;
@@ -91,7 +91,7 @@ int FoxUdpSocket::sendTo(const char* buff, int buffLen, const char* remoteIP, in
     return ::sendto(localSocket, buff, buffLen, 0, (struct sockaddr*)&remoteAddr, addrLen);
 }
 
-void FoxUdpSocket::close()
+void FoxOldUdpSocket::close()
 {
     // 通知handler退出：handler处理完毕后，关闭客户端的socket
     this->socketHandler->setExit(true);
@@ -135,9 +135,9 @@ void FoxUdpSocket::close()
     }
 }
 
-void FoxUdpSocket::recvFunc(FoxSocket* socket)
+void FoxOldUdpSocket::recvFunc(FoxSocket* socket)
 {
-    FoxUdpSocket* localSocket = (FoxUdpSocket*)socket;
+    FoxOldUdpSocket* localSocket = (FoxOldUdpSocket*)socket;
     FoxSocketHandler& handler = *localSocket->socketHandler;
     FoxSocketKey& localKey = localSocket->socketKey;
 

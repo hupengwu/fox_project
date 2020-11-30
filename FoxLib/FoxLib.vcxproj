@@ -89,7 +89,7 @@
     <ClCompile Include="FoxPThreadModule.cpp" />
     <ClCompile Include="FoxStty.cpp" />
     <ClCompile Include="FoxUDPDemoSocket.cpp" />
-    <ClCompile Include="FoxUdpSocket.cpp" />
+    <ClCompile Include="FoxOldUdpSocket.cpp" />
     <ClCompile Include="FoxDateTime.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -106,7 +106,7 @@
     <ClInclude Include="FoxTypeDef.h" />
     <ClInclude Include="FoxMacrDef.h" />
     <ClInclude Include="FoxUDPDemoSocket.h" />
-    <ClInclude Include="FoxUdpSocket.h" />
+    <ClInclude Include="FoxOldUdpSocket.h" />
     <ClInclude Include="FoxDateTime.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

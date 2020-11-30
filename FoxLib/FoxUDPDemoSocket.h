@@ -1,10 +1,10 @@
 #pragma once
 
 
-#include "FoxUdpSocket.h"
+#include "FoxOldUdpSocket.h"
 #include "FoxPThreadAutoLock.h"
 
-class FoxUDPDemoSocket : public FoxUdpSocket
+class FoxUDPDemoSocket : public FoxOldUdpSocket
 {
 	// Attributes
 public:

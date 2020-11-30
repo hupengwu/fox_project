@@ -12,7 +12,7 @@ int main()
 {
 	std::string data = "send data";
 
-	FoxUdpSocket udpclient;
+	FoxOldUdpSocket udpclient;
 	udpclient.bindSocketHandler(new FoxUdpServerDemoHandler());
 
 	udpclient.close();
@@ -30,7 +30,7 @@ int main()
 	udpclient.create();
 
 	/*
-	FoxUdpSocket udpsocket;
+	FoxOldUdpSocket udpsocket;
 	udpsocket.bindSocketHandler(new FoxUdpServerDemoHandler());
 
 	udpsocket.close();

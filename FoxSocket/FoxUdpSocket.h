@@ -11,11 +11,11 @@
 /*
 * UDPSocket：这是内置异步读数据线程的UDP的服务端/客户端封装对象，简化UDP的操作。
 */
-class FoxUdpSocket : public FoxSocket
+class FoxOldUdpSocket : public FoxSocket
 {
 public:
-    FoxUdpSocket();
-    virtual ~FoxUdpSocket();
+    FoxOldUdpSocket();
+    virtual ~FoxOldUdpSocket();
 
 public:
     /*

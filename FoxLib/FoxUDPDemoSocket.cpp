@@ -29,10 +29,10 @@ void FoxUDPDemoSocket::OnReceive(int nErrorCode)
 
 	// 接收数据
 	int			iSockAddrLen = sizeof(m_SockAddr);
-	int nCount = FoxUdpSocket::ReceiveFrom(m_RxBuff, 4096, &m_SockAddr, &iSockAddrLen);
+	int nCount = FoxOldUdpSocket::ReceiveFrom(m_RxBuff, 4096, &m_SockAddr, &iSockAddrLen);
 	if (nCount == SOCKET_ERROR) {
-		DWORD dwError = FoxUdpSocket::GetLastError();
-		FoxUdpSocket::OnReceive(nErrorCode);
+		DWORD dwError = FoxOldUdpSocket::GetLastError();
+		FoxOldUdpSocket::OnReceive(nErrorCode);
 
 		/*
 		if (CBassVIParam::m_bDebugMessage)
@@ -54,7 +54,7 @@ void FoxUDPDemoSocket::OnReceive(int nErrorCode)
 	// 合法性检查:数据长度
 	if (nCount < 8)
 	{
-		FoxUdpSocket::OnReceive(nErrorCode);
+		FoxOldUdpSocket::OnReceive(nErrorCode);
 		return;
 	}
 
@@ -72,7 +72,7 @@ void FoxUDPDemoSocket::OnReceive(int nErrorCode)
 	}
 
 	m_dlRxCount++;
-	FoxUdpSocket::OnReceive(nErrorCode);
+	FoxOldUdpSocket::OnReceive(nErrorCode);
 }
 
 DWORD FoxUDPDemoSocket::GetRxCount()
@@ -90,9 +90,9 @@ int FoxUDPDemoSocket::SendToHelper(const void* lpBuf, int nBufLen, const SOCKADD
 	}
 */
 	int nResult;
-	while ((nResult = FoxUdpSocket::SendToHelper(lpBuf, nBufLen, lpSockAddr, nSockAddrLen, nFlags)) == SOCKET_ERROR)
+	while ((nResult = FoxOldUdpSocket::SendToHelper(lpBuf, nBufLen, lpSockAddr, nSockAddrLen, nFlags)) == SOCKET_ERROR)
 	{
-		FoxUdpSocket::GetLastError();
+		FoxOldUdpSocket::GetLastError();
 		return SOCKET_ERROR;
 	}
 

@@ -93,6 +93,9 @@
     <ProjectReference Include="..\FoxSocket\FoxSocket.vcxproj">
       <Project>{84b06743-7d94-45ba-83b5-90b777b808b6}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\LiteTask\LiteTask.vcxproj">
+      <Project>{290697ce-6b88-4d61-9ffb-c7805a598671}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\STLUtils\STLUtils.vcxproj">
       <Project>{98179949-d2e6-4e63-b756-c0100ea19115}</Project>
     </ProjectReference>
@@ -107,7 +110,7 @@
     <Link>
       <AdditionalDependencies>$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(RemoteRootDir)/bin/$(Platform)/$(Configuration);-Wl,--rpath=$(RemoteRootDir)/bin/$(Platform)/$(Configuration);%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <LibraryDependencies>STLUtils;UUIDUtils;cJSONUtils;FoxLib;FoxLoggerLib;FoxSocket;LiteTask</LibraryDependencies>
+      <LibraryDependencies>STLUtils;UUIDUtils;cJSONUtils;FoxLib;FoxLogger;FoxSocket;LiteTask</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
