@@ -87,7 +87,6 @@
     <ClCompile Include="FoxStringDemo.cpp" />
     <ClCompile Include="FoxStringHelper.cpp" />
     <ClCompile Include="FoxPThreadModule.cpp" />
-    <ClCompile Include="FoxStty.cpp" />
     <ClCompile Include="FoxUDPDemoSocket.cpp" />
     <ClCompile Include="FoxOldUdpSocket.cpp" />
     <ClCompile Include="FoxDateTime.cpp" />
@@ -102,7 +101,6 @@
     <ClInclude Include="FoxPThreadCond.h" />
     <ClInclude Include="FoxPThreadModule.h" />
     <ClInclude Include="FoxStrcDef.h" />
-    <ClInclude Include="FoxStty.h" />
     <ClInclude Include="FoxTypeDef.h" />
     <ClInclude Include="FoxMacrDef.h" />
     <ClInclude Include="FoxUDPDemoSocket.h" />

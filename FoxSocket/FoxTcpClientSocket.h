@@ -46,7 +46,7 @@ protected:
     /*
     * 子类需要实现的接受数据处理函数
     */
-    virtual void               recvFunc(FoxSocket* socket);
+    virtual void               recvFunc(STLThreadObject* socket);
 
     char                       recvBuff[16 * 1024];
 };

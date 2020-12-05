@@ -28,22 +28,22 @@ void CUDPItemClientSocket::OnReceive(int nErrorCode)
 
 	// 接收数据
 	int			iSockAddrLen = sizeof(m_SockAddr);
-	int nCount = FoxOldUdpSocket::ReceiveFrom(m_RxBuff, 4096, &m_SockAddr, &iSockAddrLen);
+	int nCount = FoxUdpSocket::ReceiveFrom(m_RxBuff, 4096, &m_SockAddr, &iSockAddrLen);
 	if (nCount == SOCKET_ERROR) {
-		DWORD dwError = FoxOldUdpSocket::GetLastError();
-		FoxOldUdpSocket::OnReceive(nErrorCode);
+		DWORD dwError = FoxUdpSocket::GetLastError();
+		FoxUdpSocket::OnReceive(nErrorCode);
 
 		/*
 		if (CBassVIParam::m_bDebugMessage)
 		{
 			FoxString strError;
-			strError.Format("接收错误:ERROR=%d",dwError);
+			strError.format("接收错误:ERROR=%d",dwError);
 		}
 		*/
 
 		return;
 	}
-	strIP.Format("%d.%d.%d.%d",
+	strIP.format("%d.%d.%d.%d",
 		(BYTE)(m_SockAddr.sa_data[2]),
 		(BYTE)(m_SockAddr.sa_data[3]),
 		(BYTE)(m_SockAddr.sa_data[4]),
@@ -53,7 +53,7 @@ void CUDPItemClientSocket::OnReceive(int nErrorCode)
 	// 合法性检查:数据长度
 	if (nCount < 8)
 	{
-		FoxOldUdpSocket::OnReceive(nErrorCode);
+		FoxUdpSocket::OnReceive(nErrorCode);
 		return;
 	}
 
@@ -71,7 +71,7 @@ void CUDPItemClientSocket::OnReceive(int nErrorCode)
 	}
 
 	m_dlRxCount++;
-	FoxOldUdpSocket::OnReceive(nErrorCode);
+	FoxUdpSocket::OnReceive(nErrorCode);
 }
 
 DWORD CUDPItemClientSocket::GetRxCount()
@@ -89,9 +89,9 @@ int CUDPItemClientSocket::SendToHelper(const void* lpBuf, int nBufLen, const SOC
 	}
 */
 	int nResult;
-	while ((nResult = FoxOldUdpSocket::SendToHelper(lpBuf, nBufLen, lpSockAddr, nSockAddrLen, nFlags)) == SOCKET_ERROR)
+	while ((nResult = FoxUdpSocket::SendToHelper(lpBuf, nBufLen, lpSockAddr, nSockAddrLen, nFlags)) == SOCKET_ERROR)
 	{
-		FoxOldUdpSocket::GetLastError();
+		FoxUdpSocket::GetLastError();
 		return SOCKET_ERROR;
 	}
 

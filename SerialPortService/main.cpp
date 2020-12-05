@@ -69,14 +69,14 @@ int main()
 
 
 
-   FoxDateTime dat = FoxDateTime::GetCurrentTime();
-   FoxString s =  dat.Format("%y-%m-%d %h:%M:%s");
+   FoxDateTime dat = FoxDateTime::getCurrentTime();
+   FoxString s =  dat.format("%y-%m-%d %h:%M:%s");
 
 
 
     FoxString str = "abc";
-    str.Format("%s.%s", "1", "2");
-    str.Format("%d.%d", 1, 2);
+    str.format("%s.%s", "1", "2");
+    str.format("%d.%d", 1, 2);
 
     string aaa = "aaa";
     string bbb = "bbb";

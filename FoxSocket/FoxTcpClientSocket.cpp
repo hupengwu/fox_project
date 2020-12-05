@@ -31,7 +31,7 @@ bool FoxTcpClientSocket::connect(const char* remoteIP, int remotePort)
 
     // <2> 设置recv超时:1秒
     struct timeval timeout = { 1,0 };
-    if (setsockopt(localSocket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(struct timeval)) != 0)
+    if (::setsockopt(localSocket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(struct timeval)) != 0)
     {
         logger->info("set recv timeout failed");
         return false;
@@ -61,9 +61,7 @@ bool FoxTcpClientSocket::connect(const char* remoteIP, int remotePort)
     this->socketHandler->handleConnect(this->socketKey);
 
     // <6> 启动一个专门手法的线程
-    FoxTcpClientSocket* clientSocket = this;
-    this->setFinished(false);
-    this->recvThread = new thread(recvThreadFunc, clientSocket);
+    this->createThread();
 
     return true;
 }
@@ -79,31 +77,9 @@ void FoxTcpClientSocket::close()
     // 通知handler退出：handler处理完毕后，关闭客户端的socket
     this->socketHandler->setExit(true);
 
-    // 通知监听线程退出
-    this->setExit(true);
+    // 关闭线程
+    this->closeThread();
 
-    // 检查：全体线程是否运行结束
-    while (!this->getFinished())
-    {
-        this_thread::sleep_for(chrono::milliseconds(100));
-    }
-
-    // 回收线程
-    thread* thread = this->recvThread;
-    if (thread != nullptr)
-    {
-        if (thread->joinable())
-        {
-            thread->join();
-        }
-        delete this->recvThread;
-        this->recvThread = nullptr;
-    }
-
-
-    // 重置标识
-    this->setFinished(true);
-    this->setExit(false);
     this->socketHandler->setExit(false);
 
     // 关闭本地socket
@@ -119,7 +95,7 @@ void FoxTcpClientSocket::close()
     }
 }
 
-void FoxTcpClientSocket::recvFunc(FoxSocket* socket)
+void FoxTcpClientSocket::recvFunc(STLThreadObject* socket)
 {
     FoxTcpClientSocket* clientSocket = (FoxTcpClientSocket*)socket;
     FoxSocketHandler& handler        = *clientSocket->socketHandler;

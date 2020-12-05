@@ -11,10 +11,10 @@ int main()
 	vector<string> vec;
 	STLStringUtils::split("h,h,5,6", ",", vec);
 
-	STLTimedTask time(new STLDemoRunnable());
-	time.create(1000);
+	STLTimedTask getTime(new STLDemoRunnable());
+	getTime.create(1000);
 	this_thread::sleep_for(chrono::milliseconds(1000 * 60));
-	time.close();
+	getTime.close();
 
 	this_thread::sleep_for(chrono::milliseconds(1000 * 10));
 

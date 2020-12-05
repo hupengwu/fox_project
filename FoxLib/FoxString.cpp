@@ -624,7 +624,7 @@ int FoxString::Insert( int iIndex, const char* psz )
 }
 
 
-void FoxString::Format(const char* format, ...)
+void FoxString::format(const char* format, ...)
 {
 	va_list arg;
 

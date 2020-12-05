@@ -61,9 +61,9 @@ bool Log4jLogger::isDebugEnabled()
 void Log4jLogger::printLine(thread::id threadId, string level, string message)
 {
 	time_t timep;
-	time(&timep);
+	::time(&timep);
 
-	struct tm* p = localtime(&timep);
+	struct tm* p = ::localtime(&timep);
 
 	char strTime[24];
 	snprintf(strTime, sizeof(strTime), "%.4d-%.2d-%.2d %.2d:%.2d:%.2d",

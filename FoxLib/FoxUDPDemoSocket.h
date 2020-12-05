@@ -4,7 +4,7 @@
 #include "FoxOldUdpSocket.h"
 #include "FoxPThreadAutoLock.h"
 
-class FoxUDPDemoSocket : public FoxOldUdpSocket
+class FoxUDPDemoSocket : public FoxUdpSocket
 {
 	// Attributes
 public:

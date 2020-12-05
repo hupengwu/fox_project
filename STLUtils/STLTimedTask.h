@@ -10,7 +10,7 @@ using namespace std;
 *   通过定时器可以达到几个目的：
 *   1、异步线程的思想是过程化思想，整个过程相对比较难以理解，而定时器是不断被激活的异步动作，相对比较简单
 * 使用步骤：
-*   1、通过STLTimedTask time(new STLDemoRunnable())构造一个定时器对象
+*   1、通过STLTimedTask getTime(new STLDemoRunnable())构造一个定时器对象
 *   2、启动定时器time.start()，此时线程就被启动，STLDemoRunnable的动作就不断被定时执行
 *   3、程序退出时，需要关闭定时器的时候，time.close()
 * 注意事项：

@@ -87,10 +87,10 @@ int main()
 
 //	socket.create("127.0.0.1",98231);
 
-//	STLTimedTask time(new STLDemoRunnable());
-//	time.start(1000);
+//	STLTimedTask getTime(new STLDemoRunnable());
+//	getTime.start(1000);
 //	this_thread::sleep_for(chrono::milliseconds(1000 * 60));
-//	time.close();
+//	getTime.close();
 
 //	int i = 0;
 }

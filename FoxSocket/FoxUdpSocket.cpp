@@ -42,9 +42,7 @@ bool FoxOldUdpSocket::create()
     }            
 
     // <4> 启动一个专门收发的线程
-    FoxOldUdpSocket* socket = this;
-    this->setFinished(false);
-    this->recvThread = new thread(recvThreadFunc, socket);
+    this->createThread();
 
     return true;
 }
@@ -58,7 +56,7 @@ bool FoxOldUdpSocket::bind(int localPort)
     }
 
     sockaddr_in localAddr;
-    bzero(&localAddr, sizeof(struct sockaddr_in));
+    ::bzero(&localAddr, sizeof(struct sockaddr_in));
     localAddr.sin_family = AF_INET;
     localAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     localAddr.sin_port = htons((u_short)localPort);
@@ -96,31 +94,8 @@ void FoxOldUdpSocket::close()
     // 通知handler退出：handler处理完毕后，关闭客户端的socket
     this->socketHandler->setExit(true);
 
-    // 通知监听线程退出
-    this->setExit(true);
-
-    // 检查：全体线程是否运行结束
-    while (!this->getFinished())
-    {
-        this_thread::sleep_for(chrono::milliseconds(1000));
-    }
-
-    // 回收线程
-    thread* thread = this->recvThread;
-    if (thread != nullptr)
-    {
-        if (thread->joinable())
-        {
-            thread->join();
-        }
-        delete this->recvThread;
-        this->recvThread = nullptr;
-    }
-
-
-    // 重置标识
-    this->setFinished(true);
-    this->setExit(false);
+    this->closeThread();
+    
     this->socketHandler->setExit(false);
 
     // 关闭本地socket
@@ -135,7 +110,7 @@ void FoxOldUdpSocket::close()
     }
 }
 
-void FoxOldUdpSocket::recvFunc(FoxSocket* socket)
+void FoxOldUdpSocket::recvFunc(STLThreadObject* socket)
 {
     FoxOldUdpSocket* localSocket = (FoxOldUdpSocket*)socket;
     FoxSocketHandler& handler = *localSocket->socketHandler;
@@ -146,7 +121,7 @@ void FoxOldUdpSocket::recvFunc(FoxSocket* socket)
 
 
     // <1> 接收到客户端发过来的消息       
-    int length = recvfrom(localKey.getSocket(), recvBuff, sizeof(recvBuff), 0, (struct sockaddr*)&remoteAddr, (socklen_t*)&remoteAddrLen);
+    int length = ::recvfrom(localKey.getSocket(), recvBuff, sizeof(recvBuff), 0, (struct sockaddr*)&remoteAddr, (socklen_t*)&remoteAddrLen);
     if (length < 0)
     {
         return;

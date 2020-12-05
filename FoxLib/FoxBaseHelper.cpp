@@ -87,14 +87,14 @@ BOOL FoxBaseHelper::StrToIpPort(FoxString &strIPPORT,FoxString &strIP,WORD &wPor
 	// 转换
 	DWORD dwIP = inet_addr(strIpTmp.GetBuffer(0));
 	
-	strIP.Format("%d.%d.%d.%d", dwIP%0x10000%0x100,
+	strIP.format("%d.%d.%d.%d", dwIP%0x10000%0x100,
 		dwIP%0x10000/0x100,
 		dwIP/0x10000%0x100,
 		dwIP/0x10000/0x100						
 		);
 	wPort = atoi(strPort.GetBuffer(0));
 	
-	strPORT.Format("%d",wPort);
+	strPORT.format("%d",wPort);
 	
 	// 转换结果是否跟原文一致
 	if (strIpTmp != strIP)
@@ -119,7 +119,7 @@ BOOL FoxBaseHelper::StrToIpPort(FoxString &strIPPORT,DWORDLONG &dwIPPORT)
 
 		// 转换
 		DWORD dwIP = inet_addr(strIPPORT.GetBuffer(0));
-		strIP.Format("%d.%d.%d.%d", dwIP%0x10000%0x100,
+		strIP.format("%d.%d.%d.%d", dwIP%0x10000%0x100,
 									dwIP%0x10000/0x100,
 									dwIP/0x10000%0x100,
 									dwIP/0x10000/0x100						
@@ -143,14 +143,14 @@ BOOL FoxBaseHelper::StrToIpPort(FoxString &strIPPORT,DWORDLONG &dwIPPORT)
 		// 转换
 		DWORD dwIP = inet_addr(strIp.GetBuffer(0));
 
-		strIP.Format("%d.%d.%d.%d", dwIP%0x10000%0x100,
+		strIP.format("%d.%d.%d.%d", dwIP%0x10000%0x100,
 									dwIP%0x10000/0x100,
 									dwIP/0x10000%0x100,
 									dwIP/0x10000/0x100						
 									);
 		WORD wPort = atoi(strPort.GetBuffer(0));
 
-		strPORT.Format("%d",wPort);
+		strPORT.format("%d",wPort);
 
 		// 转换结果是否跟原文一致
 		if (strIp != strIP)
@@ -176,7 +176,7 @@ BOOL FoxBaseHelper::StrToIpPort(FoxString &strIP,WORD &wPort,DWORDLONG &dwIPPORT
     DWORD dwIP = inet_addr(strIP.GetBuffer(0));
 
     FoxString strTemp;
-    strTemp.Format("%d.%d.%d.%d", dwIP%0x10000%0x100,
+    strTemp.format("%d.%d.%d.%d", dwIP%0x10000%0x100,
         dwIP%0x10000/0x100,
         dwIP/0x10000%0x100,
         dwIP/0x10000/0x100						
@@ -202,7 +202,7 @@ BOOL FoxBaseHelper::StrToIp(FoxString &strIP,DWORD &dwIP)
 	dwIP = inet_addr(strIP.GetBuffer(0));
 	
 	FoxString strIpTmp;
-	strIpTmp.Format("%d.%d.%d.%d", dwIP%0x10000%0x100,
+	strIpTmp.format("%d.%d.%d.%d", dwIP%0x10000%0x100,
 		dwIP%0x10000/0x100,
 		dwIP/0x10000%0x100,
 		dwIP/0x10000/0x100						
@@ -298,7 +298,7 @@ DATE FoxBaseHelper::atoDATE(const char *str)
 FoxString FoxBaseHelper::DATEToa(DATE date)
 {
 	FoxString str;
-	str.Format("%l",date);
+	str.format("%l",date);
 	return str;
 }
 

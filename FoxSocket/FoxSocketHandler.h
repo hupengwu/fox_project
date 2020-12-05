@@ -39,7 +39,7 @@ public:
 
     /**
      * 处理Read消息：当接收到客户端发送过来的数据时，会捕获到这个动作
-     * 对象：FoxTcpServerSocket/FoxTcpClientSocket/FoxOldUdpSocket
+     * 对象：FoxTcpServerSocket/FoxTcpClientSocket/FoxUdpSocket
      *
      * @param key FoxSocketKey
      */

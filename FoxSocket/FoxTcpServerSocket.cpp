@@ -28,7 +28,7 @@ FoxTcpServerSocket::~FoxTcpServerSocket()
 bool FoxTcpServerSocket::create(int localPort)
 {
     // <1> 创建一个socket句柄
-    int localSocket = socket(AF_INET, SOCK_STREAM, 0);
+    int localSocket = ::socket(AF_INET, SOCK_STREAM, 0);
     if (localSocket == -1)
     {
         logger->info("Create Socket Failed!");
@@ -39,7 +39,7 @@ bool FoxTcpServerSocket::create(int localPort)
 
     // <2> 设置地址重用：避免刚刚已经调用close的端口无法被绑定（之前被使用过的socket，操作系统会保持一定的TIME_WAIT时间内禁止再次绑定 ）
     int on = 1;
-    if (setsockopt(localSocket, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) != 0)
+    if (::setsockopt(localSocket, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) != 0)
     {
         logger->info("set SO_REUSEADDR failed");
         return false;
@@ -51,7 +51,7 @@ bool FoxTcpServerSocket::create(int localPort)
     localAddr.sin_family = AF_INET;
     localAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     localAddr.sin_port = htons((u_short)localPort);
-    if (bind(localSocket, (struct sockaddr*)&localAddr, sizeof(struct sockaddr)) < 0)
+    if (::bind(localSocket, (struct sockaddr*)&localAddr, sizeof(struct sockaddr)) < 0)
     {
         logger->info("Bind error.Port[%d]", localAddr.sin_port);
         return false;
@@ -61,14 +61,14 @@ bool FoxTcpServerSocket::create(int localPort)
 
     // <4> 设置accept/recv超时:1秒
     struct timeval timeout = { 1,0 };
-    if (setsockopt(localSocket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(struct timeval)) != 0)
+    if (::setsockopt(localSocket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(struct timeval)) != 0)
     {
         logger->info("set accept timeout failed");
         return false;
     }
 
     // <5> serverSocket用于监听
-    if (listen(localSocket, 20))
+    if (::listen(localSocket, 20))
     {
         logger->info("Listen error!");
         return false;
@@ -79,9 +79,7 @@ bool FoxTcpServerSocket::create(int localPort)
     this->clientThread.create(this->nThreads);
     
     // <7> 启动一个专门监听接入的listener线程
-    FoxTcpServerSocket* socket = this;
-    this->setFinished(false);
-    this->recvThread = new thread(recvThreadFunc, socket);
+    this->createThread();
     
     return true;
 }
@@ -90,34 +88,9 @@ void FoxTcpServerSocket::close()
 {
     // 通知handler退出：handler处理完毕后，关闭客户端的socket
     this->socketHandler->setExit(true);
+
+    this->closeThread();    
     
-    // 关闭处理客户端的线程池
-	this->clientThread.close();
-
-    // 通知监听线程退出
-    this->setExit(true);
-
-    // 检查：全体线程是否运行结束
-    while (!this->getFinished())
-    {
-        this_thread::sleep_for(chrono::milliseconds(1000));
-    }
-
-    // 回收线程
-    thread* thread = this->recvThread;    
-    if (thread != nullptr)
-    {
-        if (thread->joinable())
-        {
-            thread->join();
-        }
-        delete this->recvThread;
-        this->recvThread = nullptr;
-    }
-
-    // 重置标识
-    this->setFinished(true);
-    this->setExit(false);
     this->socketHandler->setExit(false);
 
     // 关闭服务端socket
@@ -144,7 +117,7 @@ int FoxTcpServerSocket::getThreads()
     return this->nThreads;
 }
 
-void FoxTcpServerSocket::recvFunc(FoxSocket* socket)
+void FoxTcpServerSocket::recvFunc(STLThreadObject* socket)
 {  
     FoxTcpServerSocket* localSocket = (FoxTcpServerSocket*)socket;
     FoxSocketKey& localKey = localSocket->socketKey;
@@ -155,7 +128,7 @@ void FoxTcpServerSocket::recvFunc(FoxSocket* socket)
     int remoteAddrLen = sizeof(remoteAddr);
 
     // 等待客户端socket的接入
-    int remoteSocket = accept(localKey.getSocket(), (sockaddr*)&remoteAddr, (socklen_t*)(&remoteAddrLen));
+    int remoteSocket = ::accept(localKey.getSocket(), (sockaddr*)&remoteAddr, (socklen_t*)(&remoteAddrLen));
     if (-1 == remoteSocket)
     {
         return;
@@ -163,7 +136,7 @@ void FoxTcpServerSocket::recvFunc(FoxSocket* socket)
 
     // 接入了一个客户socket
     logger->info("try cconnect from client, address : %s, port : %d ,Socket Num : % d",
-        inet_ntoa(remoteAddr.sin_addr),
+        ::inet_ntoa(remoteAddr.sin_addr),
         remoteAddr.sin_port,
         remoteSocket
     );

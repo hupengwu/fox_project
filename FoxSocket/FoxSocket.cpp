@@ -22,13 +22,10 @@ ILogger* FoxSocket::logger = FoxLoggerFactory::getLogger();
 
 
 FoxSocket::FoxSocket()
-{
-    this->isExit = false;
-    this->bFinished = true;
-    this->socketHandler = nullptr;
-    this->recvThread = nullptr;
+{    
     this->socketKey.setSocket(-1);
 
+    this->socketHandler = nullptr;
     this->socketHandler = new FoxSocketHandler();
 }
 
@@ -36,15 +33,6 @@ FoxSocket::~FoxSocket()
 {
     delete this->socketHandler;
     this->socketHandler = nullptr;
-}
-
-bool FoxSocket::create(int nSocketPort)
-{
-	return false;
-}
-
-void FoxSocket::close()
-{
 }
 
 bool FoxSocket::bindSocketHandler(FoxSocketHandler* socketHandler)
@@ -66,51 +54,4 @@ FoxSocketKey FoxSocket::getSocketKey()
 {
     lock_guard<mutex> guard(this->lock);
     return this->socketKey;
-}
-
-void FoxSocket::setFinished(bool finished)
-{
-    lock_guard<mutex> guard(this->lock);
-    this->bFinished = finished;
-}
-
-bool FoxSocket::getFinished()
-{
-    lock_guard<mutex> guard(this->lock);
-    return this->bFinished;
-}
-
-void FoxSocket::setExit(bool isExit)
-{
-    lock_guard<mutex> guard(this->lock);
-    this->isExit = isExit;
-}
-
-bool FoxSocket::getExit()
-{
-    lock_guard<mutex> guard(this->lock);
-    return this->isExit;
-}
-
-void FoxSocket::recvThreadFunc(FoxSocket* socket)
-{
-    while (true)
-    {
-        // 检查：退出线程标记
-        if (socket->getExit())
-        {
-            break;
-        }
-        
-        socket->recvFunc(socket);
-    }
-
-    // 退出线程
-    FoxSocketKey socketKey = socket->socketKey;
-    logger->info("finish recvThreadFunc from socket, address : %s, port : %d ,Socket Num : % d",
-        inet_ntoa(socketKey.getSocketAddr().sin_addr),
-        socketKey.getSocketAddr().sin_port,
-        socketKey.getSocket());
-
-    socket->setFinished(true);
 }

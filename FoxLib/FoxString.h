@@ -85,7 +85,7 @@ public:
 	void	MakeLower();
 	
 	// 格式化字符串(格式参数要强类型匹配,不允许隐式转换)
-	void	Format(const char* format, ...);
+	void	format(const char* format, ...);
 	
 private:
 	static  void	Append(char* &szString,const char* szAppend);

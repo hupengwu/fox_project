@@ -68,7 +68,7 @@ public:
 
 		pthread_mutex_lock(&m_mu);
 
-		timeout.tv_sec = time(NULL);
+		timeout.tv_sec = getTime(NULL);
 		timeout.tv_nsec = dwMilliseconds;
 
 		if (m_icount <= 0)

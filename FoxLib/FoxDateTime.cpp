@@ -7,19 +7,19 @@
 #define ASSERT(x) 
 #endif
 
-int _afxMonthDays[13] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+int MonthDays[13] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
 
-FoxDateTime FoxDateTime::GetCurrentTime()
+FoxDateTime FoxDateTime::getCurrentTime()
 {
-	return FoxDateTime(::time(NULL));
+	return FoxDateTime(::getTime(NULL));
 }
 
-void FoxDateTime::SetStatus(DateTimeStatus status)
+void FoxDateTime::setStatus(DateTimeStatus status)
 {
 	m_status = status;
 }
 
-FoxDateTime::DateTimeStatus FoxDateTime::GetStatus() const
+FoxDateTime::DateTimeStatus FoxDateTime::getStatus() const
 {
 	return m_status;
 }
@@ -27,7 +27,7 @@ FoxDateTime::DateTimeStatus FoxDateTime::GetStatus() const
 FoxDateTime::FoxDateTime()
 {
 	m_dt = valid;
-	SetStatus(valid);
+	setStatus(valid);
 }
 
 FoxDateTime::FoxDateTime(const FoxDateTime& dateSrc)
@@ -44,7 +44,7 @@ FoxDateTime::FoxDateTime(time_t timeSrc)
 
 FoxDateTime::FoxDateTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec)
 {
-	SetDateTime(nYear, nMonth, nDay, nHour, nMin, nSec);
+	setDateTime(nYear, nMonth, nDay, nHour, nMin, nSec);
 }
 
 FoxDateTime::FoxDateTime(const SYSTEMTIME& systimeSrc)
@@ -52,91 +52,91 @@ FoxDateTime::FoxDateTime(const SYSTEMTIME& systimeSrc)
 	*this = systimeSrc;
 }
 
-int FoxDateTime::GetYear() const
+int FoxDateTime::getYear() const
 {
-	if (GetStatus() != valid)
+	if (getStatus() != valid)
 	{
-		return AFX_OLE_DATETIME_ERROR;
+		return DATETIME_ERROR;
 	}
 
-	struct tm* pTmTemp = ::localtime(&m_dt);
+	struct tm* pTmTemp = ::getLocalTime(&m_dt);
 	return pTmTemp->tm_year + 1900;
 }
 
-int FoxDateTime::GetMonth() const
+int FoxDateTime::getMonth() const
 {
-	if (GetStatus() != valid)
+	if (getStatus() != valid)
 	{
-		return AFX_OLE_DATETIME_ERROR;
+		return DATETIME_ERROR;
 	}
 
-	struct tm* pTmTemp = ::localtime(&m_dt);
+	struct tm* pTmTemp = ::getLocalTime(&m_dt);
 	return pTmTemp->tm_mon + 1;
 }
 
-int FoxDateTime::GetDay() const
+int FoxDateTime::getDay() const
 {
-	if (GetStatus() != valid)
+	if (getStatus() != valid)
 	{
-		return AFX_OLE_DATETIME_ERROR;
+		return DATETIME_ERROR;
 	}
 
-	struct tm* pTmTemp = ::localtime(&m_dt);
+	struct tm* pTmTemp = ::getLocalTime(&m_dt);
 	return pTmTemp->tm_mday;
 }
 
-int FoxDateTime::GetHour() const
+int FoxDateTime::getHour() const
 {
-	if (GetStatus() != valid)
+	if (getStatus() != valid)
 	{
-		return AFX_OLE_DATETIME_ERROR;
+		return DATETIME_ERROR;
 	}
 
-	struct tm* pTmTemp = ::localtime(&m_dt);
+	struct tm* pTmTemp = ::getLocalTime(&m_dt);
 	return pTmTemp->tm_hour;
 }
 
-int FoxDateTime::GetMinute() const
+int FoxDateTime::getMinute() const
 {
-	if (GetStatus() != valid)
+	if (getStatus() != valid)
 	{
-		return AFX_OLE_DATETIME_ERROR;
+		return DATETIME_ERROR;
 	}
 
-	struct tm* pTmTemp = ::localtime(&m_dt);
+	struct tm* pTmTemp = ::getLocalTime(&m_dt);
 	return pTmTemp->tm_min;
 }
 
-int FoxDateTime::GetSecond() const
+int FoxDateTime::getSecond() const
 {
-	if (GetStatus() != valid)
+	if (getStatus() != valid)
 	{
-		return AFX_OLE_DATETIME_ERROR;
+		return DATETIME_ERROR;
 	}
 
-	struct tm* pTmTemp = ::localtime(&m_dt);
+	struct tm* pTmTemp = ::getLocalTime(&m_dt);
 	return pTmTemp->tm_sec;
 }
 
-int FoxDateTime::GetDayOfWeek() const
+int FoxDateTime::getDayOfWeek() const
 {
-	if (GetStatus() != valid)
+	if (getStatus() != valid)
 	{
-		return AFX_OLE_DATETIME_ERROR;
+		return DATETIME_ERROR;
 	}
 
-	struct tm* pTmTemp = ::localtime(&m_dt);
+	struct tm* pTmTemp = ::getLocalTime(&m_dt);
 	return pTmTemp->tm_wday + 1;
 }
 
-int FoxDateTime::GetDayOfYear() const
+int FoxDateTime::getDayOfYear() const
 {
-	if (GetStatus() != valid)
+	if (getStatus() != valid)
 	{
-		return AFX_OLE_DATETIME_ERROR;
+		return DATETIME_ERROR;
 	}
 
-	struct tm* pTmTemp = ::localtime(&m_dt);
+	struct tm* pTmTemp = ::getLocalTime(&m_dt);
 	return pTmTemp->tm_yday + 1;
 }
 
@@ -161,14 +161,14 @@ const FoxDateTime& FoxDateTime::operator=(const time_t& timeSrc)
 
 const FoxDateTime& FoxDateTime::operator=(const SYSTEMTIME& systimeSrc)
 {
-	m_status = _AfxOleDateFromTm(systimeSrc.wYear, systimeSrc.wMonth,
+	m_status = _dateTimeFromTm(systimeSrc.wYear, systimeSrc.wMonth,
 		systimeSrc.wDay, systimeSrc.wHour, systimeSrc.wMinute,
 		systimeSrc.wSecond, m_dt) ? valid : invalid;
 
 	return *this;
 }
 
-BOOL FoxDateTime::_AfxOleDateFromTm(WORD wYear, WORD wMonth, WORD wDay,
+BOOL FoxDateTime::_dateTimeFromTm(WORD wYear, WORD wMonth, WORD wDay,
 	WORD wHour, WORD wMinute, WORD wSecond, DATE& dtDest)
 {
 	// Validate year and month (ignore day of week and milliseconds)
@@ -180,7 +180,7 @@ BOOL FoxDateTime::_AfxOleDateFromTm(WORD wYear, WORD wMonth, WORD wDay,
 		((wYear % 100) != 0 || (wYear % 400) == 0);
 
 	int nDaysInMonth =
-		_afxMonthDays[wMonth] - _afxMonthDays[wMonth - 1] +
+		MonthDays[wMonth] - MonthDays[wMonth - 1] +
 		((bLeapYear && wDay == 29 && wMonth == 2) ? 1 : 0);
 
 	// Finish validating the date
@@ -191,13 +191,13 @@ BOOL FoxDateTime::_AfxOleDateFromTm(WORD wYear, WORD wMonth, WORD wDay,
 		return FALSE;
 	}
 
-	// Cache the date in days and time in fractional days
+	// Cache the date in days and getTime in fractional days
 	long nDate;
 	double dblTime;
 
 	//It is a valid date; make Jan 1, 1AD be 1
 	nDate = wYear * 365L + wYear / 4 - wYear / 100 + wYear / 400 +
-		_afxMonthDays[wMonth - 1] + wDay;
+		MonthDays[wMonth - 1] + wDay;
 
 	//  If leap year and it's before March, subtract 1:
 	if (wMonth <= 2 && bLeapYear)
@@ -225,26 +225,26 @@ BOOL FoxDateTime::operator!=(const FoxDateTime& date) const
 }
 BOOL FoxDateTime::operator<(const FoxDateTime& date) const
 {
-		ASSERT(GetStatus() == FoxDateTime::valid);
-		ASSERT(date.GetStatus() == FoxDateTime::valid);
+		ASSERT(getStatus() == FoxDateTime::valid);
+		ASSERT(date.getStatus() == FoxDateTime::valid);
 	return (m_dt < date.m_dt);
 }
 BOOL FoxDateTime::operator>(const FoxDateTime& date) const
 {
-		ASSERT(GetStatus() == FoxDateTime::valid);
-		ASSERT(date.GetStatus() == FoxDateTime::valid);
+		ASSERT(getStatus() == FoxDateTime::valid);
+		ASSERT(date.getStatus() == FoxDateTime::valid);
 	return (m_dt > date.m_dt);
 }
 BOOL FoxDateTime::operator<=(const FoxDateTime& date) const
 {
-		ASSERT(GetStatus() == FoxDateTime::valid);
-		ASSERT(date.GetStatus() == FoxDateTime::valid);
+		ASSERT(getStatus() == FoxDateTime::valid);
+		ASSERT(date.getStatus() == FoxDateTime::valid);
 	return (m_dt <= date.m_dt);
 }
 BOOL FoxDateTime::operator>=(const FoxDateTime& date) const
 {
-		ASSERT(GetStatus() == FoxDateTime::valid);
-		ASSERT(date.GetStatus() == FoxDateTime::valid);
+		ASSERT(getStatus() == FoxDateTime::valid);
+		ASSERT(date.getStatus() == FoxDateTime::valid);
 	return (m_dt >= date.m_dt);
 }
 
@@ -253,21 +253,21 @@ FoxDateTime FoxDateTime::operator+(const FoxDateTimeSpan& dateSpan) const
 	FoxDateTime dateResult;    // Initializes m_status to valid
 
 	// If either operand NULL, result NULL
-	if (GetStatus() == FoxDateTime::null || dateSpan.GetStatus() == FoxDateTimeSpan::null)
+	if (getStatus() == FoxDateTime::null || dateSpan.getStatus() == FoxDateTimeSpan::null)
 	{
-		dateResult.SetStatus(FoxDateTime::null);
+		dateResult.setStatus(FoxDateTime::null);
 		return dateResult;
 	}
 
 	// If either operand invalid, result invalid
-	if (GetStatus() == FoxDateTime::invalid || dateSpan.GetStatus() == FoxDateTimeSpan::invalid)
+	if (getStatus() == FoxDateTime::invalid || dateSpan.getStatus() == FoxDateTimeSpan::invalid)
 	{
-		dateResult.SetStatus(FoxDateTime::invalid);
+		dateResult.setStatus(FoxDateTime::invalid);
 		return dateResult;
 	}
 
-	dateResult.SetStatus(valid);
-	dateResult.m_dt = m_dt + (time_t)dateSpan.GetSeconds();
+	dateResult.setStatus(valid);
+	dateResult.m_dt = m_dt + (time_t)dateSpan.getSeconds();
 	return dateResult;
 }
 FoxDateTime FoxDateTime::operator-(const FoxDateTimeSpan& dateSpan) const
@@ -275,31 +275,31 @@ FoxDateTime FoxDateTime::operator-(const FoxDateTimeSpan& dateSpan) const
 	FoxDateTime dateResult;    // Initializes m_status to valid
 
 	// If either operand NULL, result NULL
-	if (GetStatus() == FoxDateTime::null || dateSpan.GetStatus() == FoxDateTimeSpan::null)
+	if (getStatus() == FoxDateTime::null || dateSpan.getStatus() == FoxDateTimeSpan::null)
 	{
-		dateResult.SetStatus(FoxDateTime::null);
+		dateResult.setStatus(FoxDateTime::null);
 		return dateResult;
 	}
 
 	// If either operand invalid, result invalid
-	if (GetStatus() == FoxDateTime::invalid || dateSpan.GetStatus() == FoxDateTimeSpan::invalid)
+	if (getStatus() == FoxDateTime::invalid || dateSpan.getStatus() == FoxDateTimeSpan::invalid)
 	{
-		dateResult.SetStatus(FoxDateTime::invalid);
+		dateResult.setStatus(FoxDateTime::invalid);
 		return dateResult;
 	}
 
-	dateResult.SetStatus(valid);
-	dateResult.m_dt = m_dt - (time_t)dateSpan.GetSeconds();
+	dateResult.setStatus(valid);
+	dateResult.m_dt = m_dt - (time_t)dateSpan.getSeconds();
 	return dateResult;
 }
 const FoxDateTime& FoxDateTime::operator+=(const FoxDateTimeSpan dateSpan)
 {
-	m_dt += dateSpan.GetSeconds();
+	m_dt += dateSpan.getSeconds();
 	return *this;
 }
 const FoxDateTime& FoxDateTime::operator-=(const FoxDateTimeSpan dateSpan)
 {
-	m_dt -= dateSpan.GetSeconds();
+	m_dt -= dateSpan.getSeconds();
 	return *this;
 }
 
@@ -308,16 +308,16 @@ FoxDateTimeSpan FoxDateTime::operator-(const FoxDateTime& date) const
 	FoxDateTimeSpan spanResult;
 
 	// If either operand NULL, result NULL
-	if (GetStatus() == null || date.GetStatus() == null)
+	if (getStatus() == null || date.getStatus() == null)
 	{
-		spanResult.SetStatus(FoxDateTimeSpan::null);
+		spanResult.setStatus(FoxDateTimeSpan::null);
 		return spanResult;
 	}
 
 	// If either operand invalid, result invalid
-	if (GetStatus() == invalid || date.GetStatus() == invalid)
+	if (getStatus() == invalid || date.getStatus() == invalid)
 	{
-		spanResult.SetStatus(FoxDateTimeSpan::invalid);
+		spanResult.setStatus(FoxDateTimeSpan::invalid);
 		return spanResult;
 	}
 
@@ -326,17 +326,17 @@ FoxDateTimeSpan FoxDateTime::operator-(const FoxDateTime& date) const
 	return spanResult;
 }
 
-int FoxDateTime::SetDate(int nYear, int nMonth, int nDay)
+int FoxDateTime::setDate(int nYear, int nMonth, int nDay)
 {
-	return SetDateTime(nYear, nMonth, nDay, 0, 0, 0);
+	return setDateTime(nYear, nMonth, nDay, 0, 0, 0);
 }
 
-int FoxDateTime::SetTime(int nHour, int nMin, int nSec)
+int FoxDateTime::setTime(int nHour, int nMin, int nSec)
 {
-	return SetDateTime(1900, 1, 1, nHour, nMin, nSec);
+	return setDateTime(1900, 1, 1, nHour, nMin, nSec);
 }
 
-int FoxDateTime::SetDateTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec)
+int FoxDateTime::setDateTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec)
 {
 	if (nYear < 1900 || nYear > 9999 || nMonth < 1 || nMonth > 12)
 	{
@@ -349,7 +349,7 @@ int FoxDateTime::SetDateTime(int nYear, int nMonth, int nDay, int nHour, int nMi
 		((nYear % 100) != 0 || (nYear % 400) == 0);
 
 	int nDaysInMonth =
-		_afxMonthDays[nMonth] - _afxMonthDays[nMonth - 1] +
+		MonthDays[nMonth] - MonthDays[nMonth - 1] +
 		((bLeapYear && nDay == 29 && nMonth == 2) ? 1 : 0);
 
 	// Finish validating the date
@@ -372,7 +372,7 @@ int FoxDateTime::SetDateTime(int nYear, int nMonth, int nDay, int nHour, int nMi
 
 	long nDate;
 
-	nDate = _afxMonthDays[nMonth - 1] + nDay - 1;
+	nDate = MonthDays[nMonth - 1] + nDay - 1;
 	if (nMonth > 2 && bLeapYear)
 		nDate++;
 
@@ -389,16 +389,16 @@ int FoxDateTime::SetDateTime(int nYear, int nMonth, int nDay, int nHour, int nMi
 	return m_status;
 }
 
-FoxString  FoxDateTime::Format(char* pFrmt) const
+FoxString  FoxDateTime::format(char* pFrmt) const
 {
 	FoxString  strFrmt;
 	strFrmt = (char*)"";
-	if (GetStatus() == null || GetStatus() == invalid)
+	if (getStatus() == null || getStatus() == invalid)
 	{
 		return strFrmt;
 	}
 
-	struct tm* pTmTemp = ::localtime(&m_dt);
+	struct tm* pTmTemp = ::getLocalTime(&m_dt);
 
 	char strTmp[10];
 	BOOL bFlag = FALSE;
@@ -529,18 +529,18 @@ FoxString  FoxDateTime::Format(char* pFrmt) const
 FoxDateTimeSpan::FoxDateTimeSpan()
 {
 	m_span = 0;
-	SetStatus(valid);
+	setStatus(valid);
 }
 
 FoxDateTimeSpan::FoxDateTimeSpan(double dblSpanSrc)
 {
 	m_span = dblSpanSrc;
-	SetStatus(valid);
+	setStatus(valid);
 }
 
 FoxDateTimeSpan::FoxDateTimeSpan(long lDays, int nHours, int nMins, int nSecs)
 {
-	SetDateTimeSpan(lDays, nHours, nMins, nSecs);
+	setDateTimeSpan(lDays, nHours, nMins, nSecs);
 }
 
 FoxDateTimeSpan::FoxDateTimeSpan(const FoxDateTimeSpan& dateSpanSrc)
@@ -549,90 +549,90 @@ FoxDateTimeSpan::FoxDateTimeSpan(const FoxDateTimeSpan& dateSpanSrc)
 	m_status = dateSpanSrc.m_status;
 }
 
-void FoxDateTimeSpan::SetStatus(DateTimeSpanStatus status)
+void FoxDateTimeSpan::setStatus(DateTimeSpanStatus status)
 {
 	m_status = status;
 }
-FoxDateTimeSpan::DateTimeSpanStatus FoxDateTimeSpan::GetStatus() const
+FoxDateTimeSpan::DateTimeSpanStatus FoxDateTimeSpan::getStatus() const
 {
 	return m_status;
 }
 
-double FoxDateTimeSpan::GetTotalDays() const
+double FoxDateTimeSpan::getTotalDays() const
 {
-		ASSERT(GetStatus() == valid); 
+		ASSERT(getStatus() == valid); 
 	return m_span;
 }
 
-double FoxDateTimeSpan::GetTotalHours() const
+double FoxDateTimeSpan::getTotalHours() const
 {
-		ASSERT(GetStatus() == valid);
-	long lReturns = (long)(m_span * 24 + AFX_OLE_DATETIME_HALFSECOND);
+		ASSERT(getStatus() == valid);
+	long lReturns = (long)(m_span * 24 + DATETIME_HALFSECOND);
 	return lReturns;
 }
 
-double FoxDateTimeSpan::GetTotalMinutes() const
+double FoxDateTimeSpan::getTotalMinutes() const
 {
-		ASSERT(GetStatus() == valid);
-	long lReturns = (long)(m_span * 24 * 60 + AFX_OLE_DATETIME_HALFSECOND);
+		ASSERT(getStatus() == valid);
+	long lReturns = (long)(m_span * 24 * 60 + DATETIME_HALFSECOND);
 	return lReturns;
 }
 
-double FoxDateTimeSpan::GetTotalSeconds() const
+double FoxDateTimeSpan::getTotalSeconds() const
 {
-		ASSERT(GetStatus() == valid);
-	long lReturns = (long)(m_span * 24 * 60 * 60 + AFX_OLE_DATETIME_HALFSECOND);
+		ASSERT(getStatus() == valid);
+	long lReturns = (long)(m_span * 24 * 60 * 60 + DATETIME_HALFSECOND);
 	return lReturns;
 }
 
-long FoxDateTimeSpan::GetDays() const
+long FoxDateTimeSpan::getDays() const
 {
-		ASSERT(GetStatus() == valid); 
+		ASSERT(getStatus() == valid); 
 	return (long)m_span;
 }
 
-long FoxDateTimeSpan::GetHours() const
+long FoxDateTimeSpan::getHours() const
 {
-		ASSERT(GetStatus() == valid);
+		ASSERT(getStatus() == valid);
 
 	double dblTemp;
 
 	// Truncate days and scale up
 	dblTemp = modf(m_span, &dblTemp);
 
-	long lReturns = (long)((dblTemp + AFX_OLE_DATETIME_HALFSECOND) * 24);
+	long lReturns = (long)((dblTemp + DATETIME_HALFSECOND) * 24);
 	if (lReturns >= 24)
 		lReturns -= 24;
 
 	return lReturns;
 }
 
-long FoxDateTimeSpan::GetMinutes() const
+long FoxDateTimeSpan::getMinutes() const
 {
-		ASSERT(GetStatus() == valid);
+		ASSERT(getStatus() == valid);
 
 	double dblTemp;
 
 	// Truncate hours and scale up
 	dblTemp = modf(m_span * 24, &dblTemp);
 
-	long lReturns = (long)((dblTemp + AFX_OLE_DATETIME_HALFSECOND) * 60);
+	long lReturns = (long)((dblTemp + DATETIME_HALFSECOND) * 60);
 	if (lReturns >= 60)
 		lReturns -= 60;
 
 	return lReturns;
 }
 
-long FoxDateTimeSpan::GetSeconds() const
+long FoxDateTimeSpan::getSeconds() const
 {
-		ASSERT(GetStatus() == valid);
+		ASSERT(getStatus() == valid);
 
 	double dblTemp;
 
 	// Truncate minutes and scale up
 	dblTemp = modf(m_span * 24 * 60, &dblTemp);
 
-	long lReturns = (long)((dblTemp + AFX_OLE_DATETIME_HALFSECOND) * 60);
+	long lReturns = (long)((dblTemp + DATETIME_HALFSECOND) * 60);
 	if (lReturns >= 60)
 		lReturns -= 60;
 
@@ -642,7 +642,7 @@ long FoxDateTimeSpan::GetSeconds() const
 const FoxDateTimeSpan& FoxDateTimeSpan::operator=(double dblSpanSrc)
 {
 	m_span = dblSpanSrc;
-	SetStatus(valid);
+	setStatus(valid);
 	return *this;
 }
 const FoxDateTimeSpan& FoxDateTimeSpan::operator=(const FoxDateTimeSpan& dateSpanSrc)
@@ -664,26 +664,26 @@ BOOL FoxDateTimeSpan::operator!=(const FoxDateTimeSpan& dateSpan) const
 }
 BOOL FoxDateTimeSpan::operator<(const FoxDateTimeSpan& dateSpan) const
 {
-		ASSERT(GetStatus() == valid);
-		ASSERT(dateSpan.GetStatus() == valid);
+		ASSERT(getStatus() == valid);
+		ASSERT(dateSpan.getStatus() == valid);
 	return m_span < dateSpan.m_span;
 }
 BOOL FoxDateTimeSpan::operator>(const FoxDateTimeSpan& dateSpan) const
 {
-		ASSERT(GetStatus() == valid);
-		ASSERT(dateSpan.GetStatus() == valid);
+		ASSERT(getStatus() == valid);
+		ASSERT(dateSpan.getStatus() == valid);
 	return m_span > dateSpan.m_span;
 }
 BOOL FoxDateTimeSpan::operator<=(const FoxDateTimeSpan& dateSpan) const
 {
-		ASSERT(GetStatus() == valid);
-		ASSERT(dateSpan.GetStatus() == valid);
+		ASSERT(getStatus() == valid);
+		ASSERT(dateSpan.getStatus() == valid);
 	return m_span <= dateSpan.m_span;
 }
 BOOL FoxDateTimeSpan::operator>=(const FoxDateTimeSpan& dateSpan) const
 {
-		ASSERT(GetStatus() == valid);
-		ASSERT(dateSpan.GetStatus() == valid);
+		ASSERT(getStatus() == valid);
+		ASSERT(dateSpan.getStatus() == valid);
 	return m_span >= dateSpan.m_span;
 }
 
@@ -692,22 +692,22 @@ FoxDateTimeSpan FoxDateTimeSpan::operator+(const FoxDateTimeSpan& dateSpan) cons
 	FoxDateTimeSpan dateSpanTemp;
 
 	// If either operand Null, result Null
-	if (GetStatus() == null || dateSpan.GetStatus() == null)
+	if (getStatus() == null || dateSpan.getStatus() == null)
 	{
-		dateSpanTemp.SetStatus(null);
+		dateSpanTemp.setStatus(null);
 		return dateSpanTemp;
 	}
 
 	// If either operand Invalid, result Invalid
-	if (GetStatus() == invalid || dateSpan.GetStatus() == invalid)
+	if (getStatus() == invalid || dateSpan.getStatus() == invalid)
 	{
-		dateSpanTemp.SetStatus(invalid);
+		dateSpanTemp.setStatus(invalid);
 		return dateSpanTemp;
 	}
 
 	// Add spans and validate within legal range
 	dateSpanTemp.m_span = m_span + dateSpan.m_span;
-	dateSpanTemp.SetStatus(valid);
+	dateSpanTemp.setStatus(valid);
 
 	return dateSpanTemp;
 }
@@ -716,22 +716,22 @@ FoxDateTimeSpan FoxDateTimeSpan::operator-(const FoxDateTimeSpan& dateSpan) cons
 	FoxDateTimeSpan dateSpanTemp;
 
 	// If either operand Null, result Null
-	if (GetStatus() == null || dateSpan.GetStatus() == null)
+	if (getStatus() == null || dateSpan.getStatus() == null)
 	{
-		dateSpanTemp.SetStatus(null);
+		dateSpanTemp.setStatus(null);
 		return dateSpanTemp;
 	}
 
 	// If either operand Invalid, result Invalid
-	if (GetStatus() == invalid || dateSpan.GetStatus() == invalid)
+	if (getStatus() == invalid || dateSpan.getStatus() == invalid)
 	{
-		dateSpanTemp.SetStatus(invalid);
+		dateSpanTemp.setStatus(invalid);
 		return dateSpanTemp;
 	}
 
 	// Add spans and validate within legal range
 	dateSpanTemp.m_span = m_span - dateSpan.m_span;
-	dateSpanTemp.SetStatus(valid);
+	dateSpanTemp.setStatus(valid);
 
 	return dateSpanTemp;
 }
@@ -755,19 +755,19 @@ FoxDateTimeSpan::operator double() const
 	return m_span;
 }
 
-void FoxDateTimeSpan::SetDateTimeSpan(long lDays, int nHours, int nMins, int nSecs)
+void FoxDateTimeSpan::setDateTimeSpan(long lDays, int nHours, int nMins, int nSecs)
 {
 	// Set date span by breaking into fractional days (all input ranges valid)
 	m_span = lDays + ((double)nHours) / 24 + ((double)nMins) / (24 * 60) +
 		((double)nSecs) / (24 * 60 * 60);
 
-	SetStatus(valid);
+	setStatus(valid);
 }
 
 
-BOOL FoxDateTime::GetAsSystemTime(SYSTEMTIME& timeDest) const
+BOOL FoxDateTime::getAsSystemTime(SYSTEMTIME& timeDest) const
 {
-	struct tm* ptm = GetLocalTm(NULL);
+	struct tm* ptm = getLocalTm(NULL);
 	if (ptm == NULL)
 		return FALSE;
 
@@ -782,11 +782,11 @@ BOOL FoxDateTime::GetAsSystemTime(SYSTEMTIME& timeDest) const
 
 	return TRUE;
 }
-struct tm* FoxDateTime::GetLocalTm(struct tm* ptm) const
+struct tm* FoxDateTime::getLocalTm(struct tm* ptm) const
 {
 	if (ptm != NULL)
 	{
-		struct tm* ptmTemp = localtime(&m_time);
+		struct tm* ptmTemp = getLocalTime(&m_time);
 		if (ptmTemp == NULL)
 			return NULL;    // indicates the m_time was not initialized!
 
@@ -794,6 +794,6 @@ struct tm* FoxDateTime::GetLocalTm(struct tm* ptm) const
 		return ptm;
 	}
 	else
-		return localtime(&m_time);
+		return getLocalTime(&m_time);
 }
 

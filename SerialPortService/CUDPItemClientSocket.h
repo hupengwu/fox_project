@@ -4,7 +4,7 @@
 #include <FoxOldUdpSocket.h>
 #include <FoxPThreadAutoLock.h>
 
-class CUDPItemClientSocket : public FoxOldUdpSocket
+class CUDPItemClientSocket : public FoxUdpSocket
 {
 	// Attributes
 public:

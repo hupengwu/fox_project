@@ -15,8 +15,8 @@
 
 
 
-#define AFX_OLE_DATETIME_ERROR (-1)
-#define AFX_OLE_DATETIME_HALFSECOND (1.0 / (2.0 * (60.0 * 60.0 * 24.0)))
+#define DATETIME_ERROR (-1)
+#define DATETIME_HALFSECOND (1.0 / (2.0 * (60.0 * 60.0 * 24.0)))
 
 typedef struct  _SYSTEMTIME
 {
@@ -44,7 +44,7 @@ public:
 	};
 	// Constructors
 public:
-	static FoxDateTime GetCurrentTime();
+	static FoxDateTime getCurrentTime();
 
 	FoxDateTime();
 	virtual ~FoxDateTime() {};
@@ -56,20 +56,20 @@ public:
 	FoxDateTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec);
 
 public:
-	void SetStatus(DateTimeStatus status);
-	DateTimeStatus GetStatus() const;
+	void setStatus(DateTimeStatus status);
+	DateTimeStatus getStatus() const;
 
-	int GetYear() const;
-	int GetMonth() const;       // month of year (1 = Jan)
-	int GetDay() const;         // day of month (0-31)
-	int GetHour() const;        // hour in day (0-23)
-	int GetMinute() const;      // minute in hour (0-59)
-	int GetSecond() const;      // second in minute (0-59)
-	int GetDayOfWeek() const;   // 1=Sun, 2=Mon, ..., 7=Sat
-	int GetDayOfYear() const;   // days since start of year, Jan 1 = 1
+	int getYear() const;
+	int getMonth() const;       // month of year (1 = Jan)
+	int getDay() const;         // day of month (0-31)
+	int getHour() const;        // hour in day (0-23)
+	int getMinute() const;      // minute in hour (0-59)
+	int getSecond() const;      // second in minute (0-59)
+	int getDayOfWeek() const;   // 1=Sun, 2=Mon, ..., 7=Sat
+	int getDayOfYear() const;   // days since start of year, Jan 1 = 1
 
-	struct tm* GetLocalTm(struct tm* ptm = NULL) const;// 091109 ysq Add
-	BOOL GetAsSystemTime(SYSTEMTIME& timeDest) const;
+	struct tm* getLocalTm(struct tm* ptm = NULL) const;// 091109 ysq Add
+	BOOL getAsSystemTime(SYSTEMTIME& timeDest) const;
 
 public:
 	const FoxDateTime& operator=(const FoxDateTime& dateSrc);
@@ -92,14 +92,14 @@ public:
 	// DateTimeSpan math
 	FoxDateTimeSpan operator-(const FoxDateTime& date) const;
 
-	int SetDate(int nYear, int nMonth, int nDay);
-	int SetTime(int nHour, int nMin, int nSec);
-	int SetDateTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec);
+	int setDate(int nYear, int nMonth, int nDay);
+	int setTime(int nHour, int nMin, int nSec);
+	int setDateTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec);
 
 	// formatting
-	FoxString  Format(char* pFrmt) const;
+	FoxString  format(char* pFrmt) const;
 protected:
-	BOOL _AfxOleDateFromTm(WORD wYear, WORD wMonth, WORD wDay,
+	BOOL _dateTimeFromTm(WORD wYear, WORD wMonth, WORD wDay,
 		WORD wHour, WORD wMinute, WORD wSecond, DATE& dtDest);
 public:
 	time_t m_dt;   // 单位：秒
@@ -134,18 +134,18 @@ public:
 	double m_span;   // 单位：天
 	DateTimeSpanStatus m_status;
 
-	void SetStatus(DateTimeSpanStatus status);
-	DateTimeSpanStatus GetStatus() const;
+	void setStatus(DateTimeSpanStatus status);
+	DateTimeSpanStatus getStatus() const;
 
-	double GetTotalDays() const;    // span in days (about -3.65e6 to 3.65e6)
-	double GetTotalHours() const;   // span in hours (about -8.77e7 to 8.77e6)
-	double GetTotalMinutes() const; // span in minutes (about -5.26e9 to 5.26e9)
-	double GetTotalSeconds() const; // span in seconds (about -3.16e11 to 3.16e11)
+	double getTotalDays() const;    // span in days (about -3.65e6 to 3.65e6)
+	double getTotalHours() const;   // span in hours (about -8.77e7 to 8.77e6)
+	double getTotalMinutes() const; // span in minutes (about -5.26e9 to 5.26e9)
+	double getTotalSeconds() const; // span in seconds (about -3.16e11 to 3.16e11)
 
-	long GetDays() const;       // component days in span
-	long GetHours() const;      // component hours in span (-23 to 23)
-	long GetMinutes() const;    // component minutes in span (-59 to 59)
-	long GetSeconds() const;    // component seconds in span (-59 to 59)
+	long getDays() const;       // component days in span
+	long getHours() const;      // component hours in span (-23 to 23)
+	long getMinutes() const;    // component minutes in span (-59 to 59)
+	long getSeconds() const;    // component seconds in span (-59 to 59)
 
 	// Operations
 public:
@@ -168,11 +168,11 @@ public:
 
 	operator double() const;
 
-	void SetDateTimeSpan(long lDays, int nHours, int nMins, int nSecs);
+	void setDateTimeSpan(long lDays, int nHours, int nMins, int nSecs);
 
 	// formatting
-//	CString Format(LPCTSTR pFormat) const;
-//	CString Format(UINT nID) const;
+//	CString format(LPCTSTR pFormat) const;
+//	CString format(UINT nID) const;
 
 	// Implementation
 public:
