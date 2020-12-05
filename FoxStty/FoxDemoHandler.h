@@ -10,5 +10,7 @@ public:
 
 public:
 	virtual void handleRead(int fd, const unsigned char* buff, int length);
+
+    virtual void handleNoRead(int fd);
 };
 

@@ -20,7 +20,7 @@ public:
     /*
     * 自定义socketHandler，它会被自动释放
     */
-    bool                       bindSocketHandler(FoxSocketHandler* socketHandler);
+    bool                       bindHandler(FoxSocketHandler* handler);
 
     /*
     * 获取SocketKey信息

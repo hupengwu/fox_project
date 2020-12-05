@@ -35,17 +35,17 @@ FoxSocket::~FoxSocket()
     this->socketHandler = nullptr;
 }
 
-bool FoxSocket::bindSocketHandler(FoxSocketHandler* socketHandler)
+bool FoxSocket::bindHandler(FoxSocketHandler* handler)
 {
     lock_guard<mutex> guard(this->lock);
 
-    if (socketHandler == nullptr)
+    if (handler == nullptr)
     {
         return false;
     }
 
     delete this->socketHandler;
-    this->socketHandler = socketHandler;
+    this->socketHandler = handler;
 
     return true;
 }

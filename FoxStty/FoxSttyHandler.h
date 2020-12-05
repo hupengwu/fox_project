@@ -31,6 +31,14 @@ public:
      */
     virtual void handleRead(int fd, const unsigned char* buff, int length);
 
+    /**
+     * 处理NoRead消息：SELECT超过一定的时间间隔都没有收到该数据，会捕获到这个动作
+     * 对象：
+     *
+     * @param key FoxStty
+     */
+    virtual void handleNoRead(int fd);
+
  
     /**
      * 处理关闭Socket消息：当服务端关闭的时候，会捕获到这个动作
