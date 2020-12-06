@@ -7,12 +7,11 @@ int main()
     FoxStty foxSerialPort;
     foxSerialPort.bindHandler(new FoxDemoHandler());
     foxSerialPort.open("ttyS1");
-    foxSerialPort.setTimeOut(10 * 1000 * 1000);
+    foxSerialPort.setTimeOut(2 * 1000 * 1000);
     foxSerialPort.setParam();
 
-  //  usleep(1000000000);
     int send = 0;
-    foxSerialPort.sendData("hupengwu",8, send);
+    foxSerialPort.sendData("send data",10, send);
     usleep(1000000000);
 
     /*

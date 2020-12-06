@@ -89,11 +89,11 @@ private:
 	FoxSttyHandler*		handler;
 
 private:
-	int         fd;        // 串口设备ID     
-	char        name[24];  // 串口设备名称，例："/dev/ttyS0" 
-	termios     ntm;       // 新的串口设备选项 
-	termios     otm;       // 旧的串口设备选项
-	char		data[1024];// 接收的数据
-	long        uTimeOut;  // SELECT超时
+	int				fd;        // 串口设备ID     
+	char			name[24];  // 串口设备名称，例："/dev/ttyS0" 
+	termios			ntm;       // 新的串口设备选项 
+	termios			otm;       // 旧的串口设备选项
+	char			data[1024];// 接收的数据
+	long			uTimeOut;  // SELECT超时
 };
 

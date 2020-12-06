@@ -315,7 +315,7 @@ void FoxStty::recvFunc(STLThreadObject* threadObj)
         }
 
         // 通知：已经收到一部分数据
-        handler->handleRead(fd, data, recvLen);
+        handler->handleRead(fd, data, recvLen);        
     }
 }
 

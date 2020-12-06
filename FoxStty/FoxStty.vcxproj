@@ -78,18 +78,20 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>..\STLUtils;..\FoxLogger</IncludePath>
+    <IncludePath>..\FoxDef;..\STLUtils;..\FoxLogger</IncludePath>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="FoxDemoHandler.cpp" />
     <ClCompile Include="FoxStty.cpp" />
     <ClCompile Include="FoxSttyHandler.cpp" />
+    <ClCompile Include="FoxSttyBuffer.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FoxDemoHandler.h" />
     <ClInclude Include="FoxStty.h" />
     <ClInclude Include="FoxSttyHandler.h" />
+    <ClInclude Include="FoxSttyBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\STLUtils\STLUtils.vcxproj">

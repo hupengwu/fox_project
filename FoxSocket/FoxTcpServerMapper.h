@@ -22,7 +22,7 @@ public:// 是否存在socket
 public:// 是否存在socket
 	void pushBuff(int hClientSocket, STLByteArray& buff);
 	void popBuff(int hClientSocket, list<STLByteArray>& buffs);
-	bool hasBuff(int hClientSocket);
+	bool queryBuff(int hClientSocket);
 
 private:
 	/**

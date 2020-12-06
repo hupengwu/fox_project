@@ -95,7 +95,7 @@ void FoxTcpServerMapper::popBuff(int hClientSocket, list<STLByteArray>& buffs)
 	buffList.clear();
 }
 
-bool FoxTcpServerMapper::hasBuff(int hClientSocket)
+bool FoxTcpServerMapper::queryBuff(int hClientSocket)
 {
 	lock_guard<mutex> guard(this->lock);
 
