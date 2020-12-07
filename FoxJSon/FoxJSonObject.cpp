@@ -46,7 +46,6 @@ FoxJSonObject::FoxJSonObject(const FoxJSonObject& oJsonObject)
     Parse(oJsonObject.ToString());
 }
 
-#if __cplusplus >= 201101L
 FoxJSonObject::FoxJSonObject(FoxJSonObject&& oJsonObject)
     : m_pJsonData(oJsonObject.m_pJsonData),
     m_pExternJsonDataRef(oJsonObject.m_pExternJsonDataRef),
@@ -63,7 +62,6 @@ FoxJSonObject::FoxJSonObject(FoxJSonObject&& oJsonObject)
     m_array_iter = m_mapJsonArrayRef.end();
     m_object_iter = m_mapJsonObjectRef.end();
 }
-#endif
 
 FoxJSonObject::~FoxJSonObject()
 {
@@ -76,7 +74,6 @@ FoxJSonObject& FoxJSonObject::operator=(const FoxJSonObject& oJsonObject)
     return(*this);
 }
 
-#if __cplusplus >= 201101L
 FoxJSonObject& FoxJSonObject::operator=(FoxJSonObject&& oJsonObject)
 {
     m_pJsonData = oJsonObject.m_pJsonData;
@@ -94,7 +91,6 @@ FoxJSonObject& FoxJSonObject::operator=(FoxJSonObject&& oJsonObject)
     m_object_iter = m_mapJsonObjectRef.end();
     return(*this);
 }
-#endif
 
 bool FoxJSonObject::operator==(const FoxJSonObject& oJsonObject) const
 {
@@ -251,11 +247,9 @@ FoxJSonObject& FoxJSonObject::operator[](const std::string& strKey)
     {
         return(*(m_object_iter->second));
     }
-#if __cplusplus < 201101L
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-#else
+
     auto iter = m_mapJsonObjectRef.find(strKey);
-#endif
+
     if (iter == m_mapJsonObjectRef.end())
     {
         cJSON* pJsonStruct = NULL;
@@ -300,11 +294,9 @@ FoxJSonObject& FoxJSonObject::operator[](unsigned int uiWhich)
     {
         return(*(m_array_iter->second));
     }
-#if __cplusplus < 201101L
-    std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.find(uiWhich);
-#else
+
     auto iter = m_mapJsonArrayRef.find(uiWhich);
-#endif
+
     if (iter == m_mapJsonArrayRef.end())
     {
         cJSON* pJsonStruct = NULL;
@@ -533,12 +525,8 @@ void FoxJSonObject::Clear()
         cJSON_Delete(m_pJsonData);
         m_pJsonData = NULL;
     }
-#if __cplusplus < 201101L
-    for (std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.begin();
-        iter != m_mapJsonArrayRef.end(); ++iter)
-#else
+
     for (auto iter = m_mapJsonArrayRef.begin(); iter != m_mapJsonArrayRef.end(); ++iter)
-#endif
     {
         if (iter->second != NULL)
         {
@@ -548,12 +536,8 @@ void FoxJSonObject::Clear()
     }
     m_mapJsonArrayRef.clear();
     m_array_iter = m_mapJsonArrayRef.end();
-#if __cplusplus < 201101L
-    for (std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.begin();
-        iter != m_mapJsonObjectRef.end(); ++iter)
-#else
+
     for (auto iter = m_mapJsonObjectRef.begin(); iter != m_mapJsonObjectRef.end(); ++iter)
-#endif
     {
         if (iter->second != NULL)
         {
@@ -1027,11 +1011,8 @@ bool FoxJSonObject::Add(const std::string& strKey, const FoxJSonObject& oJsonObj
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-#else
+
     auto iter = m_mapJsonObjectRef.find(strKey);
-#endif
     if (iter != m_mapJsonObjectRef.end())
     {
         if (iter->second != NULL)
@@ -1047,68 +1028,6 @@ bool FoxJSonObject::Add(const std::string& strKey, const FoxJSonObject& oJsonObj
     return(true);
 }
 
-#if __cplusplus < 201101L
-bool FoxJSonObject::AddWithMove(const std::string& strKey, FoxJSonObject& oJsonObject)
-{
-    cJSON* pFocusData = NULL;
-    if (m_pJsonData != NULL)
-    {
-        pFocusData = m_pJsonData;
-    }
-    else if (m_pExternJsonDataRef != NULL)
-    {
-        pFocusData = m_pExternJsonDataRef;
-    }
-    else
-    {
-        m_pJsonData = cJSON_CreateObject();
-        m_pKeyTravers = m_pJsonData;
-        pFocusData = m_pJsonData;
-    }
-
-    if (pFocusData == NULL)
-    {
-        m_strErrMsg = "json data is null!";
-        return(false);
-    }
-    if (pFocusData->type != cJSON_Object)
-    {
-        m_strErrMsg = "not a json object! json array?";
-        return(false);
-    }
-    if (cJSON_GetObjectItem(pFocusData, strKey.c_str()) != NULL)
-    {
-        m_strErrMsg = "key exists!";
-        return(false);
-    }
-    cJSON* pJsonStruct = oJsonObject.m_pJsonData;
-    oJsonObject.m_pJsonData = NULL;
-    if (pJsonStruct == NULL)
-    {
-        m_strErrMsg = "can not move a non-independent(internal) FoxJSonObject from one to another.";
-        return(false);
-    }
-    cJSON_AddItemToObject(pFocusData, strKey.c_str(), pJsonStruct);
-    if (cJSON_GetObjectItem(pFocusData, strKey.c_str()) == NULL)
-    {
-        return(false);
-    }
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-    if (iter != m_mapJsonObjectRef.end())
-    {
-        if (iter->second != NULL)
-        {
-            delete (iter->second);
-            iter->second = NULL;
-        }
-        m_mapJsonObjectRef.erase(iter);
-    }
-    m_pKeyTravers = pFocusData;
-    m_strLastObjectKey = "";
-    m_object_iter = m_mapJsonObjectRef.end();
-    return(true);
-}
-#else
 bool FoxJSonObject::Add(const std::string& strKey, FoxJSonObject&& oJsonObject)
 {
     cJSON* pFocusData = NULL;
@@ -1169,7 +1088,6 @@ bool FoxJSonObject::Add(const std::string& strKey, FoxJSonObject&& oJsonObject)
     m_object_iter = m_mapJsonObjectRef.end();
     return(true);
 }
-#endif
 
 bool FoxJSonObject::Add(const std::string& strKey, const std::string& strValue)
 {
@@ -1547,26 +1465,6 @@ bool FoxJSonObject::Add(const std::string& strKey, double dValue)
     return(true);
 }
 
-#if __cplusplus < 201101L
-bool FoxJSonObject::ReplaceAdd(const std::string& strKey, const FoxJSonObject& oJsonObject)
-{
-    if (KeyExist(strKey))
-    {
-        return(Replace(strKey, oJsonObject));
-    }
-    return(Add(strKey, oJsonObject));
-}
-
-bool FoxJSonObject::ReplaceAdd(const std::string& strKey, const std::string& strValue)
-{
-    if (KeyExist(strKey))
-    {
-        return(Replace(strKey, strValue));
-    }
-    return(Add(strKey, strValue));
-}
-#endif
-
 bool FoxJSonObject::AddNull(const std::string& strKey)
 {
     cJSON* pFocusData = NULL;
@@ -1636,11 +1534,8 @@ bool FoxJSonObject::Delete(const std::string& strKey)
         return(false);
     }
     cJSON_DeleteItemFromObject(pFocusData, strKey.c_str());
-#if __cplusplus < 201101L
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-#else
+
     auto iter = m_mapJsonObjectRef.find(strKey);
-#endif
     if (iter != m_mapJsonObjectRef.end())
     {
         if (iter->second != NULL)
@@ -1688,11 +1583,9 @@ bool FoxJSonObject::Replace(const std::string& strKey, const FoxJSonObject& oJso
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-#else
+
     auto iter = m_mapJsonObjectRef.find(strKey);
-#endif
+
     if (iter != m_mapJsonObjectRef.end())
     {
         if (iter->second != NULL)
@@ -1707,55 +1600,6 @@ bool FoxJSonObject::Replace(const std::string& strKey, const FoxJSonObject& oJso
     return(true);
 }
 
-#if __cplusplus < 201101L
-bool FoxJSonObject::ReplaceWithMove(const std::string& strKey, FoxJSonObject& oJsonObject)
-{
-    cJSON* pFocusData = NULL;
-    if (m_pJsonData == NULL)
-    {
-        pFocusData = m_pExternJsonDataRef;
-    }
-    else
-    {
-        pFocusData = m_pJsonData;
-    }
-    if (pFocusData == NULL)
-    {
-        m_strErrMsg = "json data is null!";
-        return(false);
-    }
-    if (pFocusData->type != cJSON_Object)
-    {
-        m_strErrMsg = "not a json object! json array?";
-        return(false);
-    }
-    cJSON* pJsonStruct = oJsonObject.m_pJsonData;
-    oJsonObject.m_pJsonData = NULL;
-    if (pJsonStruct == NULL)
-    {
-        m_strErrMsg = "can not move a non-independent(internal) FoxJSonObject from one to another.";
-        return(false);
-    }
-    cJSON_ReplaceItemInObject(pFocusData, strKey.c_str(), pJsonStruct);
-    if (cJSON_GetObjectItem(pFocusData, strKey.c_str()) == NULL)
-    {
-        return(false);
-    }
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-    if (iter != m_mapJsonObjectRef.end())
-    {
-        if (iter->second != NULL)
-        {
-            delete (iter->second);
-            iter->second = NULL;
-        }
-        m_mapJsonObjectRef.erase(iter);
-    }
-    m_strLastObjectKey = "";
-    m_object_iter = m_mapJsonObjectRef.end();
-    return(true);
-}
-#else
 bool FoxJSonObject::Replace(const std::string& strKey, FoxJSonObject&& oJsonObject)
 {
     cJSON* pFocusData = NULL;
@@ -1803,7 +1647,6 @@ bool FoxJSonObject::Replace(const std::string& strKey, FoxJSonObject&& oJsonObje
     m_object_iter = m_mapJsonObjectRef.end();
     return(true);
 }
-#endif
 
 bool FoxJSonObject::Replace(const std::string& strKey, const std::string& strValue)
 {
@@ -1831,11 +1674,9 @@ bool FoxJSonObject::Replace(const std::string& strKey, const std::string& strVal
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-#else
+
     auto iter = m_mapJsonObjectRef.find(strKey);
-#endif
+
     if (iter != m_mapJsonObjectRef.end())
     {
         if (iter->second != NULL)
@@ -1879,11 +1720,9 @@ bool FoxJSonObject::Replace(const std::string& strKey, int32 iValue)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-#else
+
     auto iter = m_mapJsonObjectRef.find(strKey);
-#endif
+
     if (iter != m_mapJsonObjectRef.end())
     {
         if (iter->second != NULL)
@@ -1927,11 +1766,8 @@ bool FoxJSonObject::Replace(const std::string& strKey, uint32 uiValue)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-#else
+
     auto iter = m_mapJsonObjectRef.find(strKey);
-#endif
     if (iter != m_mapJsonObjectRef.end())
     {
         if (iter->second != NULL)
@@ -1975,11 +1811,9 @@ bool FoxJSonObject::Replace(const std::string& strKey, int64 llValue)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-#else
+
     auto iter = m_mapJsonObjectRef.find(strKey);
-#endif
+
     if (iter != m_mapJsonObjectRef.end())
     {
         if (iter->second != NULL)
@@ -2023,11 +1857,9 @@ bool FoxJSonObject::Replace(const std::string& strKey, uint64 ullValue)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-#else
+
     auto iter = m_mapJsonObjectRef.find(strKey);
-#endif
+
     if (iter != m_mapJsonObjectRef.end())
     {
         if (iter->second != NULL)
@@ -2071,11 +1903,9 @@ bool FoxJSonObject::Replace(const std::string& strKey, bool bValue, bool bValueA
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-#else
+
     auto iter = m_mapJsonObjectRef.find(strKey);
-#endif
+
     if (iter != m_mapJsonObjectRef.end())
     {
         if (iter->second != NULL)
@@ -2119,11 +1949,9 @@ bool FoxJSonObject::Replace(const std::string& strKey, float fValue)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-#else
+
     auto iter = m_mapJsonObjectRef.find(strKey);
-#endif
+
     if (iter != m_mapJsonObjectRef.end())
     {
         if (iter->second != NULL)
@@ -2167,11 +1995,9 @@ bool FoxJSonObject::Replace(const std::string& strKey, double dValue)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-#else
+
     auto iter = m_mapJsonObjectRef.find(strKey);
-#endif
+
     if (iter != m_mapJsonObjectRef.end())
     {
         if (iter->second != NULL)
@@ -2215,11 +2041,9 @@ bool FoxJSonObject::ReplaceWithNull(const std::string& strKey)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<std::string, FoxJSonObject*>::iterator iter = m_mapJsonObjectRef.find(strKey);
-#else
+
     auto iter = m_mapJsonObjectRef.find(strKey);
-#endif
+
     if (iter != m_mapJsonObjectRef.end())
     {
         if (iter->second != NULL)
@@ -2611,12 +2435,8 @@ bool FoxJSonObject::Add(const FoxJSonObject& oJsonObject)
         return(false);
     }
     unsigned int uiLastIndex = (unsigned int)cJSON_GetArraySize(pFocusData) - 1;
-#if __cplusplus < 201101L
-    for (std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.begin();
-        iter != m_mapJsonArrayRef.end(); )
-#else
+
     for (auto iter = m_mapJsonArrayRef.begin(); iter != m_mapJsonArrayRef.end(); )
-#endif
     {
         if (iter->first >= uiLastIndex)
         {
@@ -2637,70 +2457,7 @@ bool FoxJSonObject::Add(const FoxJSonObject& oJsonObject)
     return(true);
 }
 
-#if __cplusplus < 201101L
-bool FoxJSonObject::AddWithMove(FoxJSonObject& oJsonObject)
-{
-    cJSON* pFocusData = NULL;
-    if (m_pJsonData != NULL)
-    {
-        pFocusData = m_pJsonData;
-    }
-    else if (m_pExternJsonDataRef != NULL)
-    {
-        pFocusData = m_pExternJsonDataRef;
-    }
-    else
-    {
-        m_pJsonData = cJSON_CreateArray();
-        pFocusData = m_pJsonData;
-    }
 
-    if (pFocusData == NULL)
-    {
-        m_strErrMsg = "json data is null!";
-        return(false);
-    }
-    if (pFocusData->type != cJSON_Array)
-    {
-        m_strErrMsg = "not a json array! json object?";
-        return(false);
-    }
-    cJSON* pJsonStruct = oJsonObject.m_pJsonData;
-    oJsonObject.m_pJsonData = NULL;
-    if (pJsonStruct == NULL)
-    {
-        m_strErrMsg = "can not move a non-independent(internal) FoxJSonObject from one to another.";
-        return(false);
-    }
-    int iArraySizeBeforeAdd = cJSON_GetArraySize(pFocusData);
-    cJSON_AddItemToArray(pFocusData, pJsonStruct);
-    int iArraySizeAfterAdd = cJSON_GetArraySize(pFocusData);
-    if (iArraySizeAfterAdd == iArraySizeBeforeAdd)
-    {
-        return(false);
-    }
-    unsigned int uiLastIndex = (unsigned int)cJSON_GetArraySize(pFocusData) - 1;
-    for (std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.begin(); iter != m_mapJsonArrayRef.end(); )
-    {
-        if (iter->first >= uiLastIndex)
-        {
-            if (iter->second != NULL)
-            {
-                delete (iter->second);
-                iter->second = NULL;
-            }
-            m_mapJsonArrayRef.erase(iter++);
-        }
-        else
-        {
-            iter++;
-        }
-    }
-    m_uiLastArrayIndex = 0;
-    m_array_iter = m_mapJsonArrayRef.end();
-    return(true);
-}
-#else
 bool FoxJSonObject::Add(FoxJSonObject&& oJsonObject)
 {
     cJSON* pFocusData = NULL;
@@ -2763,7 +2520,6 @@ bool FoxJSonObject::Add(FoxJSonObject&& oJsonObject)
     m_array_iter = m_mapJsonArrayRef.end();
     return(true);
 }
-#endif
 
 bool FoxJSonObject::Add(const std::string& strValue)
 {
@@ -3183,12 +2939,8 @@ bool FoxJSonObject::AddAsFirst(const FoxJSonObject& oJsonObject)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    for (std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.begin();
-        iter != m_mapJsonArrayRef.end(); )
-#else
+
     for (auto iter = m_mapJsonArrayRef.begin(); iter != m_mapJsonArrayRef.end(); )
-#endif
     {
         if (iter->second != NULL)
         {
@@ -3202,62 +2954,6 @@ bool FoxJSonObject::AddAsFirst(const FoxJSonObject& oJsonObject)
     return(true);
 }
 
-#if __cplusplus < 201101L
-bool FoxJSonObject::AddAsFirstWithMove(FoxJSonObject& oJsonObject)
-{
-    cJSON* pFocusData = NULL;
-    if (m_pJsonData != NULL)
-    {
-        pFocusData = m_pJsonData;
-    }
-    else if (m_pExternJsonDataRef != NULL)
-    {
-        pFocusData = m_pExternJsonDataRef;
-    }
-    else
-    {
-        m_pJsonData = cJSON_CreateArray();
-        pFocusData = m_pJsonData;
-    }
-
-    if (pFocusData == NULL)
-    {
-        m_strErrMsg = "json data is null!";
-        return(false);
-    }
-    if (pFocusData->type != cJSON_Array)
-    {
-        m_strErrMsg = "not a json array! json object?";
-        return(false);
-    }
-    cJSON* pJsonStruct = oJsonObject.m_pJsonData;
-    oJsonObject.m_pJsonData = NULL;
-    if (pJsonStruct == NULL)
-    {
-        m_strErrMsg = "can not move a non-independent(internal) FoxJSonObject from one to another.";
-        return(false);
-    }
-    int iArraySizeBeforeAdd = cJSON_GetArraySize(pFocusData);
-    cJSON_AddItemToArrayHead(pFocusData, pJsonStruct);
-    int iArraySizeAfterAdd = cJSON_GetArraySize(pFocusData);
-    if (iArraySizeAfterAdd == iArraySizeBeforeAdd)
-    {
-        return(false);
-    }
-    for (std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.begin(); iter != m_mapJsonArrayRef.end(); )
-    {
-        if (iter->second != NULL)
-        {
-            delete (iter->second);
-            iter->second = NULL;
-        }
-        m_mapJsonArrayRef.erase(iter++);
-    }
-    m_uiLastArrayIndex = 0;
-    m_array_iter = m_mapJsonArrayRef.end();
-    return(true);
-}
-#else
 bool FoxJSonObject::AddAsFirst(FoxJSonObject&& oJsonObject)
 {
     cJSON* pFocusData = NULL;
@@ -3312,7 +3008,6 @@ bool FoxJSonObject::AddAsFirst(FoxJSonObject&& oJsonObject)
     m_array_iter = m_mapJsonArrayRef.end();
     return(true);
 }
-#endif
 
 bool FoxJSonObject::AddAsFirst(const std::string& strValue)
 {
@@ -3714,12 +3409,8 @@ bool FoxJSonObject::Delete(int iWhich)
         return(false);
     }
     cJSON_DeleteItemFromArray(pFocusData, iWhich);
-#if __cplusplus < 201101L
-    for (std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.begin();
-        iter != m_mapJsonArrayRef.end(); )
-#else
+
     for (auto iter = m_mapJsonArrayRef.begin(); iter != m_mapJsonArrayRef.end(); )
-#endif
     {
         if (iter->first >= (unsigned int)iWhich)
         {
@@ -3772,11 +3463,9 @@ bool FoxJSonObject::Replace(int iWhich, const FoxJSonObject& oJsonObject)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.find(iWhich);
-#else
+
     auto iter = m_mapJsonArrayRef.find(iWhich);
-#endif
+
     if (iter != m_mapJsonArrayRef.end())
     {
         if (iter->second != NULL)
@@ -3791,55 +3480,6 @@ bool FoxJSonObject::Replace(int iWhich, const FoxJSonObject& oJsonObject)
     return(true);
 }
 
-#if __cplusplus < 201101L
-bool FoxJSonObject::ReplaceWithMove(int iWhich, FoxJSonObject& oJsonObject)
-{
-    cJSON* pFocusData = NULL;
-    if (m_pJsonData == NULL)
-    {
-        pFocusData = m_pExternJsonDataRef;
-    }
-    else
-    {
-        pFocusData = m_pJsonData;
-    }
-    if (pFocusData == NULL)
-    {
-        m_strErrMsg = "json data is null!";
-        return(false);
-    }
-    if (pFocusData->type != cJSON_Array)
-    {
-        m_strErrMsg = "not a json array! json object?";
-        return(false);
-    }
-    cJSON* pJsonStruct = oJsonObject.m_pJsonData;
-    oJsonObject.m_pJsonData = NULL;
-    if (pJsonStruct == NULL)
-    {
-        m_strErrMsg = "can not move a non-independent(internal) FoxJSonObject from one to another.";
-        return(false);
-    }
-    cJSON_ReplaceItemInArray(pFocusData, iWhich, pJsonStruct);
-    if (cJSON_GetArrayItem(pFocusData, iWhich) == NULL)
-    {
-        return(false);
-    }
-    std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.find(iWhich);
-    if (iter != m_mapJsonArrayRef.end())
-    {
-        if (iter->second != NULL)
-        {
-            delete (iter->second);
-            iter->second = NULL;
-        }
-        m_mapJsonArrayRef.erase(iter);
-    }
-    m_uiLastArrayIndex = 0;
-    m_array_iter = m_mapJsonArrayRef.end();
-    return(true);
-}
-#else
 bool FoxJSonObject::Replace(int iWhich, FoxJSonObject&& oJsonObject)
 {
     cJSON* pFocusData = NULL;
@@ -3887,7 +3527,6 @@ bool FoxJSonObject::Replace(int iWhich, FoxJSonObject&& oJsonObject)
     m_array_iter = m_mapJsonArrayRef.end();
     return(true);
 }
-#endif
 
 bool FoxJSonObject::Replace(int iWhich, const std::string& strValue)
 {
@@ -3915,11 +3554,9 @@ bool FoxJSonObject::Replace(int iWhich, const std::string& strValue)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.find(iWhich);
-#else
+
     auto iter = m_mapJsonArrayRef.find(iWhich);
-#endif
+
     if (iter != m_mapJsonArrayRef.end())
     {
         if (iter->second != NULL)
@@ -3963,11 +3600,9 @@ bool FoxJSonObject::Replace(int iWhich, int32 iValue)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.find(iWhich);
-#else
+
     auto iter = m_mapJsonArrayRef.find(iWhich);
-#endif
+
     if (iter != m_mapJsonArrayRef.end())
     {
         if (iter->second != NULL)
@@ -4011,11 +3646,9 @@ bool FoxJSonObject::Replace(int iWhich, uint32 uiValue)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.find(iWhich);
-#else
+
     auto iter = m_mapJsonArrayRef.find(iWhich);
-#endif
+
     if (iter != m_mapJsonArrayRef.end())
     {
         if (iter->second != NULL)
@@ -4059,11 +3692,9 @@ bool FoxJSonObject::Replace(int iWhich, int64 llValue)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.find(iWhich);
-#else
+
     auto iter = m_mapJsonArrayRef.find(iWhich);
-#endif
+
     if (iter != m_mapJsonArrayRef.end())
     {
         if (iter->second != NULL)
@@ -4107,11 +3738,9 @@ bool FoxJSonObject::Replace(int iWhich, uint64 ullValue)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.find(iWhich);
-#else
+
     auto iter = m_mapJsonArrayRef.find(iWhich);
-#endif
+
     if (iter != m_mapJsonArrayRef.end())
     {
         if (iter->second != NULL)
@@ -4155,11 +3784,9 @@ bool FoxJSonObject::Replace(int iWhich, bool bValue, bool bValueAgain)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.find(iWhich);
-#else
+
     auto iter = m_mapJsonArrayRef.find(iWhich);
-#endif
+
     if (iter != m_mapJsonArrayRef.end())
     {
         if (iter->second != NULL)
@@ -4203,11 +3830,9 @@ bool FoxJSonObject::Replace(int iWhich, float fValue)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.find(iWhich);
-#else
+
     auto iter = m_mapJsonArrayRef.find(iWhich);
-#endif
+
     if (iter != m_mapJsonArrayRef.end())
     {
         if (iter->second != NULL)
@@ -4251,11 +3876,9 @@ bool FoxJSonObject::Replace(int iWhich, double dValue)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.find(iWhich);
-#else
+
     auto iter = m_mapJsonArrayRef.find(iWhich);
-#endif
+
     if (iter != m_mapJsonArrayRef.end())
     {
         if (iter->second != NULL)
@@ -4299,11 +3922,9 @@ bool FoxJSonObject::ReplaceWithNull(int iWhich)
     {
         return(false);
     }
-#if __cplusplus < 201101L
-    std::map<unsigned int, FoxJSonObject*>::iterator iter = m_mapJsonArrayRef.find(iWhich);
-#else
+
     auto iter = m_mapJsonArrayRef.find(iWhich);
-#endif
+
     if (iter != m_mapJsonArrayRef.end())
     {
         if (iter->second != NULL)

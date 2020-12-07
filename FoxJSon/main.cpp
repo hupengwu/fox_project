@@ -6,6 +6,19 @@
 
 int main(int argc, char* argv[])
 {
+#define literal(text) literal_(text)
+#define literal_(text) #text
+#ifdef __cplusplus
+    printf("c++\n");
+#else
+    printf("c");
+#endif
+
+    long ver = __cplusplus;
+    printf("%d\n", ver);
+
+    std::cout << literal(__cplusplus) << " " << literal_(__cplusplus);
+
     std::ifstream fin(argv[1]);
     if (fin.good())
     {
