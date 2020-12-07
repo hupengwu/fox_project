@@ -2,15 +2,14 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "../CJsonObject.hpp"
+#include "FoxJSonObject.h"
 
-//int main()
 int main(int argc, char* argv[])
 {
     std::ifstream fin(argv[1]);
     if (fin.good())
     {
-        neb::CJsonObject oJson;
+        FoxJSonObject oJson;
         std::stringstream ssContent;
         ssContent << fin.rdbuf();
         if (oJson.Parse(ssContent.str()))
@@ -26,7 +25,7 @@ int main(int argc, char* argv[])
     int iValue;
     double fTimeout;
     std::string strValue;
-    neb::CJsonObject oJson("{\"refresh_interval\":60,"
+    FoxJSonObject oJson("{\"refresh_interval\":60,"
                         "\"test_float\":[18.0, 10.0, 5.0],"
                         "\"test_int\":[135355, -1844674407370955161, -935375],"
                         "\"timeout\":12.5,"
@@ -77,7 +76,7 @@ int main(int argc, char* argv[])
      std::cout << oJson.ToFormattedString() << std::endl;
 
      std::cout << "-------------------------------------------------------------------" << std::endl;
-     neb::CJsonObject oCopyJson = oJson;
+     FoxJSonObject oCopyJson = oJson;
      if (oCopyJson == oJson)
      {
          std::cout << "json equal" << std::endl;
@@ -87,13 +86,13 @@ int main(int argc, char* argv[])
      std::cout << oCopyJson.ToString() << std::endl;
      std::cout << "-------------------------key traverse------------------------------" << std::endl;
      std::string strTraversing;
-     while(oJson["dynamic_loading"][0].getKey(strTraversing))
+     while(oJson["dynamic_loading"][0].GetKey(strTraversing))
      {
          std::cout << "traversing:  " << strTraversing << std::endl;
      }
      std::cout << "---------------add a new key, then key traverse---------------------" << std::endl;
      oJson["dynamic_loading"][0].Add("new_key", "new_value");
-     while(oJson["dynamic_loading"][0].getKey(strTraversing))
+     while(oJson["dynamic_loading"][0].GetKey(strTraversing))
      {
          std::cout << "traversing:  " << strTraversing << std::endl;
      }
@@ -114,5 +113,17 @@ int main(int argc, char* argv[])
      oJson["test_float"].AddNull();
      std::cout << oJson.ToString() << std::endl;
 
+     if (oJson.KeyExist("simeout"))
+         std::cout << "timeout key exist" << std::endl;
+
+     FoxJSonObject oLongLong("{\"long_long\":1283949231388184576}");
+     int64 llValue = 0;
+     uint64 ullValue = 0;
+     oLongLong.Get("long_long", llValue);
+     oLongLong.Get("long_long", ullValue);
+     std::cout << "llValue = " << llValue << ",  ullValue = " << ullValue << std::endl;
+     oJson.Add("json_move", std::move(oLongLong)); // C++11
+ //    oJson.AddWithMove("json_move", oLongLong);  
+     std::cout << oJson.ToString() << std::endl;
 }
 

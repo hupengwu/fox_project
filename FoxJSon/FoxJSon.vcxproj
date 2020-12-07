@@ -35,9 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{c9e271ea-6b50-4128-b42c-a80deb019bc4}</ProjectGuid>
+    <ProjectGuid>{445e0c6f-4cb3-4210-b160-17c12b0acb18}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>cJSONUtils</RootNamespace>
+    <RootNamespace>FoxJSon</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -47,7 +47,6 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -60,8 +59,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <RemoteRootDir>/home/pi/projects/$(SolutionName)</RemoteRootDir>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -78,17 +77,30 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>..\FoxDef;..\STLUtils</IncludePath>
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="cJSON.c" />
+    <ClCompile Include="FoxJSonObject.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FoxDef\FoxDef.vcxproj">
+      <Project>{f65de489-bc6a-4add-afa0-98eed08d3ffc}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\STLUtils\STLUtils.vcxproj">
+      <Project>{98179949-d2e6-4e63-b756-c0100ea19115}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cJSON.h" />
+    <ClInclude Include="FoxJSonObject.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <AdditionalLibraryDirectories>$(RemoteRootDir)/bin/$(Platform)/$(Configuration);-Wl,--rpath=$(RemoteRootDir)/bin/$(Platform)/$(Configuration);%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LibraryDependencies>STLUtils;cJSONUtils</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

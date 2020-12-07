@@ -84,9 +84,6 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\cJSONUtils\cJSONUtils.vcxproj">
-      <Project>{c9e271ea-6b50-4128-b42c-a80deb019bc4}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\FoxLib\FoxLib.vcxproj">
       <Project>{b21f15f5-0938-40ce-898b-14db31756bef}</Project>
     </ProjectReference>
