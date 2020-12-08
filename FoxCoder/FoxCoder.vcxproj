@@ -35,9 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{611876db-8d8d-4e54-973e-6c67e0731b87}</ProjectGuid>
+    <ProjectGuid>{af77f24a-efdb-45ad-a6b2-9f922472c90b}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>FoxFile</RootNamespace>
+    <RootNamespace>FoxCoder</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -60,7 +60,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
     <RemoteRootDir>/home/pi/projects/$(SolutionName)</RemoteRootDir>
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -78,31 +77,21 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>..\FoxLogger;$(IncludePath)</IncludePath>
+    <IncludePath>..\FoxDef;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
-    <ClInclude Include="FoxFile.h" />
-    <ClInclude Include="FoxIniFile.h" />
+    <ClInclude Include="FoxCoderUtils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FoxFile.cpp" />
-    <ClCompile Include="FoxIniFile.cpp" />
+    <ClCompile Include="FoxCoderUtils.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Test.ini" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FoxLogger\FoxLogger.vcxproj">
-      <Project>{23242466-3fa2-4656-b7a6-fe77bea44a99}</Project>
+    <ProjectReference Include="..\FoxDef\FoxDef.vcxproj">
+      <Project>{f65de489-bc6a-4add-afa0-98eed08d3ffc}</Project>
     </ProjectReference>
   </ItemGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Link>
-      <AdditionalLibraryDirectories>$(RemoteRootDir)/bin/$(Platform)/$(Configuration);-Wl,--rpath=$(RemoteRootDir)/bin/$(Platform)/$(Configuration);%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <LibraryDependencies>FoxLogger;</LibraryDependencies>
-    </Link>
-  </ItemDefinitionGroup>
+  <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

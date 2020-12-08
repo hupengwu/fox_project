@@ -67,7 +67,7 @@ bool FoxSttyBuffer::queryBuff(int fd, int& size)
 	size = 0;
 	if (this->fd2buff.find(fd) != this->fd2buff.end())
 	{
-		size = this->fd2buff[fd]->getSize();
+		size = this->fd2buff[fd]->getFiletSize();
 		return true;
 	}
 

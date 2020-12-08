@@ -23,7 +23,7 @@ void FoxTcpClientDemoHandler::handleConnect(FoxSocketKey& key)
         key.getSocket());
 }
 
-void FoxTcpClientDemoHandler::handleRead(FoxSocketKey& key, const char* buff, int length)
+void FoxTcpClientDemoHandler::handleRead(FoxSocketKey& key, const void* buff, int length)
 {
     static int i = 0;
     if (i++ < 100000)

@@ -19,12 +19,19 @@ public:
 public:
     /*
     * 将一个字符串分割成多分
+    * 例如：分割诸如"1,2,3,4"这种被,符号分割的字符串
     */
     static bool	split(const char* strString, const char* szSplit, list<string>& listString);
     static bool	split(const string& strString, const char* szSplit, list<string>& listString);
     static bool	split(const char* strString, const char* szSplit, vector<string>& vecString);
     static bool	split(const string& strString, const char* szSplit, vector<string>& vecString);
-    
+
+    /*
+    * 一个字符串的左边/右边的子字符串
+    */
+    static string left(const string& strString, const size_t& len);
+    static string right(const string& strString, const size_t& len);
+ 
 };
 
 template<typename ...Args>

@@ -20,7 +20,7 @@ public:
 public:
 	bool appendBuff(int fd, const char* pData, int nSize);
 	bool removeBuff(int fd, STLByteArray& buff);
-	bool queryBuff(int fd,int& size);
+	bool queryBuff(int fd,  int& size);
 
 private:
 	/**

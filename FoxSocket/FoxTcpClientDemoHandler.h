@@ -25,7 +25,7 @@ public:
      *
      * @param key SelectionKey
      */
-    virtual void handleRead(FoxSocketKey& key, const char* buff, int length);
+    virtual void handleRead(FoxSocketKey& key, const void* buff, int length);
 
     /**
      * 处理断开连接消息：当客户端跟服务器的连接断开时候，会捕获到这个动作

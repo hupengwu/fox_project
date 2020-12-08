@@ -62,12 +62,12 @@ bool FoxSocketKey::getInvalid()
     return this->invalid;
 }
 
-int FoxSocketKey::send(const char* buff, int length)
+int FoxSocketKey::send(const void* buff, int length)
 {    
     return ::send(this->socket, buff, length, 0);
 }
 
-int FoxSocketKey::sendTo(const char* buff, int buffLen, sockaddr_in& addr_client, int addrLen)
+int FoxSocketKey::sendTo(const void* buff, int buffLen, sockaddr_in& addr_client, int addrLen)
 {
 	return ::sendto(this->socket, buff, buffLen, 0, (struct sockaddr*)&addr_client, addrLen);
 }

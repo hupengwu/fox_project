@@ -87,4 +87,14 @@ bool STLStringUtils::split(const string& strString, const char* szSplit, vector<
 	return split(strString.c_str(), szSplit, vecString);
 }
 
+string STLStringUtils::left(const string& strString, const size_t& len)
+{
+	return strString.substr(0,len);
+}
+
+string STLStringUtils::right(const string& strString, const size_t& len)
+{
+	return strString.substr(strString.size() - len, len);
+}
+
 

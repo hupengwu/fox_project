@@ -23,7 +23,7 @@ void FoxTcpServerDemoHandler::handleConnect(FoxSocketKey& key)
         key.getSocket());
 }
 
-void FoxTcpServerDemoHandler::handleRead(FoxSocketKey& key, const char* buff, int length)
+void FoxTcpServerDemoHandler::handleRead(FoxSocketKey& key, const void* buff, int length)
 {
     // 接收到的数据
     logger->info("handleRead from client, address : %s, port : %d ,Socket Num : % d,message =  %s",

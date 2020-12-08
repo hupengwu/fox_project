@@ -25,11 +25,11 @@ void FoxSocketHandler::handleConnect(FoxSocketKey& key)
 {
 }
 
-void FoxSocketHandler::handleRead(FoxSocketKey& key, const char* buff, int length)
+void FoxSocketHandler::handleRead(FoxSocketKey& key, const void* buff, int length)
 {
 }
 
-void FoxSocketHandler::handleReadFrom(FoxSocketKey& serverKey, const char* buff, int length, sockaddr_in& addr_client, int& addrLen)
+void FoxSocketHandler::handleReadFrom(FoxSocketKey& serverKey, const void* buff, int length, sockaddr_in& addr_client, int& addrLen)
 {
 }
 

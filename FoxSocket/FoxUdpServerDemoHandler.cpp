@@ -14,7 +14,7 @@ FoxUdpServerDemoHandler::~FoxUdpServerDemoHandler()
 {
 }
 
-void FoxUdpServerDemoHandler::handleReadFrom(FoxSocketKey& serverKey, const char* buff, int buffLen, sockaddr_in& addr_client, int& addrLen)
+void FoxUdpServerDemoHandler::handleReadFrom(FoxSocketKey& serverKey, const void* buff, int buffLen, sockaddr_in& addr_client, int& addrLen)
 {
     static int i = 0;
     if (i++ < 100000)

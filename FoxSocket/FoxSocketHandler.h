@@ -43,7 +43,7 @@ public:
      *
      * @param key FoxSocketKey
      */
-    virtual void handleRead(FoxSocketKey& key,const char* buff,int length);
+    virtual void handleRead(FoxSocketKey& key,const void* buff,int length);
 
     /**
      * 处理Read消息：当接收到客户端发送过来的数据时，会捕获到这个动作
@@ -51,7 +51,7 @@ public:
      *
      * @param key FoxSocketKey
      */
-    virtual void handleReadFrom(FoxSocketKey& key, const char* buff, int buffLen, sockaddr_in& remoteAddr, int& remoteAddrLen);
+    virtual void handleReadFrom(FoxSocketKey& key, const void* buff, int buffLen, sockaddr_in& remoteAddr, int& remoteAddrLen);
 
     /**
      * 处理断开连接消息：当客户端跟服务器的连接断开时候，会捕获到这个动作

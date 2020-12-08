@@ -34,8 +34,8 @@ public:// ÊôĞÔ
 	bool		getInvalid();
 
 public:// socket²Ù×÷
-	int			send(const char* buff,int length);
-	int			sendTo(const char* buff, int buffLen, sockaddr_in& addr_client, int addrLen);
+	int			send(const void* buff,int length);
+	int			sendTo(const void* buff, int buffLen, sockaddr_in& addr_client, int addrLen);
 
 private:
 	/*
