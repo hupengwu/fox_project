@@ -34,10 +34,22 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FoxZipFile.h" />
+    <ClInclude Include="FoxZipUtils.h" />
+    <ClInclude Include="strict_fstream.hpp" />
+    <ClInclude Include="zstr.hpp" />
+    <ClInclude Include="zstr_make_unique_polyfill.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FoxZipFile.cpp" />
+    <ClCompile Include="FoxZipUtils.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{d9a06c84-509d-48b6-8740-d8e7f1355b09}</ProjectGuid>
+    <ProjectGuid>{118eb838-16ac-4635-8d84-868e261b6290}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>FoxStty</RootNamespace>
+    <RootNamespace>FoxZipper</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -60,7 +72,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
     <RemoteRootDir>/home/pi/projects/$(SolutionName)</RemoteRootDir>
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -78,28 +89,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>..\FoxDef;..\STLUtils;..\FoxLogger</IncludePath>
+    <IncludePath>..\STLUtils</IncludePath>
   </PropertyGroup>
-  <ItemGroup>
-    <ClCompile Include="FoxDemoHandler.cpp" />
-    <ClCompile Include="FoxStty.cpp" />
-    <ClCompile Include="FoxSttyHandler.cpp" />
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="FoxDemoHandler.h" />
-    <ClInclude Include="FoxStty.h" />
-    <ClInclude Include="FoxSttyHandler.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\STLUtils\STLUtils.vcxproj">
-      <Project>{98179949-d2e6-4e63-b756-c0100ea19115}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <AdditionalLibraryDirectories>$(RemoteRootDir)/bin/$(Platform)/$(Configuration);-Wl,--rpath=$(RemoteRootDir)/bin/$(Platform)/$(Configuration);%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <LibraryDependencies>STLUtils;FoxLogger;</LibraryDependencies>
+      <AdditionalDependencies>-lz;$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
+      <LibraryDependencies>STLUtils</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

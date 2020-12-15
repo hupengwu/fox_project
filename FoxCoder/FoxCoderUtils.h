@@ -1,12 +1,17 @@
-#pragma once
+Ôªø#pragma once
 
 #include <fox.h>
+#include <stddef.h>
 
 namespace fox 
 {
-	// CRC-16-CCITTµƒ∂‡œÓ Ω
+	/*
+	* Â∏∏Áî®ÁöÑCRC16Â§öÈ°πÂºè
+	*/
+
+	// CRC-16-CCITTÁöÑÂ§öÈ°πÂºè
 	constexpr auto CRCMARK_CCITT = 0x8408;
-	// CRC-16µƒ∂‡œÓ Ω
+	// CRC-16ÁöÑÂ§öÈ°πÂºè
 	constexpr auto CRCMARK_16 = 0xA001;
 }
 
@@ -16,19 +21,22 @@ class FoxCoderUtils
 {
 public:
 	/*
-	* ªÒµ√CRC16µƒ ˝æ›±‡¬Î
+	* Ëé∑ÂæóCRC16ÁöÑÊï∞ÊçÆÁºñÁ†Å
 	*/
 	static WORD getCrc16(BYTE* bytePtr, DWORD dwLength, WORD wMark = 0x8408, WORD wCrc16 = 0xFFFF);
 
 public:
 	/*
-	* BCD¬Î->HEX¬Î
+	* BCDÁ†Å->HEXÁ†Å
 	*/
-	static bool Bcd2Hex(BYTE& byteBcd);
+	static bool Bcd2Hex(const BYTE& byteBcd, BYTE& byteHex);
 	/*
-	* HEX¬Î->BCD¬Î
+	* HEXÁ†Å->BCDÁ†Å
 	*/
-	static void	HexToBcd(BYTE& byteBcd);
+	static bool Hex2Bcd(const BYTE& byteHex, BYTE& byteBcd);
+
+public:
+
 	
 };
 

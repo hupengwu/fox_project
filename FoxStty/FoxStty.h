@@ -14,7 +14,7 @@ namespace fox
 	/*
 	* 校验位
 	*/
-	enum TTYParity { N, E, O, S };
+	enum TTYParity { N = 0, E = 1, O = 2, S = 3 };
 }
 
 using namespace fox;
@@ -40,6 +40,11 @@ public:
 	* 打开串口：dev下的ttyS0、ttyS1等串口设备名称
 	*/
 	bool open(const char* name = "ttyS0");	
+
+	/*
+	*  是否打开
+	*/
+	bool isOpen();
 
 	/*
 	* 设置通信参数:速率/数据位/停止位/校验位
@@ -69,7 +74,8 @@ public:
 	/*
 	* 设置轮询线程的SELECT超时，如果超时范围没有数据接收到，handler会handleNoRead()一下
 	*/
-	void setTimeOut(long uTimeOut);
+	void setRcvTimeOut(long uTimeOut);
+	long getRcvTimeOut();
 
 private:
 	/*
@@ -94,6 +100,7 @@ private:
 	termios			ntm;       // 新的串口设备选项 
 	termios			otm;       // 旧的串口设备选项
 	char			data[1024];// 接收的数据
+	mutex			lock;
 	long			uTimeOut;  // SELECT超时
 };
 

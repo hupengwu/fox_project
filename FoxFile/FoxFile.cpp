@@ -3,7 +3,11 @@
 #include<unistd.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <dirent.h>
 
+#include <FoxLoggerFactory.h>
+
+ILogger* FoxFile::logger = FoxLoggerFactory::getLogger();
 
 FoxFile::FoxFile()
 {
@@ -47,78 +51,60 @@ ssize_t FoxFile::write(const void* buf, size_t len)
     return ::write(this->fd, buf, len);
 }
 
-off_t FoxFile::getFiletSize(const char* fname)
+off_t FoxFile::getFiletSize(const char* filename)
 {
     struct stat statbuf;
-    if (::stat(fname, &statbuf) == 0)
+    if (::stat(filename, &statbuf) != 0) 
     {
-        return statbuf.st_size;
+        logger->error("Get stat on %s Error：%s\n",filename, strerror(errno));
+        return (-1);
     }
 
-    return -1;
+    return statbuf.st_size; 
 }
 
-bool FoxFile::readTextFile(const char* fname, std::string& txt, mode_t mode)
+bool FoxFile::readTextFile(const char* fname, std::string& txt)
 {
-    // 检查文件大小
-    int size = FoxFile::getFiletSize(fname);
-
     // 打开文件
-    FoxFile file;
-    if (!file.open(fname, O_RDONLY, mode))
+    FILE*  fp = ::fopen(fname,"r");
+    if (fp == nullptr)
     {
         return false;
     }
 
     // 读取数据
-    char* buff = new char[size + 1];
-    size = file.read(buff, size + 1);
-    if (size <= 0)
+    char buff[128];
+
+    txt = "";
+    while (::fgets(buff, sizeof(buff), fp) > 0)
     {
-        file.close();
-        return false;
+        txt.append(buff);
     }
-    else
-    {
-        file.close();
-    }   
-    
-    // 给数据后面加一个字符串结束符
-    buff[size] = 0;
 
-    txt = buff;
-
-    delete buff;
+    ::fclose(fp);
 
     return true;
 }
 
-bool FoxFile::writeTextFile(const char* fname, const std::string& txt, mode_t mode)
+bool FoxFile::writeTextFile(const char* fname, const std::string& txt)
 {
     // 打开文件
-    FoxFile file;
-    if (!file.open(fname, O_WRONLY, mode))
+    FILE* fp = fopen(fname, "w");
+    if (fp == nullptr)
     {
         return false;
     }
 
-    // 读取数据
-    int size = file.write(txt.c_str(), txt.size()+1);
-    if (size <= 0)
-    {
-        file.close();
-        return false;
-    }
-    else
-    {
-        file.close();
-        return true;
-    }    
+    ::fputs(txt.c_str(),fp);
+
+    ::fclose(fp);
+
+
+    return true;
 }
 
 bool FoxFile::createDirs(const std::string& dirName)
 {
-
     uint32_t beginCmpPath = 0;
     uint32_t endCmpPath = 0;
 
@@ -160,7 +146,7 @@ bool FoxFile::createDirs(const std::string& dirName)
             {
                 if (::mkdir(curPath.c_str(), S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IWGRP | S_IWOTH) == -1)
                 {
-               //     LOGD("mkdir(%s) failed(%s)\n", curPath.c_str(), strerror(errno));
+                    logger->error("mkdir(%s) failed(%s)\n", curPath.c_str(), strerror(errno));
                     return false;
                 }
             }
@@ -168,4 +154,48 @@ bool FoxFile::createDirs(const std::string& dirName)
     }
 
     return true;
+}
+
+const char* FoxFile::getCurrentDirName()
+{
+    return ::get_current_dir_name();
+}
+
+bool FoxFile::getDirFileNames(const char* dirName, vector<string>& vecFileName)
+{
+    DIR* dirp = ::opendir(dirName);
+    if (dirp == nullptr)
+    {
+        return false;
+    }
+
+    struct dirent* dp = nullptr;
+    while ((dp = ::readdir(dirp)) != nullptr)
+    {
+        vecFileName.push_back(std::string(dp->d_name));
+    }
+
+    (void)::closedir(dirp);
+    return true;
+}
+
+//检查目录是否存在
+//-1:存在 0:不存在
+bool FoxFile::hasFolder(const char* path)
+{
+    DIR* dp = ::opendir(path);
+    if (dp == nullptr)
+    {
+        return false;
+    }
+
+    ::closedir(dp);
+    return true;
+}
+
+//检查文件(所有类型)是否存在
+//-1:存在 0:不存在
+bool FoxFile::hasFile(const char* path)
+{
+    return ::access(path, F_OK) != 0;
 }

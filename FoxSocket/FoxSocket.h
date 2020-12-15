@@ -9,7 +9,11 @@
 #include "FoxSocketHandler.h"
 #include "FoxSocketKey.h"
 
-
+/*
+* socket多线程封装：简化socket的操作，通过异步线程提供一个通用的消息响应机制
+* 
+* https://www.cnblogs.com/wangfengju/p/6172575.html
+*/
 class FoxSocket : public STLThreadObject
 {
 public:

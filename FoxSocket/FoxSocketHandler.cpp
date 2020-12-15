@@ -29,6 +29,14 @@ void FoxSocketHandler::handleRead(FoxSocketKey& key, const void* buff, int lengt
 {
 }
 
+void FoxSocketHandler::handleHasRead(FoxSocketKey& key)
+{
+}
+
+void FoxSocketHandler::handleNoRead(FoxSocketKey& key)
+{
+}
+
 void FoxSocketHandler::handleReadFrom(FoxSocketKey& serverKey, const void* buff, int length, sockaddr_in& addr_client, int& addrLen)
 {
 }

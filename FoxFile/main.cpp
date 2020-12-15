@@ -4,6 +4,12 @@
 int main() 
 {
 	std::string txt;
+
+
+
+	txt = FoxFile::getCurrentDirName();
+	FoxFile::createDirs("../../../FoxFile/log");
+	
 	FoxFile::readTextFile("../../../FoxFile/Test.ini", txt);
 	FoxFile::writeTextFile("../../../FoxFile/Test.ini", txt);
 

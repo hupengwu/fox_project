@@ -50,6 +50,11 @@ bool FoxStty::open(const char* name)
     return true;
 }
 
+bool FoxStty::isOpen()
+{
+    return this->fd > 0;
+}
+
 bool FoxStty::setParam(int speed, int databits, int stopbits, TTYParity parity)
 {
     // 清空tm数据
@@ -226,8 +231,8 @@ bool FoxStty::recvData(unsigned char* data, int dataLen, long uTimeout, int& rec
 
     // 指明select的最大等待时间1000微秒
     timeval tv = { 0 };
-    tv.tv_sec = 0;
-    tv.tv_usec = uTimeout;
+    tv.tv_sec = uTimeout / (1000 * 1000);
+    tv.tv_usec = uTimeout % (1000 * 1000);
 
     // select：readset中是否有描述符被改变
     int maxfd = this->fd + 1;
@@ -283,24 +288,22 @@ void FoxStty::close()
         ::close(this->fd);
         this->fd = -1;
     }
-
-
 }
 
 void FoxStty::recvFunc(STLThreadObject* threadObj)
 {
-    FoxStty* stty           = (FoxStty*)threadObj;
-    unsigned char* data     = (unsigned char*)stty->data;
-    int dataLen             = sizeof(stty->data);
+    FoxStty* stty = (FoxStty*)threadObj;
+    unsigned char* data = (unsigned char*)stty->data;
+    int dataLen = sizeof(stty->data);
     FoxSttyHandler* handler = stty->handler;
-    int fd                  = stty->fd;
+    int fd = stty->fd;
 
     int recvLen = 0;
 
     while (true)
     {
         // 读取数据：SELECT最大等待100毫秒（这种方式比usleep占用CPU要低，又不会出现数据到达时缓冲区数据丢失）
-        if (!stty->recvData(data, dataLen, stty->uTimeOut, recvLen))
+        if (!stty->recvData(data, dataLen, stty->getRcvTimeOut(), recvLen))
         {
             ::usleep(100 * 1000);
             continue;
@@ -315,7 +318,7 @@ void FoxStty::recvFunc(STLThreadObject* threadObj)
         }
 
         // 通知：已经收到一部分数据
-        handler->handleRead(fd, data, recvLen);        
+        handler->handleRead(fd, data, recvLen);
     }
 }
 
@@ -332,7 +335,14 @@ bool FoxStty::bindHandler(FoxSttyHandler* handler)
     return true;
 }
 
-void FoxStty::setTimeOut(long uTimeOut)
+void FoxStty::setRcvTimeOut(long uTimeOut)
 {
+    lock_guard<mutex> guard(this->lock);
     this->uTimeOut = uTimeOut;
+}
+
+long FoxStty::getRcvTimeOut()
+{
+    lock_guard<mutex> guard(this->lock);
+    return this->uTimeOut;
 }

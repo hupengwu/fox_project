@@ -3,9 +3,30 @@
 #include "STLDemoRunnable.h"
 #include "STLTimedTask.h"
 #include "STLStringUtils.h"
+#include "STLKVMapper.h"
+#include "STLKVDemoIterator.h"
 
 int main()
 {
+	STLKVMapper<string, string> k2vmaper;
+	std::map<string, string > k2v;
+	k2v["1"] = "one";
+	k2v["2"] = "two";
+	k2v["3"] = "three";
+
+	
+	k2vmaper.swap(k2v);
+
+	set<string> keys;
+	keys.insert("1");
+	keys.insert("2");
+
+	bool r = k2vmaper.hasKey("1");
+//	k2vmaper.getKeys(keys);
+	STLKVDemoIterator it;
+	k2vmaper.foreach(it);
+	k2vmaper.foreach(keys,it);
+
 	list<string> list;
 	STLStringUtils::split("h,h,5,6",",", list);
 	vector<string> vec;

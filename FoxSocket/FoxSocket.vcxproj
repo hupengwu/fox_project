@@ -108,6 +108,9 @@
     <ClCompile Include="FoxSocketKey.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FoxDef\FoxDef.vcxproj">
+      <Project>{f65de489-bc6a-4add-afa0-98eed08d3ffc}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\FoxLogger\FoxLogger.vcxproj">
       <Project>{23242466-3fa2-4656-b7a6-fe77bea44a99}</Project>
     </ProjectReference>

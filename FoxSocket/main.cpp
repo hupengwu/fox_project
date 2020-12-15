@@ -12,6 +12,7 @@ int main()
 {
 	std::string data = "send data";
 
+	/*
 	FoxOldUdpSocket udpclient;
 	udpclient.bindHandler(new FoxUdpServerDemoHandler());
 
@@ -29,7 +30,7 @@ int main()
 
 	udpclient.create();
 
-	/*
+	
 	FoxOldUdpSocket udpsocket;
 	udpsocket.bindHandler(new FoxUdpServerDemoHandler());
 
@@ -67,7 +68,7 @@ int main()
 */
 	
 
-/*
+
 
 	FoxTcpServerSocket socket;
 	socket.bindHandler(new FoxTcpServerDemoHandler());
@@ -76,12 +77,12 @@ int main()
 
 	socket.create(98232);
 
-	this_thread::sleep_for(chrono::milliseconds(1000 * 200000));
+	this_thread::sleep_for(chrono::milliseconds(1000 * 20000000));
 
-	socket.close();
+//	socket.close();
 
-	socket.create(98231);
-	*/
+//	socket.create(98231);
+
 
 	this_thread::sleep_for(chrono::milliseconds(1000 * 1000));
 

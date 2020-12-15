@@ -34,13 +34,13 @@ bool FoxTcpServerSocket::create(int localPort)
         logger->info("Create Socket Failed!");
         return false;
     }
-    logger->info("socket create successfully!");
-    this->socketKey.setSocket(localSocket);
+    logger->info("socket create successfully!");    
 
     // <2> 设置地址重用：避免刚刚已经调用close的端口无法被绑定（之前被使用过的socket，操作系统会保持一定的TIME_WAIT时间内禁止再次绑定 ）
     int on = 1;
     if (::setsockopt(localSocket, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) != 0)
     {
+        ::close(localSocket);
         logger->info("set SO_REUSEADDR failed");
         return false;
     }
@@ -53,6 +53,7 @@ bool FoxTcpServerSocket::create(int localPort)
     localAddr.sin_port = htons((u_short)localPort);
     if (::bind(localSocket, (struct sockaddr*)&localAddr, sizeof(struct sockaddr)) < 0)
     {
+        ::close(localSocket);
         logger->info("Bind error.Port[%d]", localAddr.sin_port);
         return false;
     }
@@ -63,17 +64,22 @@ bool FoxTcpServerSocket::create(int localPort)
     struct timeval timeout = { 1,0 };
     if (::setsockopt(localSocket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(struct timeval)) != 0)
     {
-        logger->info("set accept timeout failed");
+        ::close(localSocket);
+        logger->info("set recv timeout failed");
         return false;
     }
 
     // <5> serverSocket用于监听
     if (::listen(localSocket, 20))
     {
+        ::close(localSocket);
         logger->info("Listen error!");
         return false;
     }
-    logger->info("Listening on port[% d]", localAddr.sin_port);
+    logger->info("Listening on port[% d]", localPort);
+
+    // 保存localSocket
+    this->socketKey.setSocket(localSocket);
 
     // <6> 启动客户端数据处理的异步任务线程池
     this->clientThread.create(this->nThreads);
@@ -103,6 +109,24 @@ void FoxTcpServerSocket::close()
         ::close(localSocket);
         this->socketKey.setSocket(-1);
     } 
+}
+
+bool FoxTcpServerSocket::setRevTimeOut(timeval& timeout)
+{
+    int localSocket = this->socketKey.getSocket();
+    if (localSocket == -1)
+    {
+        return false;
+    }
+
+    // 设置accept/recv超时
+     if (::setsockopt(localSocket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(struct timeval)) != 0)
+    {
+        logger->info("set recv timeout failed");
+        return false;
+    }
+
+    return true;
 }
 
 void FoxTcpServerSocket::setThreads(int nThreads)

@@ -46,6 +46,25 @@ public:
     virtual void handleRead(FoxSocketKey& key,const void* buff,int length);
 
     /**
+     * 处理HasRead消息：当接收到客户端发送过来的一组数据被接收完成，会捕获到这个动作
+     * 客户端已经发送完成一组数据
+     * 对象：FoxTcpServerSocket/FoxTcpClientSocket/FoxUdpSocket
+     *
+     * @param key FoxSocketKey
+     */
+    virtual void handleHasRead(FoxSocketKey& key);
+
+
+    /**
+     * 处理NoRead消息：SELECT超过一定的时间间隔都没有收到该数据，会捕获到这个动作
+     * 客户端到了超时都没有后续新的数据过来
+     * 对象：FoxTcpServerSocket/FoxTcpClientSocket
+     *
+     * @param key FoxStty
+     */
+    virtual void handleNoRead(FoxSocketKey& key);
+
+    /**
      * 处理Read消息：当接收到客户端发送过来的数据时，会捕获到这个动作
      * 对象：FoxUdpSocket
      *

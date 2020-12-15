@@ -1,25 +1,28 @@
-#include "FoxCoderUtils.h"
+ï»¿#include "FoxCoderUtils.h"
 
-// º¯ÊıËµÃ÷:¼ÆËã×Ö·ûÊı×éµÄCRCĞ£ÑéÂë
-//			CRCĞ£Ñé¶àÏîÊ½ CRC16	CRCMARK_16
-//			CRCĞ£Ñé¶àÏîÊ½ CRCCCITT	CRCMARK_CCITT
-// ÊäÈë²ÎÊı:byPtr:×Ö·ûÊı×éÃû
-//          byteLength-×Ö·ûÊı×éµÄ³¤¶È
-//			byteMark-Ğ£Ñé·½Ê½
-// Êä³ö²ÎÊı:ÎŞ
-// ·µ »Ø Öµ:CRCĞ£ÑéÂë
+#include <iconv.h>
+#include <memory.h>
+
+// å‡½æ•°è¯´æ˜:è®¡ç®—å­—ç¬¦æ•°ç»„çš„CRCæ ¡éªŒç 
+//			CRCæ ¡éªŒå¤šé¡¹å¼ CRC16	CRCMARK_16
+//			CRCæ ¡éªŒå¤šé¡¹å¼ CRCCCITT	CRCMARK_CCITT
+// è¾“å…¥å‚æ•°:byPtr:å­—ç¬¦æ•°ç»„å
+//          byteLength-å­—ç¬¦æ•°ç»„çš„é•¿åº¦
+//			byteMark-æ ¡éªŒæ–¹å¼
+// è¾“å‡ºå‚æ•°:æ— 
+// è¿” å› å€¼:CRCæ ¡éªŒç 
 WORD FoxCoderUtils::getCrc16(BYTE* byPtr, DWORD dwLength, WORD wMark, WORD wCrc16)
 {
 	unsigned short usCrc16;
 
-	//16Î»µÄCRC¼Ä´æÆ÷
+	//16ä½çš„CRCå¯„å­˜å™¨
 	BYTE byCrc16Lo = wCrc16 % 0x100;
 	BYTE byCrc16Hi = wCrc16 / 0x100;
 
-	//ÁÙÊ±±äÁ¿
+	//ä¸´æ—¶å˜é‡
 	BYTE bySaveHi, bySaveLo;
 
-	//CRC¶àÏîÊ½ÂëµÄ¼Ä´æÆ÷
+	//CRCå¤šé¡¹å¼ç çš„å¯„å­˜å™¨
 	BYTE byCl, byCh;
 	byCl = wMark % 0x100;
 	byCh = wMark / 0x100;
@@ -27,18 +30,18 @@ WORD FoxCoderUtils::getCrc16(BYTE* byPtr, DWORD dwLength, WORD wMark, WORD wCrc1
 	for (DWORD i = 0; i < dwLength; i++)
 	{
 		{
-			byCrc16Lo ^= *byPtr;	//Ã¿Ò»¸öÊı¾İÓëCRC¼Ä´æÆ÷½øĞĞÒì»ò
+			byCrc16Lo ^= *byPtr;	//æ¯ä¸€ä¸ªæ•°æ®ä¸CRCå¯„å­˜å™¨è¿›è¡Œå¼‚æˆ–
 			for (int k = 0; k < 8; k++)
 			{
 				bySaveHi = byCrc16Hi;
 				bySaveLo = byCrc16Lo;
-				byCrc16Hi /= 2;			 //¸ßÎ»ÓÒÒÆÒ»Î»
-				byCrc16Lo /= 2;			 //µÍÎ»ÓÒÒÆÒ»Î»
-				if ((bySaveHi & 0x01) == 0x01)		 //Èç¹û¸ßÎ»×Ö½Ú×îºóÒ»Î»Îª1
+				byCrc16Hi /= 2;			 //é«˜ä½å³ç§»ä¸€ä½
+				byCrc16Lo /= 2;			 //ä½ä½å³ç§»ä¸€ä½
+				if ((bySaveHi & 0x01) == 0x01)		 //å¦‚æœé«˜ä½å­—èŠ‚æœ€åä¸€ä½ä¸º1
 				{
-					byCrc16Lo |= 0x80;				 //ÔòµÍÎ»×Ö½ÚÓÒÒÆºóÇ°Ãæ²¹1
-				}										 //·ñÔò×Ô¶¯²¹0
-				if ((bySaveLo & 0x01) == 0x01)		 //Èç¹û¸ßÎ»×Ö½Ú×îºóÒ»Î»Îª1£¬ÔòÓë¶àÏîÊ½Âë½øĞĞÒì»ò
+					byCrc16Lo |= 0x80;				 //åˆ™ä½ä½å­—èŠ‚å³ç§»åå‰é¢è¡¥1
+				}										 //å¦åˆ™è‡ªåŠ¨è¡¥0
+				if ((bySaveLo & 0x01) == 0x01)		 //å¦‚æœé«˜ä½å­—èŠ‚æœ€åä¸€ä½ä¸º1ï¼Œåˆ™ä¸å¤šé¡¹å¼ç è¿›è¡Œå¼‚æˆ–
 				{
 					byCrc16Hi ^= byCh;
 					byCrc16Lo ^= byCl;
@@ -53,36 +56,36 @@ WORD FoxCoderUtils::getCrc16(BYTE* byPtr, DWORD dwLength, WORD wMark, WORD wCrc1
 	return usCrc16;
 }
 
-// º¯ÊıËµÃ÷:BCDÂë->HEXÂë
-// ÊäÈë²ÎÊı:byteBcd-±àÂë
-// Êä³ö²ÎÊı:byteBcd-HEX±àÂë
-// ·µ »Ø Öµ:×ª»»ÊÇ·ñ³É¹¦
-bool FoxCoderUtils::Bcd2Hex(BYTE& byteBcd)
+// å‡½æ•°è¯´æ˜:BCDç ->HEXç 
+// è¾“å…¥å‚æ•°:byteHex-ç¼–ç 
+// è¾“å‡ºå‚æ•°:byteHex-HEXç¼–ç 
+// è¿” å› å€¼:è½¬æ¢æ˜¯å¦æˆåŠŸ
+bool FoxCoderUtils::Bcd2Hex(const BYTE& byteBcd, BYTE& byteHex)
 {
-	// ¶ÔÊäÈëµÄÊı¾İºÏ·¨ĞÔ½øĞĞ¼ì²é
-	if (((byteBcd % 16) > 9) || ((byteBcd / 16) > 9))
+	// å¯¹è¾“å…¥çš„æ•°æ®åˆæ³•æ€§è¿›è¡Œæ£€æŸ¥
+	if (((byteBcd % 0x10) > 9) || ((byteBcd / 0x10) > 9))
 	{
 		return false;
 	}
 
-	BYTE bcd = byteBcd;
-
-	byteBcd = (bcd % 16) * 1 + (bcd / 16) * 10;
+	byteHex = (byteBcd % 0x10) * 1 + (byteBcd / 0x10) * 10;
 
 	return true;
 }
 
-// º¯ÊıËµÃ÷:HEXÂë->BCDÂë
-// ÊäÈë²ÎÊı:byteBcd-HEX±àÂë
-// Êä³ö²ÎÊı:byteBcd-BCD±àÂë
-// ·µ »Ø Öµ:ÎŞ
-void FoxCoderUtils::HexToBcd(BYTE& byteBcd)
+// å‡½æ•°è¯´æ˜:HEXç ->BCDç 
+// è¾“å…¥å‚æ•°:byteHex-HEXç¼–ç 
+// è¾“å‡ºå‚æ•°:byteHex-BCDç¼–ç 
+// è¿” å› å€¼:æ— 
+bool FoxCoderUtils::Hex2Bcd(const BYTE& byteHex, BYTE& byteBcd)
 {
-	BYTE bcd;
-	bcd = byteBcd;
+	// å¯¹è¾“å…¥çš„æ•°æ®åˆæ³•æ€§è¿›è¡Œæ£€æŸ¥
+	if (byteBcd >= 100)
+	{
+		return false;
+	}
 
-	byteBcd = (bcd % 10) * 1 + (bcd / 10) * 16;
-
-	return;
+	byteBcd = (byteHex % 10) * 0x01 + (byteHex / 10) * 0x10;
+	return true;
 }
 

@@ -100,11 +100,19 @@ void FoxTcpClientSocket::recvFunc(STLThreadObject* socket)
     FoxTcpClientSocket* clientSocket = (FoxTcpClientSocket*)socket;
     FoxSocketHandler& handler        = *clientSocket->socketHandler;
     FoxSocketKey& localKey           = clientSocket->socketKey;
+    int recvSize                     = sizeof(recvBuff);
 
     // <1> 接收到服务端发过来的消息
-    int length = ::recv(localKey.getSocket(), recvBuff, sizeof(recvBuff), 0);
+    int length = ::recv(localKey.getSocket(), recvBuff, recvSize, 0);
     if (-1 == length)
     {
+        int err = errno;
+        if (err == EAGAIN)
+        {
+            // 重试：连续到了超时都没有接收到数据,为正常状况
+            this->socketHandler->handleNoRead(localKey);
+        }
+
         return;
     }
 
@@ -112,6 +120,12 @@ void FoxTcpClientSocket::recvFunc(STLThreadObject* socket)
     if (length > 0)
     {
         handler.handleRead(localKey, recvBuff, length);
+
+        if (length < recvSize)
+        {
+            // 服务端发送过来的一组数据，已经通过多次recv动作取完了
+            this->socketHandler->handleHasRead(localKey);
+        }
         return;
     }
 

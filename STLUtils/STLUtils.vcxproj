@@ -88,11 +88,15 @@
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="CSemaphoreTest.h" />
+    <ClInclude Include="STLFIFOBuffers.h" />
+    <ClInclude Include="STLKVDemoIterator.h" />
+    <ClInclude Include="STLKVIterator.h" />
     <ClInclude Include="STLAsyncTask.h" />
     <ClInclude Include="STLByteArray.h" />
     <ClInclude Include="STLDemoRunnable.h" />
     <ClInclude Include="STLDequeUtils.h" />
     <ClInclude Include="STLEvent.h" />
+    <ClInclude Include="STLKVMapper.h" />
     <ClInclude Include="STLListUtils.h" />
     <ClInclude Include="STLLockGuardUtils.h" />
     <ClInclude Include="STLMapUtils.h" />
@@ -118,6 +122,8 @@
     <ClCompile Include="STLDemoRunnable.cpp" />
     <ClCompile Include="STLDequeUtils.cpp" />
     <ClCompile Include="STLEvent.cpp" />
+    <ClCompile Include="STLFIFOBuffers.cpp" />
+    <ClCompile Include="STLKVDemoIterator.cpp" />
     <ClCompile Include="STLLockGuardUtils.cpp" />
     <ClCompile Include="STLMethodUtil.cpp" />
     <ClCompile Include="STLRunnable.cpp" />

@@ -22,9 +22,20 @@ public:
     virtual ~FoxTcpServerSocket();
 
 public:
+    /*
+    * 创建/关闭socket
+    */
     bool create(int nSocketPort);
     void close();
 
+    /*
+    * 设置accept/recv超时
+    */
+    bool setRevTimeOut(timeval& timeout);
+
+    /*
+    * 接收线程的数量
+    */
     void setThreads(int nThreads);
     int  getThreads();
 

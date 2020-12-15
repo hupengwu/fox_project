@@ -7,7 +7,7 @@ int main()
     FoxStty foxSerialPort;
     foxSerialPort.bindHandler(new FoxDemoHandler());
     foxSerialPort.open("ttyS1");
-    foxSerialPort.setTimeOut(2 * 1000 * 1000);
+    foxSerialPort.setRcvTimeOut(2 * 1000 * 1000);
     foxSerialPort.setParam();
 
     int send = 0;

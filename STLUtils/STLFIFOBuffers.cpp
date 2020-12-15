@@ -1,10 +1,10 @@
-#include "FoxSttyBuffer.h"
+#include "STLFIFOBuffers.h"
 
-FoxSttyBuffer::FoxSttyBuffer()
+STLFIFOBuffers::STLFIFOBuffers()
 {
 }
 
-FoxSttyBuffer::~FoxSttyBuffer()
+STLFIFOBuffers::~STLFIFOBuffers()
 {
 	lock_guard<mutex> guard(this->lock);
 
@@ -14,7 +14,7 @@ FoxSttyBuffer::~FoxSttyBuffer()
 	}
 }
 
-bool FoxSttyBuffer::appendBuff(int fd, const char* pData, int nSize)
+bool STLFIFOBuffers::appendBuff(int fd, const void* pData, int nSize)
 {
 	lock_guard<mutex> guard(this->lock);
 
@@ -32,12 +32,12 @@ bool FoxSttyBuffer::appendBuff(int fd, const char* pData, int nSize)
 	}
 
 	// 将数据追加到尾部
-	data->append(pData, nSize);
-		
+	data->append((const char*)pData, nSize);
+
 	return true;
 }
 
-bool FoxSttyBuffer::removeBuff(int fd, STLByteArray& buff)
+bool STLFIFOBuffers::removeBuff(int fd, STLByteArray& buff)
 {
 	lock_guard<mutex> guard(this->lock);
 
@@ -55,21 +55,22 @@ bool FoxSttyBuffer::removeBuff(int fd, STLByteArray& buff)
 
 	// 删除指针
 	delete data;
-	
+
 	this->fd2buff.erase(fd);
 	return true;
 }
 
-bool FoxSttyBuffer::queryBuff(int fd, int& size)
+bool STLFIFOBuffers::queryBuff(int fd, int& size)
 {
 	lock_guard<mutex> guard(this->lock);
 
 	size = 0;
 	if (this->fd2buff.find(fd) != this->fd2buff.end())
 	{
-		size = this->fd2buff[fd]->getFiletSize();
+		size = this->fd2buff[fd]->getSize();
 		return true;
 	}
 
 	return false;
 }
+

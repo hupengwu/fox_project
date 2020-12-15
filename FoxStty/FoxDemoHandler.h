@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FoxSttyHandler.h"
-#include "FoxSttyBuffer.h"
+#include <STLFIFOBuffers.h>
 
 class FoxDemoHandler : public FoxSttyHandler
 {
@@ -15,6 +15,6 @@ public:
     virtual void handleNoRead(int fd);
 
 private:
-	FoxSttyBuffer recver;
+	STLFIFOBuffers buffers;
 };
 

@@ -11,7 +11,7 @@ public:
 	virtual ~STLByteArray();
 	
 public:// 内存大小管理
-	int getFiletSize() const;
+	int getSize() const;
 	int getUpperBound() const;
 	void setSize(int nNewSize, int nGrowBy = -1);
 	void freeExtra();

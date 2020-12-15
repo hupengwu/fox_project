@@ -240,10 +240,10 @@ void STLByteArray::insertAt(int nStartIndex, STLByteArray* pNewArray)
 	assert(pNewArray != nullptr);
 	assert(nStartIndex >= 0);
 
-	if (pNewArray->getFiletSize() > 0)
+	if (pNewArray->getSize() > 0)
 	{
-		insertAt(nStartIndex, pNewArray->getAt(0), pNewArray->getFiletSize());
-		for (int i = 0; i < pNewArray->getFiletSize(); i++) 
+		insertAt(nStartIndex, pNewArray->getAt(0), pNewArray->getSize());
+		for (int i = 0; i < pNewArray->getSize(); i++) 
 		{
 			setAt(nStartIndex + i, pNewArray->getAt(i));
 		}			
@@ -251,7 +251,7 @@ void STLByteArray::insertAt(int nStartIndex, STLByteArray* pNewArray)
 }
 
 //////////////////////////////////////////////////////////////////////////
-int STLByteArray::getFiletSize() const
+int STLByteArray::getSize() const
 {
 	return m_nSize;
 }
