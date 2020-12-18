@@ -8,18 +8,18 @@ FoxSttyHandler::~FoxSttyHandler()
 {
 }
 
-void FoxSttyHandler::handleOpen(int fd)
+void FoxSttyHandler::handleOpen(const int fd, const char* name)
 {
 }
 
-void FoxSttyHandler::handleRead(int fd, const unsigned char* buff, int length)
+void FoxSttyHandler::handleRead(const int fd, const char* name, const unsigned char* buff, int length)
 {
 }
 
-void FoxSttyHandler::handleNoRead(int fd)
+void FoxSttyHandler::handleNoRead(const int fd, const char* name)
 {
 }
 
-void FoxSttyHandler::handleClosed(int fd)
+void FoxSttyHandler::handleClosed(const int fd, const char* name)
 {
 }

@@ -9,7 +9,7 @@ FoxDemoHandler::~FoxDemoHandler()
 {
 }
 
-void FoxDemoHandler::handleRead(int fd, const unsigned char* buff, int length)
+void FoxDemoHandler::handleRead(const int fd, const char* name, const unsigned char* buff, int length)
 {
 	if (buff == nullptr || length <= 0)
 	{
@@ -28,7 +28,7 @@ void FoxDemoHandler::handleRead(int fd, const unsigned char* buff, int length)
 	::printf("%s\n", buff);
 }
 
-void FoxDemoHandler::handleNoRead(int fd)
+void FoxDemoHandler::handleNoRead(const int fd, const char* name)
 {
 	// 检查：是否为空数据
 	int size = 0;

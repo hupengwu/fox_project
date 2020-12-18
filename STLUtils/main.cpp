@@ -8,6 +8,17 @@
 
 int main()
 {
+	STLByteArray bytes;
+	
+	STLStringUtils::str2bytes("f1 F2 F3 F4", bytes);
+	BYTE i = bytes.getAt(0);
+	i = bytes.getAt(1);
+	i = bytes.getAt(2);
+	i = bytes.getAt(3);
+	i = 241;
+	string tt;
+	STLStringUtils::bytes2str(bytes,tt);
+
 	STLKVMapper<string, string> k2vmaper;
 	std::map<string, string > k2v;
 	k2v["1"] = "one";
@@ -41,21 +52,21 @@ int main()
 
 
 	// 1.创建5线程的线程池
-	STLAsyncTask asyncTask;
-	asyncTask.create(100);
+	STLAsyncTask threads;
+	threads.create(100);
 
 	this_thread::sleep_for(chrono::milliseconds(1000 * 1));
 
 	// 3.执行30个任务
 	for (size_t i = 0; i < 3000; i++)
 	{
-		asyncTask.execute(new STLDemoRunnable());
+		threads.execute(new STLDemoRunnable());
 	}
 	
 	this_thread::sleep_for(chrono::milliseconds(1000*60));
 
 	// 关闭线程池
-	asyncTask.close();
+	threads.close();
 
 	this_thread::sleep_for(chrono::milliseconds(1000 * 1000));
 

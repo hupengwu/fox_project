@@ -21,7 +21,7 @@ public:
      *
      * @param key FoxStty
      */
-    virtual void handleOpen(int fd);
+    virtual void handleOpen(const int fd,const char* name);
 
     /**
      * 处理Read消息：当接收到客户端发送过来的数据时，会捕获到这个动作
@@ -29,7 +29,7 @@ public:
      *
      * @param key FoxStty
      */
-    virtual void handleRead(int fd, const unsigned char* buff, int length);
+    virtual void handleRead(const int fd, const char* name, const unsigned char* buff, int length);
 
     /**
      * 处理NoRead消息：SELECT超过一定的时间间隔都没有收到该数据，会捕获到这个动作
@@ -37,7 +37,7 @@ public:
      *
      * @param key FoxStty
      */
-    virtual void handleNoRead(int fd);
+    virtual void handleNoRead(const int fd, const char* name);
 
  
     /**
@@ -46,6 +46,6 @@ public:
      *
      * @param key FoxStty
      */
-    virtual void handleClosed(int fd);
+    virtual void handleClosed(const int fd, const char* name);
 };
 

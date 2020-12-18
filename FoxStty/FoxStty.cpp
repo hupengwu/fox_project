@@ -42,7 +42,7 @@ bool FoxStty::open(const char* name)
     }
 
     // 通知打开串口
-    this->handler->handleOpen(this->fd);
+    this->handler->handleOpen(this->fd,this->name);
 
     // <6> 启动一个后台收发的线程
     this->createThread();
@@ -280,7 +280,7 @@ void FoxStty::close()
 {
     this->closeThread();
 
-    this->handler->handleClosed(this->fd);
+    this->handler->handleClosed(this->fd, this->name);
 
     if (this->fd > 0)
     {
@@ -313,12 +313,12 @@ void FoxStty::recvFunc(STLThreadObject* threadObj)
         if (recvLen == 0)
         {
             // 通知：在100毫秒内，没有收到数据
-            handler->handleNoRead(fd);
+            handler->handleNoRead(fd, this->name);
             continue;
         }
 
         // 通知：已经收到一部分数据
-        handler->handleRead(fd, data, recvLen);
+        handler->handleRead(fd, this->name, data, recvLen);
     }
 }
 

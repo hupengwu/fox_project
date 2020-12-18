@@ -3,6 +3,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include "STLByteArray.h"
 
 using namespace std;
 
@@ -31,7 +32,15 @@ public:
     */
     static string left(const string& strString, const size_t& len);
     static string right(const string& strString, const size_t& len);
+
+public:
+    /*
+    * 将字符串转换成字节数组
+    */
+    static bool str2bytes(string& str, STLByteArray& byArray);
+    static bool str2bytes(const char* str, STLByteArray& byArray);
  
+    static bool bytes2str(STLByteArray& arrArray, string& str);
 };
 
 template<typename ...Args>
