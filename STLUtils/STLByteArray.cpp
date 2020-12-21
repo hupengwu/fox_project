@@ -222,7 +222,7 @@ void STLByteArray::removeAt(int nIndex, int nCount)
 	assert(nCount >= 0);
 	assert(nIndex + nCount <= m_nSize);
 
-	// just remove a range
+	// just remove_if a range
 	int nMoveCount = m_nSize - (nIndex + nCount);
 
 	if (nMoveCount)

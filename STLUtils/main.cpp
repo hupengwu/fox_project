@@ -10,6 +10,9 @@ int main()
 {
 	STLByteArray bytes;
 	
+	string ttt = "f1 F2 F3 F4";
+	STLStringUtils::remove_if(ttt,' ');
+
 	STLStringUtils::str2bytes("f1 F2 F3 F4", bytes);
 	BYTE i = bytes.getAt(0);
 	i = bytes.getAt(1);

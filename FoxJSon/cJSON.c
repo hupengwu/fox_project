@@ -38,7 +38,7 @@
 #define UINT_MAX   4294967295U
 #endif
 
-/* remove global variable for thread safe. --by Bwar on 2020-11-15
+/* remove_if global variable for thread safe. --by Bwar on 2020-11-15
 static const char *ep;
 
 const char *cJSON_GetErrorPtr()

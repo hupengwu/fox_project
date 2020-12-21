@@ -100,12 +100,17 @@ string STLStringUtils::right(const string& strString, const size_t& len)
 	return strString.substr(strString.size() - len, len);
 }
 
+void STLStringUtils::remove_if(string& strString, const char& c)
+{
+	auto lambdaFunc = [&](char x) {return x == c; };
+	strString.erase(std::remove_if(strString.begin(), strString.end(), lambdaFunc), strString.end());
+}
 
-bool is_space(char x) { return x == ' '; }
 bool STLStringUtils::str2bytes(std::string& str, STLByteArray& byArray)
 {
 	// É¾³ý¿Õ¸ñ
-	str.erase(std::remove_if(str.begin(), str.end(), is_space), str.end());
+	auto lambdaFunc = [&](char x) {return x == ' '; };
+	str.erase(std::remove_if(str.begin(), str.end(), lambdaFunc), str.end());
 
 	if (str.empty())
 	{
@@ -187,7 +192,7 @@ bool STLStringUtils::str2bytes(const char* str, STLByteArray& byArray)
 	return str2bytes(string,byArray);
 }
 
-bool STLStringUtils::bytes2str(STLByteArray& arrArray, string& str)
+void STLStringUtils::bytes2str(STLByteArray& arrArray, string& str)
 {
 	STLByteArray arrString;
 	int nSize = arrArray.getSize();
@@ -225,7 +230,12 @@ bool STLStringUtils::bytes2str(STLByteArray& arrArray, string& str)
 	}
 
 	str = (char*)(arrString.getData());
-	return true;
 }
 
+std::string STLStringUtils::bytes2str(STLByteArray& arrArray)
+{
+	string str;
+	bytes2str(arrArray, str);
+	return str;
+}
 

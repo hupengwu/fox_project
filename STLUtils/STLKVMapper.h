@@ -61,7 +61,7 @@ public:
      *
      * @param key 一个对象的key
      */
-    void remove(const KEY& key);
+    void remove_if(const KEY& key);
 
     /**
      * 删除指定的对象
@@ -69,7 +69,7 @@ public:
      * @param keys 一组对象的key
      * @throws Exception 异常
      */
-    void remove(const set<KEY>& keys);
+    void remove_if(const set<KEY>& keys);
 
     /**
      * 清空数据
@@ -146,14 +146,14 @@ inline void STLKVMapper<KEY, VALUE>::swap(map<KEY, VALUE>& m)
 }
 
 template<typename KEY, typename VALUE>
-inline void STLKVMapper<KEY, VALUE>::remove(const KEY& key)
+inline void STLKVMapper<KEY, VALUE>::remove_if(const KEY& key)
 {
     lock_guard<mutex> guard(this->lock);
     this->key2value.erase(key);
 }
 
 template<typename KEY, typename VALUE>
-inline void STLKVMapper<KEY, VALUE>::remove(const set<KEY>& keys)
+inline void STLKVMapper<KEY, VALUE>::remove_if(const set<KEY>& keys)
 {
     lock_guard<mutex> guard(this->lock);
 
