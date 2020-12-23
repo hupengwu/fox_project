@@ -72,7 +72,7 @@ public:     // method of ordinary json object
     bool Add(const std::string& strKey, uint32 uiValue);
     bool Add(const std::string& strKey, int64 llValue);
     bool Add(const std::string& strKey, uint64 ullValue);
-    bool Add(const std::string& strKey, bool bValue, bool bValueAgain);
+    bool Add(const std::string& strKey, bool bValue);
     bool Add(const std::string& strKey, float fValue);
     bool Add(const std::string& strKey, double dValue);
     bool AddNull(const std::string& strKey);    // add null like this:   "key":null

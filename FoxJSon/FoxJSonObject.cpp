@@ -1324,7 +1324,7 @@ bool FoxJSonObject::Add(const std::string& strKey, uint64 ullValue)
     return(true);
 }
 
-bool FoxJSonObject::Add(const std::string& strKey, bool bValue, bool bValueAgain)
+bool FoxJSonObject::Add(const std::string& strKey, bool bValue)
 {
     cJSON* pFocusData = NULL;
     if (m_pJsonData != NULL)
